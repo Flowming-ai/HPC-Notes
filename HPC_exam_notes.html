@@ -1,0 +1,2239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECCE 738 考前极简笔记</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/hljs/github.min.css">
+<link rel="stylesheet" href="assets/hljs/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<style>
+/* 配色与版面参考 VLM_Midterm_Review：纸张式单栏、红色章标题、蓝色小节、按类型着色的方框 */
+:root {
+  color-scheme: light dark;
+  --ink: #1b1b1f; --muted: #5a5f6b; --line: #d9dbe0; --soft: #f5f6f8; --bg: #e9eaee; --paper: #ffffff;
+  --accent: #a3261e; --accent-soft: #fbeeec; --blue: #1f3a5f; --blue-soft: #eaf0f8;
+  --amber: #b86a00; --amber-soft: #fff6e5; --green: #1f6e43; --green-soft: #e9f5ee;
+  --hl: #fff1b8; --zh: #4b586b; --link: #1f4f8f; --shadow: rgba(0,0,0,.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e4e6ea; --muted: #9aa1ad; --line: #363b43; --soft: #23272d; --bg: #111316; --paper: #1a1d21;
+    --accent: #f0857b; --accent-soft: #32201e; --blue: #8fb4e8; --blue-soft: #1b2535;
+    --amber: #e5a54a; --amber-soft: #2d2515; --green: #6cc494; --green-soft: #17281e;
+    --hl: #453a0e; --zh: #a3b3c8; --link: #8fb4e8; --shadow: rgba(0,0,0,.5);
+  }
+}
+* { box-sizing: border-box; }
+html { font-size: 14.5px; scroll-behavior: smooth; scroll-padding-top: 12px; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 1rem/1.55 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC", "Noto Sans SC",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 目录 */
+#nav {
+  position: fixed; inset: 0 auto 0 0; width: 264px; overflow-y: auto; z-index: 20;
+  background: var(--paper); border-right: 1px solid var(--line);
+  padding: 16px 10px 40px; font-size: .9rem; line-height: 1.4;
+}
+#nav .brand { font-weight: 700; font-size: 1.05rem; margin: 0 6px 2px; color: var(--accent); }
+#nav .sub { color: var(--muted); font-size: .8rem; margin: 0 6px 10px; }
+#nav .tools { display: flex; gap: 5px; flex-wrap: wrap; margin: 0 6px 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+button.tool {
+  font: inherit; font-size: .8rem; color: var(--ink); background: var(--soft);
+  border: 1px solid var(--line); border-radius: 3px; padding: 2px 8px; cursor: pointer;
+}
+button.tool:hover { border-color: var(--blue); color: var(--blue); }
+#coreonly.on { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+a.full { display: block; margin: 0 6px 8px; font-size: .8rem; color: var(--muted); }
+.toc, .toc ol { list-style: none; margin: 0; padding: 0; }
+.toc > li { margin: 8px 0 2px; }
+.toc a { display: block; color: var(--ink); text-decoration: none; padding: 3px 6px; border-radius: 3px; }
+.toc a:hover { background: var(--soft); }
+.toc > li > a { font-weight: 650; }
+.toc ol a { font-size: .85rem; color: var(--muted); padding: 2px 6px 2px 3.2em; text-indent: -2.5em; }
+.toc a.active { background: var(--accent-soft); color: var(--accent); }
+.toc .chnum { display: block; color: var(--muted); font-weight: 600; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; }
+.toc .secnum { display: inline-block; min-width: 2.5em; text-indent: 0; font-variant-numeric: tabular-nums; }
+.toc .prio { font-size: .68rem; letter-spacing: 0; }
+#menu {
+  display: none; position: fixed; top: 10px; left: 10px; z-index: 30;
+  background: var(--paper); box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* 纸张 */
+main {
+  max-width: 900px; margin: 22px 28px 60px max(292px, calc(264px + (100vw - 264px - 900px) / 2));
+  background: var(--paper); padding: 38px 46px 90px; box-shadow: 0 2px 14px var(--shadow);
+}
+
+/* 封面 */
+.cover {
+  border: 1px solid var(--line); border-radius: 4px; padding: 14px 20px 14px;
+  background: linear-gradient(180deg, var(--paper), var(--accent-soft));
+}
+.cover .sub { color: var(--muted); font-size: .9rem; margin: 0; }
+.cover h1 { font-size: 1.75rem; line-height: 1.25; margin: 4px 0 6px; color: var(--accent); letter-spacing: -.01em; }
+.cover .meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 12px; margin-top: 12px; }
+.cover .meta div { background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 7px 10px; font-size: .9rem; line-height: 1.5; }
+.cover .meta b { display: block; font-size: .76rem; color: var(--muted); letter-spacing: .05em; margin-bottom: 1px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.tag {
+  display: inline-block; font-size: .74rem; font-weight: 600; letter-spacing: .03em;
+  padding: 1px 7px; border-radius: 2px; color: var(--paper); background: var(--muted);
+}
+.tag.red { background: var(--accent); } .tag.blue { background: var(--blue); }
+.tag.amber { background: var(--amber); } .tag.green { background: var(--green); }
+.tag.gray { background: var(--line); color: var(--ink); }
+.tag.yellow { background: var(--hl); color: var(--ink); }
+
+/* 标题：章 = 红色竖条，节 = 蓝色下划线，小节 = 蓝色短条 */
+section.chapter { display: flow-root; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--line); }
+section.chapter > h1 {
+  font-size: 1.6rem; line-height: 1.25; margin: 0 0 14px; color: var(--accent);
+  border-left: 5px solid var(--accent); padding: 4px 0 4px 13px; letter-spacing: -.01em;
+}
+h1 .chnum { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; margin-bottom: 2px; }
+h1 .title-cn, h1 .reading { display: inline; font-size: .95rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+h1 .title-cn::before { content: "\A"; white-space: pre; }
+h1 .reading { margin-left: 14px; font-size: .88rem; }
+h2 {
+  font-size: 1.24rem; line-height: 1.35; margin: 34px 0 10px; padding-bottom: 5px;
+  color: var(--blue); border-bottom: 2px solid var(--blue);
+}
+h2[data-num]::before {
+  content: attr(data-num); display: inline-block; margin-right: .6em; padding: 0 .5em; border-radius: 3px;
+  background: var(--blue); color: var(--paper); font-size: .82em; font-variant-numeric: tabular-nums; vertical-align: .06em;
+}
+h3 { font-size: 1.07rem; line-height: 1.4; margin: 18px 0 5px; }
+h3:not(.practice)::before {
+  content: ""; display: inline-block; width: 4px; height: .95em; margin-right: 8px;
+  background: var(--blue); border-radius: 1px; vertical-align: -.12em;
+}
+h4 { font-size: 1rem; line-height: 1.4; margin: 14px 0 4px; }
+h3.practice {
+  color: var(--green); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase;
+  margin: 20px 0 6px; padding-top: 10px; border-top: 1px dashed var(--line);
+}
+h3.practice::before { content: "✎ "; }
+
+/* 正文 */
+p, ul, ol { margin: 6px 0; }
+ul, ol { padding-left: 1.5em; }
+li { margin: 3px 0; }
+li > p { margin: 2px 0; }
+a { color: var(--link); }
+strong { font-weight: 650; }
+code {
+  font-family: "JetBrains Mono", "Cascadia Code", "DejaVu Sans Mono", Consolas, Menlo, monospace;
+  font-size: .87em; background: var(--soft); padding: .08em .32em; border-radius: 3px;
+}
+pre {
+  background: var(--soft); border: 1px solid var(--line); border-radius: 3px;
+  padding: 9px 12px; margin: 8px 0; overflow-x: auto; line-height: 1.5; font-size: .88rem;
+}
+pre code, pre code.hljs { background: transparent; padding: 0; font-size: inherit; }
+blockquote { margin: 8px 0; padding: 1px 12px; border-left: 3px solid var(--line); color: var(--muted); font-size: .93rem; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+.katex { font-size: 1.06em; }
+.math.display { display: block; overflow-x: auto; overflow-y: hidden; }
+.katex-display { margin: .4em 0 .5em; }
+
+/* 表格：全格线、浅底表头 */
+.tw { overflow-x: auto; margin: 8px 0 12px; }
+main table { border-collapse: collapse; width: 100%; font-size: .92rem; line-height: 1.45; background: var(--paper); }
+th, td { border: 1px solid var(--line); padding: 4px 9px; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-weight: 600; }
+td.warn { color: var(--accent); font-weight: 650; }
+.muted { color: var(--muted); font-size: .86rem; }
+
+/* 中文译文：正文在英文下方；标题、表头、框标题里跟在英文后面 */
+.zh { display: block; color: var(--zh); font-size: .93em; line-height: 1.55; margin-top: 1px; }
+h1 .zh, h2 .zh, h3 .zh, h4 .zh { display: inline; margin-left: .7em; font-size: .78em; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+td .zh { font-size: .95em; line-height: 1.45; margin-top: 0; }
+th .zh { display: inline-block; margin-left: .5em; font-size: .95em; font-weight: 400; color: var(--muted); }
+.callout .title .zh { display: inline; margin-left: .6em; font-size: .93em; font-weight: 400; color: var(--muted); }
+.zh.inline { display: inline; margin-left: 0; }
+figcaption .zh { font-size: 1em; }
+details.fold > summary .zh { display: inline; margin-left: 10px; font-weight: 400; }
+/* 语言三档：双语（默认）/ 仅英文 / 仅中文。仅中文时隐藏脚本包出来的 .en，译文改用正文样式 */
+body.no-zh .zh { display: none; }
+body.zh-only .en { display: none; }
+body.zh-only :is(p, li, td) > .zh { color: inherit; font-size: 1em; line-height: inherit; }
+
+/* 方框：浅色底 + 4px 色条 + 小号大写标签，颜色表示类型 */
+.callout {
+  --c: var(--muted); --s: var(--paper);
+  background: var(--s); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 3px;
+  padding: 8px 13px 4px; margin: 10px 0;
+}
+.callout-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 9px; margin-bottom: 2px; }
+.callout .kind { font-size: .74rem; font-weight: 700; color: var(--c); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.callout .title { font-weight: 650; }
+.callout-body { font-size: .97rem; }
+.callout-body > :first-child { margin-top: 1px; }
+.callout-body > :last-child { margin-bottom: 4px; }
+.callout pre { background: var(--paper); }
+.callout code { background: color-mix(in srgb, var(--c) 10%, transparent); }
+.callout pre code { background: transparent; }
+.callout table { font-size: .9rem; }
+.callout.formula { --c: var(--blue); --s: var(--blue-soft); }
+.callout.example { --c: var(--green); --s: var(--green-soft); }
+.callout.exam, .callout.warning { --c: var(--accent); --s: var(--accent-soft); }
+.callout.basics, .callout.tip, .callout.extend, .callout.explain { --c: var(--amber); --s: var(--amber-soft); }
+.callout.cn { --c: var(--blue); --s: var(--soft); }
+.callout.note { --c: var(--muted); --s: var(--paper); }
+.callout.basics .callout-body { font-size: .92rem; }
+.callout.cn .kind { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+/* 完整版（没有 body.review）在宽屏上把公式卡放到右侧边栏 */
+@media (min-width: 1500px) {
+  body:not(.review) main { max-width: 1250px; padding-right: 400px; }
+  body:not(.review) section.chapter > aside.callout.formula { float: right; clear: right; width: 330px; margin: 4px -372px 12px 0; }
+}
+
+/* 目标行、重点句、优先级 */
+p.goal { border-left: 3px solid var(--line); padding: 1px 0 1px 11px; margin: 8px 0 12px; font-size: .95rem; }
+p.goal > strong:first-child, p.goal > .en > strong:first-child {
+  display: inline-block; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase;
+  background: var(--accent); color: var(--paper); padding: 0 6px; border-radius: 2px; margin-right: 5px; vertical-align: .08em;
+}
+p.keyline { background: var(--hl); border-radius: 3px; padding: 5px 12px; margin: 10px 0; }
+p.keyline .zh { color: inherit; opacity: .8; }
+.prio { font-weight: 700; letter-spacing: 1px; white-space: nowrap; }
+.prio.p3 { color: var(--accent); } .prio.p2 { color: var(--amber); } .prio.p1 { color: var(--muted); }
+h2 .prio { font-size: .8em; margin-left: .2em; }
+.core-hide { display: none !important; }
+
+/* 原图 */
+.figs { display: flex; gap: 10px; margin: 10px 0 14px; align-items: flex-start; }
+.figs figure { margin: 0; flex: 1 1 0; min-width: 0; text-align: center; }
+.figs img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 3px; background: #fff; }
+.figs.n1 img { width: auto; max-width: 100%; max-height: 430px; margin: 0 auto; }
+figcaption { font-size: .86rem; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+a.zoom { cursor: zoom-in; display: block; }
+#lightbox {
+  position: fixed; inset: 0; z-index: 100; padding: 24px; cursor: zoom-out;
+  background: rgba(10,12,14,.88); display: flex; align-items: center; justify-content: center;
+}
+#lightbox[hidden] { display: none; }
+#lightbox img { max-width: 100%; max-height: 100%; background: #fff; border-radius: 4px; }
+
+/* 答案：绿色方框，展开后浅绿底 */
+details {
+  border: 1px solid var(--line); border-left: 4px solid var(--green); border-radius: 3px;
+  background: var(--paper); margin: 4px 0 12px; padding: 0 13px;
+}
+details > summary {
+  cursor: pointer; padding: 5px 0; color: var(--green); font-weight: 700; font-size: .76rem;
+  letter-spacing: .06em; text-transform: uppercase; list-style: none;
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "▸ "; }
+details[open] > summary::before { content: "▾ "; }
+details[open] { background: var(--green-soft); padding-bottom: 4px; }
+details pre { background: var(--paper); }
+details.fold { background: transparent; border-style: dashed; border-left-style: solid; border-left-color: var(--blue); }
+details.fold > summary { color: var(--blue); padding: 8px 0; }
+
+/* 自动生成的附录 */
+.lead { color: var(--muted); font-size: .93rem; }
+.collected { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; }
+.card {
+  background: var(--paper); border: 1px solid var(--line); border-top: 3px solid var(--blue); border-radius: 3px;
+  padding: 7px 12px; font-size: .93rem; min-width: 0;
+}
+#app-exam .card { border-top-color: var(--accent); }
+.card-title { display: block; font-weight: 650; text-decoration: none; margin-bottom: 3px; color: var(--blue); }
+#app-exam .card-title { color: var(--accent); }
+.card-title .zh { display: inline; margin-left: .5em; font-weight: 400; color: var(--muted); }
+.generated h2 a { color: inherit; text-decoration: none; }
+
+@media (max-width: 900px) {
+  #nav { width: 290px; transform: translateX(-100%); transition: transform .2s; box-shadow: 0 0 24px var(--shadow); }
+  body.nav-open #nav { transform: none; }
+  #menu { display: block; }
+  body { background: var(--paper); }
+  main { margin: 0; padding: 52px 16px 100px; box-shadow: none; max-width: none; }
+  .cover .meta { grid-template-columns: 1fr; }
+  .figs { flex-wrap: wrap; }
+  .figs figure { flex-basis: 100%; }
+  h2 .zh, h3 .zh { display: block; margin-left: 0; }
+}
+@page { size: A4; margin: 12mm 13mm 14mm 13mm; }
+@media print {
+  html { font-size: 9.6pt; }
+  body { background: #fff; line-height: 1.42; }
+  #nav, #menu, #lightbox { display: none; }
+  main { margin: 0; padding: 0; max-width: none; box-shadow: none; }
+  section.chapter { break-before: page; border-top: 0; margin-top: 0; padding-top: 0; }
+  section.chapter > aside.callout.formula { float: none; width: auto; margin: 10px 0; }
+  h1, h2, h3, h4, .callout-head, summary { break-after: avoid; }
+  .cover, .callout.formula, figure, pre, tr, .card { break-inside: avoid; }
+}
+</style>
+</head>
+<body class="review">
+<button id="menu" class="tool" type="button">☰ 目录</button>
+<nav id="nav">
+  <div class="brand">ECCE 738 考前极简版</div>
+  <div class="sub">更新于 2026-11-13 19:38</div>
+  <div class="tools">
+    <button class="tool" id="zhtoggle" type="button">语言：双语</button>
+    <button class="tool" id="answers" type="button">展开全部答案</button>
+    <button class="tool" id="totop" type="button">回到顶部</button>
+    <button class="tool" id="coreonly" type="button" hidden>只看 ★★★ 必考</button>
+  </div>
+  <a class="full" href="../notes/HPC_notes.html">完整复习版（notes/HPC_notes.html）</a>
+  <ol class="toc"><li><a href="#ch-00_overview"><span class="chnum">Overview</span>Course Exam Map &amp; Master Formula Cheat Sheet</a><ol><li><a href="#sec-00_overview-1"><span class="secnum">0.1</span>Master Formula Cheat Sheet <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-00_overview-2"><span class="secnum">0.2</span>Parallel Models Comparison <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li></ol></li><li><a href="#ch-01_hpc_overview"><span class="chnum">Chapter 1</span>Supercomputer Performance &amp; TOP500</a><ol><li><a href="#sec-01_hpc_overview-1"><span class="secnum">1.1</span>Peak performance &amp; FLOP/s per core <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-01_hpc_overview-2"><span class="secnum">1.2</span>R_max, R_peak &amp; energy efficiency <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-01_hpc_overview-3"><span class="secnum">1.3</span>Memory, time to solution &amp; Moore's law <span class="prio p2">★★</span></a></li><li><a href="#sec-01_hpc_overview-4"><span class="secnum">1.4</span>Terms to recognise <span class="prio p1">★</span></a></li></ol></li><li><a href="#ch-02_performance"><span class="chnum">Chapter 2</span>Speedup, Efficiency &amp; Amdahl&#x27;s Law</a><ol><li><a href="#sec-02_performance-1"><span class="secnum">2.1</span>Speedup &amp; efficiency <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-02_performance-2"><span class="secnum">2.2</span>Overhead &amp; problem size <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-02_performance-3"><span class="secnum">2.3</span>Amdahl's law <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li></ol></li><li><a href="#ch-03_architecture"><span class="chnum">Chapter 3</span>Architecture, Caches &amp; Locality</a><ol><li><a href="#sec-03_architecture-1"><span class="secnum">3.1</span>Cache organization &amp; direct-mapped lookup <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-03_architecture-2"><span class="secnum">3.2</span>Locality: row-wise vs column-wise (Assignment 1) <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-03_architecture-3"><span class="secnum">3.3</span>Flynn's taxonomy <span class="prio p2">★★</span></a></li><li><a href="#sec-03_architecture-4"><span class="secnum">3.4</span>Pipelining <span class="prio p2">★★</span></a></li><li><a href="#sec-03_architecture-5"><span class="secnum">3.5</span>Terms to recognise <span class="prio p1">★</span></a></li></ol></li><li><a href="#ch-04_threads"><span class="chnum">Chapter 4</span>Threads, Race Conditions &amp; Pthreads</a><ol><li><a href="#sec-04_threads-1"><span class="secnum">4.1</span>Race conditions, mutexes &amp; private counters <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-04_threads-2"><span class="secnum">4.2</span>The Pthreads API <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-04_threads-3"><span class="secnum">4.3</span>Block partition <span class="prio p2">★★</span></a></li><li><a href="#sec-04_threads-4"><span class="secnum">4.4</span>Processes vs threads <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-05_python"><span class="chnum">Chapter 5</span>Parallel Python: Processes, Threads &amp; the GIL</a><ol><li><a href="#sec-05_python-1"><span class="secnum">5.1</span>The GIL: threads vs processes <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-05_python-2"><span class="secnum">5.2</span>Shared state &amp; lock acquisitions in multiprocessing <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-05_python-3"><span class="secnum">5.3</span>Program skeleton &amp; life cycle <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-06_matmul"><span class="chnum">Chapter 6</span>Matrix Products on the CPU</a><ol><li><a href="#sec-06_matmul-1"><span class="secnum">6.1</span>FLOP counts &amp; GFLOP/s <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-06_matmul-2"><span class="secnum">6.2</span>Pthreads matrix-vector product (Assignment 1) <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-06_matmul-3"><span class="secnum">6.3</span>Loop order for \(C = AB\) <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-06_matmul-4"><span class="secnum">6.4</span>Pthreads matrix-matrix product <span class="prio p2">★★</span></a></li><li><a href="#sec-06_matmul-5"><span class="secnum">6.5</span>Terms to recognise <span class="prio p1">★</span></a></li></ol></li><li><a href="#ch-07_dl_matmul"><span class="chnum">Chapter 7</span>Matrix Products in Deep Learning</a><ol><li><a href="#sec-07_dl_matmul-1"><span class="secnum">7.1</span>Convolution layers &amp; weights <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-07_dl_matmul-2"><span class="secnum">7.2</span>Convolution as a matrix product (im2col) <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-07_dl_matmul-3"><span class="secnum">7.3</span>Backpropagation &amp; minibatch SGD <span class="prio p2">★★</span></a></li><li><a href="#sec-07_dl_matmul-4"><span class="secnum">7.4</span>Model size &amp; 3-step compression <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-08_transformer"><span class="chnum">Chapter 8</span>Transformers: Attention as Matrix Products</a><ol><li><a href="#sec-08_transformer-1"><span class="secnum">8.1</span>Scaled dot-product attention <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-08_transformer-2"><span class="secnum">8.2</span>Multi-head attention &amp; shapes <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-08_transformer-3"><span class="secnum">8.3</span>FLOPs &amp; memory of attention <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-09_openmp"><span class="chnum">Chapter 9</span>OpenMP: Parallel Regions, Scope &amp; Reduction</a><ol><li><a href="#sec-09_openmp-1"><span class="secnum">9.1</span>The <code>parallel</code> directive &amp; fork–join <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-09_openmp-2"><span class="secnum">9.2</span>Shared vs private scope, <code>critical</code> &amp; <code>reduction</code> <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-09_openmp-3"><span class="secnum">9.3</span>Trapezoidal rule &amp; OpenMP Matmul <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-10_openmp_loops"><span class="chnum">Chapter 10</span>OpenMP Loops: parallel for, Dependences &amp; Schedules</a><ol><li><a href="#sec-10_openmp_loops-1"><span class="secnum">10.1</span>The <code>parallel for</code> directive &amp; legal form <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-10_openmp_loops-2"><span class="secnum">10.2</span>Loop dependences &amp; repair <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-10_openmp_loops-3"><span class="secnum">10.3</span>Loop schedules <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-10_openmp_loops-4"><span class="secnum">10.4</span>Matrix-vector efficiency by shape <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-11_gpu_arch"><span class="chnum">Chapter 11</span>GPU Architecture &amp; the Roofline</a><ol><li><a href="#sec-11_gpu_arch-1"><span class="secnum">11.1</span>CPU vs GPU &amp; SIMT <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-11_gpu_arch-2"><span class="secnum">11.2</span>SM &amp; GPU peak FLOP/s <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-11_gpu_arch-3"><span class="secnum">11.3</span>Arithmetic intensity, machine balance &amp; Roofline <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-11_gpu_arch-4"><span class="secnum">11.4</span>The 5 steps of a GPU computation <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-12_cuda"><span class="chnum">Chapter 12</span>The CUDA Programming Model</a><ol><li><a href="#sec-12_cuda-1"><span class="secnum">12.1</span>Grids, blocks &amp; legal launches <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-12_cuda-2"><span class="secnum">12.2</span>Global thread ID &amp; 2-D indexing <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-12_cuda-3"><span class="secnum">12.3</span>Warps, lane fill &amp; divergence <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-12_cuda-4"><span class="secnum">12.4</span>SM scheduling &amp; occupancy <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-12_cuda-5"><span class="secnum">12.5</span>Qualifiers &amp; synchronization <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-13_gpu_memory"><span class="chnum">Chapter 13</span>GPU Memory: Spaces, Coalescing &amp; Bank Conflicts</a><ol><li><a href="#sec-13_gpu_memory-1"><span class="secnum">13.1</span>Memory spaces: scope vs placement <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-13_gpu_memory-2"><span class="secnum">13.2</span>Coalesced global-memory access <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-13_gpu_memory-3"><span class="secnum">13.3</span>Shared memory &amp; bank conflicts <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-13_gpu_memory-4"><span class="secnum">13.4</span>Bandwidth, memory-bound time &amp; register pressure <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li></ol></li><li><a href="#ch-14_gpu_gemm"><span class="chnum">Chapter 14</span>Tiled Matrix Multiplication on the GPU</a><ol><li><a href="#sec-14_gpu_gemm-1"><span class="secnum">14.1</span>Naive GEMM vs Shared-Memory Tiling <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-14_gpu_gemm-2"><span class="secnum">14.2</span>Tile Arithmetic Intensity, A100 Roofline &amp; Time Model <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-14_gpu_gemm-3"><span class="secnum">14.3</span>SM Resource Budgets &amp; Register Tiling <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-15_mpi"><span class="chnum">Chapter 15</span>MPI: Message Passing between Processes</a><ol><li><a href="#sec-15_mpi-1"><span class="secnum">15.1</span>Shared vs distributed memory <span class="prio p2">★★</span></a></li><li><a href="#sec-15_mpi-2"><span class="secnum">15.2</span>Skeleton, communicators, size &amp; rank <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-15_mpi-3"><span class="secnum">15.3</span><code>MPI_Send</code>, <code>MPI_Recv</code> &amp; Greetings program <span class="prio p3"><span class="prio p2">★★</span>★</span></a></li><li><a href="#sec-15_mpi-4"><span class="secnum">15.4</span><code>MPI_Status</code> &amp; Trapezoidal rule <span class="prio p2">★★</span></a></li></ol></li><li><a href="#ch-A_ku_hpc"><span class="chnum">Appendix A</span>Slurm Cheat Sheet (KU HPC)</a><ol><li><a href="#sec-A_ku_hpc-1"><span class="secnum">A.1</span>Commands &amp; job scripts <span class="prio p2">★★</span></a></li></ol></li></ol>
+</nav>
+<main>
+<header class="cover">
+  <div class="sub">ECCE 738 · High-Performance Computing · Fall 2026 · 考前极简版</div>
+  <h1>HPC 考前精简笔记：核心直觉 · 必背公式 · 典型例题 · 易错点</h1>
+  <p class="sub">专为考前高效记忆设计：去除了重复练习、基础科普与冗长推导，每章只保留「一句话直觉 + 必背公式/代码模板 + 1道典型例题 + 易错点」。英文为主（可直接用于英文作答），下方附中文对照；左侧可一键切换「仅英文」自测或「只看 ★★★ 必考」。</p>
+  <div class="meta">
+    <div><b>考试信息</b>Course Exam 占总评 <strong>30%</strong>，第 15 周，英文作答；题型：短计算 + 简明解释 + 读/改代码。</div>
+    <div><b>优先级</b><span class="prio p3">★★★</span> 必考 · <span class="prio p2">★★</span> 常考 · <span class="prio p1">★</span> 认识即可。点击左侧「只看 ★★★ 必考」可快速过核心。</div>
+    <div><b>使用建议</b>先看第 0 章「全课公式速查」，再按章过 ★★★ 考点；考前切换「仅英文」检验能否用英文写出定义与步骤。</div>
+  </div>
+  <div class="legend">
+    <span class="tag blue">Formula 公式</span>
+    <span class="tag green">Worked example 例题 · Answer 答案</span>
+    <span class="tag red">Traps 易错点 · Exam focus</span>
+    <span class="tag amber">Basics 基础知识</span>
+    <span class="tag yellow">重点句</span>
+    <span class="tag gray">Note · 中文解释</span>
+  </div>
+</header>
+<section class="chapter" id="ch-00_overview-sec">
+<h1 id="ch-00_overview"><span class="chnum">Overview</span>Course Exam Map &amp; Master Formula Cheat Sheet <span class="title-cn">全课考点总览与核心公式速查表</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam in brief<span class="zh">考试信息速览</span></span></div><div class="callout-body"><ul>
+<li><strong>Format:</strong> Week 15, <strong>30%</strong> of grade, in <strong>English</strong>. Style matches Assignment 1: short calculations + 2–3 sentence explanations + reading/debugging code.</li>
+<li><strong>How to study:</strong> (1) Memorize the Master Formula Sheet below. (2) Click <strong>&quot;只看 ★★★ 必考&quot;</strong> on the left to master all core sections first. (3) Switch to <strong>&quot;语言：仅英文&quot;</strong> to practice writing exam answers in English.<span class="zh">考试占总评 30%，第 15 周英文作答（短计算 + 简明解释 + 读改代码）。建议先背本页速查表，再用左侧「只看 ★★★ 必考」过核心章节，最后切「仅英文」自测。</span></li>
+</ul>
+</div></div>
+<h2 id="sec-00_overview-1" data-num="0.1">Master Formula Cheat Sheet <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">全课核心公式速查</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Topic<span class="zh">专题</span></th>
+<th>Must-Know Formulas &amp; Facts<span class="zh">必背公式与结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ch 1: Supercomputers</strong></td>
+<td>\(R_{\text{peak}}=N_{\text{cores}}\times f_{\text{clock}}\times\text{FLOPs/cycle}\) (1 FMA = 2 FLOPs); TOP500 ranks by <strong>\(R_{\max}\)</strong>; \(E=R_{\max}/P\) (GFLOPS/W); \(M=N_{\text{pts}}N_{\text{var}}b\); dense solve \(\approx\tfrac{1}{3}n^3\) FLOPs</td>
+</tr>
+<tr>
+<td><strong>Ch 2: Speedup &amp; Amdahl</strong></td>
+<td>\(S=T_{\text{serial}}/T_{\text{parallel}}\) (best serial baseline!); \(E=S/p\); \(E=1/(1+pr)\) (\(r=T_{\text{ovh}}/T_{\text{serial}}\)); \(S(p)=\frac{1}{f+(1-f)/p}\le\frac{1}{f}\); \(f=\frac{p-S}{S(p-1)}\)</td>
+</tr>
+<tr>
+<td><strong>Ch 3: Caches &amp; Pipeline</strong></td>
+<td>\(C=SEB\); \(m=t+s+b\) (\(s=\log_2 S, b=\log_2 B\)); row-major <code>&amp;a[i][j]=base+(iN+j)w</code>; \(T_{\text{pipe}}=(k+n-1)T_{\text{clk}}\), \(S_{\text{pipe}}=nk/(k+n-1)\)</td>
+</tr>
+<tr>
+<td><strong>Ch 4–5: Threads &amp; Python</strong></td>
+<td><code>count++</code> = LOAD/ADD/STORE \(\implies\) private counter + 1 lock per thread (\(A_{\text{match}}=H\) vs \(A_{\text{proc}}=t\)); GIL serializes CPU-bound Python threads (use <code>multiprocessing</code>)</td>
+</tr>
+<tr>
+<td><strong>Ch 6: CPU Matmul</strong></td>
+<td>\(y=Ax\): \(2mn\) FLOPs; \(C=AB\): \(2mnk\) FLOPs; \(\text{GFLOP/s}=\text{FLOPs}/(t_{\text{sec}}\cdot 10^9)\); loop speed: <strong><code>kij</code>/<code>ikj</code> &gt; <code>ijk</code>/<code>jik</code> &gt; <code>jki</code>/<code>kji</code></strong></td>
+</tr>
+<tr>
+<td><strong>Ch 7–8: DL &amp; Attention</strong></td>
+<td>Conv weights \(=KCRS\); im2col \(\mathbf F_{K\times CRS}\mathbf P_{CRS\times NH'W'}\) (\(\approx RS\times\) memory); Attention \(Z=\operatorname{softmax}(QK^T/\sqrt{d_k})V\) (row-wise softmax); \(QKV\): \(6nd^2\), \(QK^T\) &amp; \(AV\): \(2n^2d_k\) per head</td>
+</tr>
+<tr>
+<td><strong>Ch 9–10: OpenMP</strong></td>
+<td><code>gcc -fopenmp</code>; before block = shared, inside = private; <code>reduction(op: var)</code>; <code>static</code> thread \(=\lfloor i/c\rfloor\bmod p\); <code>guided</code> \(c_k=\max(\lceil R_k/p\rceil, c_{\min})\)</td>
+</tr>
+<tr>
+<td><strong>Ch 11: GPU &amp; Roofline</strong></td>
+<td>\(P_{\text{peak}}=N_{\text{SM}}\cdot n_{\text{core/SM}}\cdot 2\cdot f_{\text{clock}}\); \(\text{AI}=\text{FLOPs}/\text{bytes}\); \(B_m=P_{\text{peak}}/BW\); \(P_{\text{att}}=\min(P_{\text{peak}}, \text{AI}\times BW)\)</td>
+</tr>
+<tr>
+<td><strong>Ch 12: CUDA</strong></td>
+<td>Block \(\le 1024\) (CC \(\ge 2.0\)); \(\text{myID}=bT+t\); \(N_{\text{warp}}=N_{\text{blk}}\lceil T/32\rceil\); \(w=\lfloor t/32\rfloor, \ell=t\bmod 32\); \(\text{Occ}=RW_{\text{blk}}/W_{\max}\)</td>
+</tr>
+<tr>
+<td><strong>Ch 13–14: GPU Mem &amp; GEMM</strong></td>
+<td>Local = thread scope, <strong>off-chip</strong>; coalesced = 4 sectors (128 B); <code>tile[32][33]</code> avoids bank conflicts; \(t_{\min}=B/BW\); tile \(\text{AI}=\frac{B_M B_N}{2(B_M+B_N)}=T/4\); \(S=4B_K(B_M+B_N)\) B; \(t\ge\max(t_{\text{compute}}, t_{\text{mem}})\)</td>
+</tr>
+<tr>
+<td><strong>Ch 15: MPI</strong></td>
+<td><code>mpicc</code> / <code>mpiexec -n p</code>; <code>MPI_Init</code>, <code>MPI_Comm_size</code>, <code>MPI_Comm_rank</code> (\(0..p-1\)), <code>MPI_Send</code> (6 args, <code>strlen+1</code>), <code>MPI_Recv</code> (7 args, <code>MAX_STRING</code>, <code>&amp;status</code>), <code>MPI_Finalize</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-00_overview-2" data-num="0.2">Parallel Models Comparison <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">四大并行编程模型对比</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Model<span class="zh">模型</span></th>
+<th>Memory<span class="zh">内存模型</span></th>
+<th>Unit of parallelism<span class="zh">并行单位</span></th>
+<th>Synchronization<span class="zh">同步方式</span></th>
+<th>Typical compile/run<span class="zh">编译运行</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pthreads</strong></td>
+<td>Shared<span class="zh">共享内存</span></td>
+<td>OS Threads (<code>pthread_t</code>)</td>
+<td>Mutex (<code>pthread_mutex_lock</code>), <code>pthread_join</code></td>
+<td><code>gcc ... -lpthread</code></td>
+</tr>
+<tr>
+<td><strong>OpenMP</strong></td>
+<td>Shared<span class="zh">共享内存</span></td>
+<td>Thread team (<code>#pragma omp</code>)</td>
+<td><code>critical</code>, <code>reduction</code>, implicit barrier at <code>for</code></td>
+<td><code>gcc -fopenmp ...</code></td>
+</tr>
+<tr>
+<td><strong>CUDA</strong></td>
+<td>Hierarchical (Global/Shared/Reg)</td>
+<td>Blocks &amp; Warps (32 threads)</td>
+<td><code>__syncthreads()</code> (block), <code>cudaDeviceSynchronize()</code> (host)</td>
+<td><code>nvcc ...</code></td>
+</tr>
+<tr>
+<td><strong>MPI</strong></td>
+<td>Distributed<span class="zh">分布式内存</span></td>
+<td>Processes (<code>rank 0..p-1</code>)</td>
+<td>Explicit messages (<code>MPI_Send</code> / <code>MPI_Recv</code>)</td>
+<td><code>mpicc ...</code> / <code>mpiexec -n p</code></td>
+</tr>
+</tbody>
+</table></div>
+
+</section>
+<section class="chapter" id="ch-01_hpc_overview-sec">
+<h1 id="ch-01_hpc_overview"><span class="chnum">Chapter 1</span>Supercomputer Performance &amp; TOP500 <span class="title-cn">超级计算机性能指标与 TOP500</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Peak performance &amp; FLOP/s per core<span class="zh">峰值算力与单核算力</span></td>
+<td>\(R_{\text{peak}}=N_{\text{cores}}\times f_{\text{clock}}\times\text{FLOPs/cycle}\); \(\text{FP/core}=R_{\text{peak}}/N_{\text{cores}}\)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>\(R_{\max}\), \(R_{\text{peak}}\) &amp; energy efficiency<span class="zh">实测排名与能效</span></td>
+<td>TOP500 ranks by \(R_{\max}\); \(E=R_{\max}/P\) (GFLOPS/W = GFLOP/J)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Memory &amp; time to solution<span class="zh">内存估算与求解时间</span></td>
+<td>\(M=N_{\text{points}}N_{\text{var}}b\); \(T=W/R_{\text{sust}}\); dense solve \(\approx\tfrac{1}{3}n^3\) flops</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Moore's law<span class="zh">摩尔定律</span></td>
+<td>Transistors double every 1.5 years<span class="zh">每 1.5 年晶体管数翻倍</span></td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-01_hpc_overview-1" data-num="1.1">Peak performance &amp; FLOP/s per core <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">峰值性能与单核算力</span></h2>
+<p><strong>One-line intuition:</strong> Theoretical peak assumes every core and every arithmetic unit does useful FP64 work on every clock tick (1 FMA = 2 FLOPs: one multiply + one add).<span class="zh">一句话直觉：理论峰值假设每个核心的每个运算单元在每个时钟周期都在满负荷做双精度浮点运算（1 次 FMA 乘加 = 2 FLOPs）。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Peak performance &amp; per-core rate<span class="zh">理论峰值与单核算力</span></span></div><div class="callout-body"><p><span class="math display">\[R_{\text{peak}} = N_{\text{nodes}} \times N_{\text{cores/node}} \times f_{\text{clock}} \times \frac{\text{FLOPs}}{\text{cycle}\cdot\text{core}}\]</span>
+<span class="math display">\[\text{FP per core} = \frac{R_{\text{peak}}}{N_{\text{cores}}}, \qquad \frac{\text{FLOPs}}{\text{cycle}\cdot\text{core}} = \frac{\text{FP per core}}{f_{\text{clock}}}\]</span></p>
+<ul>
+<li>\(R_{\text{peak}}\) (\(R_{\text{theor}}\)): theoretical peak (FLOP/s, default FP64). :: 理论峰值（默认 FP64 双精度）。</li>
+<li>\(N_{\text{cores}} = N_{\text{nodes}}\times N_{\text{cores/node}}\): total cores (with GPUs, add \(N_{\text{nodes}}\times N_{\text{acc/node}}\times P_{\text{acc}}\)). :: 总核数（若有加速卡需加上加速卡峰值）。</li>
+<li>\(f_{\text{clock}}\): clock rate in Hz (1 GHz = \(10^9\) cycles/s). :: 时钟频率（Hz）。</li>
+<li>Units: k (\(10^3\)), M (\(10^6\)), G (\(10^9\)), T (\(10^{12}\)), P (\(10^{15}\)), E (\(10^{18}\)). :: 数量级单位。</li>
+</ul>
+<p>[!EXAMPLE] LineShine peak &amp; reverse lookup (Assignment 1 style) :: 算峰值与反推单核算力
+Given: \(13{,}789{,}440\) cores, \(f_{\text{clock}}=1.55\text{ GHz}\), \(64\text{ FMAs/cycle/core}\).</p>
+<ul>
+<li>FLOPs/cycle/core: \(64\times 2 = 128\) FLOPs/cycle.</li>
+<li>Per core: \(128\times 1.55\times 10^9 = 198.4\text{ GFLOP/s}\).</li>
+<li>System \(R_{\text{peak}}\): \(13{,}789{,}440 \times 198.4\text{ GFLOP/s} = 2{,}735.82\text{ PFLOP/s} = 2.736\text{ EFLOP/s}\).</li>
+<li>Reverse (from TOP500 row): \(\text{FP/core} = 2{,}735.82\times 10^{15}/13{,}789{,}440 = 198.4\text{ GFLOP/s}\), then \(198.4/1.55 = 128\text{ FLOPs/cycle}\).<span class="zh">已知核数、主频与每周期 FMA 数即可正向求 \(R_{\text{peak}}\)；反过来用 \(R_{\text{peak}}\) 除以核数与主频即可求单核算力与每周期浮点次数。</span></li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>Forgetting <strong>1 FMA = 2 FLOPs</strong> halves the peak. :: 忘记 1 次 FMA = 2 FLOPs 会算少一半。</li>
+<li>On GPU-accelerated machines, TOP500 counts GPU compute units as cores, so \(R_{\text{peak}}/N_{\text{cores}}\) is only an average. :: 含 GPU 的机器会把 GPU 单元算进总核数，此时单核算力只是平均值。</li>
+</ul>
+</div></div>
+<h2 id="sec-01_hpc_overview-2" data-num="1.2">R_max, R_peak &amp; energy efficiency <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">实测排名与能效</span></h2>
+<p><strong>Three performance rates:</strong> \(R_{\text{sustained}}\) (whole application, often \(&lt;10\%\) of peak) \(\ll R_{\text{real}}\) (single kernel) \(\ll R_{\text{theor}}\) (\(R_{\text{peak}}\)).<span class="zh">三种性能指标：实际应用持续算力 \(R_{\text{sustained}}\)（常低于峰值的 10%）\(\ll\) 单核/单操作实测 \(R_{\text{real}}\) \(\ll\) 理论峰值 \(R_{\text{peak}}\)。</span></p>
+<p><strong>TOP500 ranking:</strong> Ranks machines by <strong>\(R_{\max}\)</strong> (LINPACK benchmark), <strong>not</strong> \(R_{\text{peak}}\). (June 2026: #1 LineShine \(R_{\max}=2198.40\) PFLOP/s, \(R_{\text{peak}}=2735.82\); #2 El Capitan \(R_{\max}=1809.00\), \(R_{\text{peak}}=2821.10\).)<span class="zh">TOP500 按 LINPACK 实测成绩 \(R_{\max}\) 排名，不按 \(R_{\text{peak}}\)。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Energy efficiency<span class="zh">能效比</span></span></div><div class="callout-body"><p><span class="math display">\[E = \frac{R_{\max}}{P} \quad (\text{in GFLOPS/W} = \text{GFLOP/J})\]</span></p>
+<ul>
+<li>\(R_{\max}\): LINPACK rate (FLOP/s); \(P\): electrical power (W = J/s; \(1\text{ MW}=10^6\text{ W}\)). :: \(R_{\max}\) 为实测算力，\(P\) 为功耗（瓦）。</li>
+</ul>
+<p>[!EXAMPLE] LineShine energy efficiency :: LineShine 能效计算
+\(R_{\max}=2{,}198.40\text{ PFLOP/s}\), \(P=42.20\text{ MW}\):
+<span class="math display">\[E = \frac{2{,}198.40\times 10^{15}\text{ FLOP/s}}{42.20\times 10^6\text{ W}} = 52.09\text{ GFLOPS/W}\]</span><span class="zh">用 \(R_{\max}\) 除以功率 \(P\) 即得每瓦算力（注意用 \(R_{\max}\)，不要用 \(R_{\text{peak}}\)）。</span></p>
+</div></div>
+<h2 id="sec-01_hpc_overview-3" data-num="1.3">Memory, time to solution &amp; Moore's law <span class="prio p2">★★</span><span class="zh">内存估算、求解时间与摩尔定律</span></h2>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Data size &amp; run time<span class="zh">数据量与运行时间</span></span></div><div class="callout-body"><p><span class="math display">\[M = N_{\text{points}} \times N_{\text{var}} \times b, \qquad T = \frac{W}{R_{\text{sust}}}\]</span></p>
+<ul>
+<li>\(M\): memory (bytes); \(N_{\text{points}}\): grid points; \(N_{\text{var}}\): variables/point; \(b\): bytes/value (\(b=8\) for <code>double</code>). :: \(M\) 为字节数，<code>double</code> 占 8 字节。</li>
+<li>\(T\): run time (s); \(W\): total FLOPs (dense \(n\times n\) linear solve \(Ax=b\) takes \(\approx \tfrac{1}{3}n^3\) FLOPs); \(R_{\text{sust}}\): sustained rate. :: 稠密线性方程组求解约需 \(\tfrac{1}{3}n^3\) 次浮点运算。</li>
+</ul>
+<p>[!EXAMPLE] Dense solve scaling (\(100\text{ MFLOP/s}\)) :: 稠密方程组求解规模效应
+At \(R=10^8\text{ FLOP/s}\): for \(n=10^4\), \(W=\tfrac{1}{3}(10^4)^3=3.33\times 10^{11}\) FLOPs \(\Rightarrow T=3{,}333\text{ s}\approx 55.6\text{ min}\). For \(n=10^6\), \(W=3.33\times 10^{17}\Rightarrow T=3.33\times 10^9\text{ s}\approx 105.7\text{ years}\), memory \(=10^{12}\times 8\text{ B}=8\text{ TB}\).<span class="zh">问题规模 \(n\) 扩大 10 倍，计算量扩大 1000 倍（\(n^3\)），内存扩大 100 倍（\(n^2\)）。</span></p>
+</div></div>
+<ul>
+<li><strong>Moore's law:</strong> Transistors per chip double every <strong>1.5 years</strong> (e.g., 12 years = \(12/1.5=8\) doublings = \(2^8=256\times\)). :: 摩尔定律：每 1.5 年芯片晶体管数翻倍。</li>
+</ul>
+<h2 id="sec-01_hpc_overview-4" data-num="1.4">Terms to recognise <span class="prio p1">★</span><span class="zh">重要术语速记</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Term<span class="zh">术语</span></th>
+<th>What to know<span class="zh">核心记忆点</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exascale<span class="zh">E 级超算</span></td>
+<td>\(\ge 10^{18}\) FLOP/s (\(1\text{ EFLOP/s}=1000\text{ PFLOP/s}\)).<span class="zh">每秒百亿亿次浮点运算。</span></td>
+</tr>
+<tr>
+<td>Supercomputer vs Cloud<span class="zh">超算 vs 云计算</span></td>
+<td>HPC: few big jobs, custom low-latency network, static scheduling; Cloud: many small tasks, commodity hardware, dynamic allocation.<span class="zh">超算跑大作业、低延迟定制网络、静态调度；云跑小任务、通用硬件、动态分配。</span></td>
+</tr>
+<tr>
+<td>Gordon Bell Prize<span class="zh">戈登贝尔奖</span></td>
+<td>Annual award for real applications; gained \(10^4\times\) in 13 years via concurrency, beating Moore's law.<span class="zh">实际应用最高奖，靠并发突破摩尔定律。</span></td>
+</tr>
+<tr>
+<td>Saudi &amp; UAE (TOP500)<span class="zh">中东代表系统</span></td>
+<td>Shaheen III - GPU (KAUST, #22, 122.80 PFLOP/s); SuperPOD (Core42, #46, 55.81 PFLOP/s).<span class="zh">了解 KAUST 与 Core42 上榜机器。</span></td>
+</tr>
+</tbody>
+</table></div>
+
+</section>
+<section class="chapter" id="ch-02_performance-sec">
+<h1 id="ch-02_performance"><span class="chnum">Chapter 2</span>Speedup, Efficiency &amp; Amdahl&#x27;s Law <span class="title-cn">加速比、效率与 Amdahl 定律</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Speedup &amp; efficiency<span class="zh">加速比与效率</span></td>
+<td>\(S=T_{\text{serial}}/T_{\text{parallel}}\); \(E=S/p\); baseline = best serial program</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Overhead &amp; problem size<span class="zh">开销与问题规模</span></td>
+<td>\(E=1/(1+p\,T_{\text{overhead}}/T_{\text{serial}})\); best \(p\) minimizes \(T_p\)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Amdahl's law &amp; serial fraction<span class="zh">Amdahl 定律</span></td>
+<td>\(S=1/(f+(1-f)/p)\le 1/f\); \(f=(p-S)/(S(p-1))\)</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-02_performance-1" data-num="2.1">Speedup &amp; efficiency <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">加速比与效率</span></h2>
+<p><strong>One-line intuition:</strong> Speedup \(S\) measures how many times faster the parallel code runs; efficiency \(E\) measures what fraction of the \(p\) cores' ideal speedup is actually achieved (\(E=1\) is ideal linear speedup).<span class="zh">一句话直觉：加速比 \(S\) 是并行快了多少倍；效率 \(E\) 是每个核发挥了理想性能的几成（\(E=1\) 为理想线性加速）。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Speedup &amp; efficiency<span class="zh">加速比与效率</span></span></div><div class="callout-body"><p><span class="math display">\[S = \frac{T_{\text{serial}}}{T_{\text{parallel}}}, \qquad E = \frac{S}{p} = \frac{T_{\text{serial}}}{p\,T_{\text{parallel}}}\]</span></p>
+<ul>
+<li>\(T_{\text{serial}}\): run time of the <strong>best serial</strong> program; \(T_{\text{parallel}}\): parallel run time on \(p\) cores. :: \(T_{\text{serial}}\) 必须是最优串行程序时间。</li>
+<li>Linear speedup: \(T_{\text{parallel}}=T_{\text{serial}}/p \iff S=p,\, E=1\). :: 线性加速即 \(S=p, E=1\)。</li>
+</ul>
+<p>[!EXAMPLE] Computing \(S\) and \(E\) :: 加速比与效率计算
+\(T_{\text{serial}}=96\text{ s}\). On \(p=16\) cores, \(T_{\text{parallel}}=8\text{ s}\):
+<span class="math display">\[S = \frac{96}{8} = 12.0, \qquad E = \frac{12.0}{16} = 0.75\ (75\%)\]</span><span class="zh">先用串行时间除以并行时间得 \(S=12\)，再除以核数 16 得效率 75%。</span></p>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>Never use the parallel program on 1 core as \(T_{\text{serial}}\): it carries parallel overhead and artificially inflates \(S\). :: 不能用“并行程序跑在 1 核”当基准，否则会虚高加速比。</li>
+<li>Exam sentence: <em>&quot;Speedup is \(S=T_{\text{serial}}/T_{\text{parallel}}\) where \(T_{\text{serial}}\) is the best serial run time; efficiency is \(E=S/p\), with \(E=1\) for linear speedup.&quot;</em> :: 英文答题标准句式。</li>
+</ul>
+</div></div>
+<h2 id="sec-02_performance-2" data-num="2.2">Overhead &amp; problem size <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">并行开销与问题规模</span></h2>
+<p><strong>One-line intuition:</strong> Parallelism adds extra cost \(T_{\text{overhead}}\) (communication, synchronization, load imbalance); efficiency rises with problem size \(n\) only if \(T_{\text{overhead}}\) grows <strong>more slowly</strong> than \(T_{\text{serial}}\).<span class="zh">一句话直觉：并行会引入额外开销（通信、同步、负载不均）；只有当开销随问题规模 \(n\) 的增长速度<strong>慢于</strong>串行时间时，增大问题规模才能提高效率。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Overhead model<span class="zh">含开销的性能模型</span></span></div><div class="callout-body"><p><span class="math display">\[T_{\text{parallel}} = \frac{T_{\text{serial}}}{p} + T_{\text{overhead}}, \qquad E = \frac{1}{1 + p\,r}, \quad r = \frac{T_{\text{overhead}}}{T_{\text{serial}}}\]</span></p>
+<ul>
+<li>\(r\): overhead ratio. Fixed \(n\), growing \(p \implies E\) falls. Fixed \(p\), growing \(n \implies E\) rises iff \(r(n)\) shrinks. :: \(r\) 为开销比。固定 \(p\) 增大 \(n\) 时，若开销增长慢于串行时间，则 \(r\) 减小、\(E\) 上升。</li>
+</ul>
+<p>[!EXAMPLE] Assignment 1 style: finding best \(p\) &amp; scaling with \(n\) :: 最优核数与规模分析
+Let \(T_1=100\text{ s}\), \(f=0.02\), \(T_p = 2 + 98/p + 0.25\log_2 p\):</p>
+<ul>
+<li>At \(p=256\): \(T_{256}=2+0.3828+2.00=4.3828\text{ s}\) (\(S=22.82\)).</li>
+<li>At \(p=512\): \(T_{512}=2+0.1914+2.25=4.4414\text{ s}\) (\(S=22.52\)).</li>
+<li>Speedup peaks at \(p=256\) because beyond 256, halving \(98/p\) saves less than the \(+0.25\text{ s}\) added by \(0.25\log_2 p\).<span class="zh">核数超过 256 后，计算时间减少量小于通信开销 \(\log_2 p\) 的增加量，因此加速比先升后降。</span></li>
+</ul>
+</div></div>
+<h2 id="sec-02_performance-3" data-num="2.3">Amdahl's law <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">Amdahl 定律</span></h2>
+<p><strong>One-line intuition:</strong> For a fixed problem size, the unparallelizable serial fraction \(f\) sets a hard ceiling \(1/f\) on speedup, even with infinite cores.<span class="zh">一句话直觉：固定问题规模下，无法并行的串行比例 \(f\) 决定了加速比上限为 \(1/f\)，核数再多也突破不了。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Amdahl's law &amp; implied serial fraction<span class="zh">Amdahl 定律与反推串行比例</span></span></div><div class="callout-body"><p><span class="math display">\[S(p) = \frac{1}{f + \dfrac{1-f}{p}} = \frac{1}{(1-\alpha) + \dfrac{\alpha}{p}} \xrightarrow{p\to\infty} \frac{1}{f}\]</span>
+<span class="math display">\[f = \frac{1/S - 1/p}{1 - 1/p} = \frac{p - S}{S(p - 1)}\]</span></p>
+<ul>
+<li>\(f\): serial fraction; \(\alpha = 1-f\): parallelizable fraction (both in \([0,1]\)). :: \(f\) 为串行比例，\(\alpha\) 为可并行比例。</li>
+</ul>
+<p>[!EXAMPLE] Limit &amp; solving for \(f\) :: 上限与反推 \(f\)</p>
+<ul>
+<li>If \(\alpha=95\%\) (\(f=0.05\)) and \(p=20\): \(S = 1/(0.05 + 0.95/20) = 10.26\), limit \(S_\infty = 1/0.05 = 20\).</li>
+<li>If \(S=6.4\) is measured on \(p=16\) cores: \(f = (16-6.4)/(6.4\times 15) = 0.1\), so limit is \(1/0.1 = 10\).<span class="zh">注意先分清题目给的是串行比例 \(f\) 还是可并行比例 \(\alpha\)。</span></li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>Check whether the given percentage is <strong>serial (\(f\))</strong> or <strong>parallelizable (\(\alpha\))</strong>: \(\alpha=0.9 \implies f=0.1 \implies S_\infty=10\). :: 看清题目给的是串行比例还是可并行比例。</li>
+<li>Amdahl's law assumes <strong>fixed problem size</strong> and <strong>zero parallel overhead</strong>. :: 假设问题规模固定且无并行开销。</li>
+</ul>
+</div></div>
+</section>
+<section class="chapter" id="ch-03_architecture-sec">
+<h1 id="ch-03_architecture"><span class="chnum">Chapter 3</span>Architecture, Caches &amp; Locality <span class="title-cn">体系结构、缓存与局部性</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Cache size, address split &amp; direct-mapped trace<span class="zh">缓存大小、地址划分与命中追踪</span></td>
+<td>\(C=S\,E\,B\); \(m=t+s+b\); hit = valid bit 1 &amp; tag match</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Row-wise vs column-wise locality<span class="zh">行遍历 vs 列遍历局部性</span></td>
+<td>C is row-major; row-wise reads adjacent bytes (\(w\) vs \(Nw\))</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Flynn's taxonomy<span class="zh">Flynn 分类</span></td>
+<td>Count instruction/data streams: CPU=MIMD, GPU=SIMD/SIMT, Cluster=dist. MIMD</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Pipelining<span class="zh">流水线周期与加速比</span></td>
+<td>\(k+n-1\) cycles vs \(nk\) cycles; \(S=nk/(k+n-1)\to k\)</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-03_architecture-1" data-num="3.1">Cache organization &amp; direct-mapped lookup <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">缓存组织与直接映射查找</span></h2>
+<p><strong>One-line intuition:</strong> A cache stores copies of recently used memory <strong>blocks</strong> in fast SRAM; each memory address splits from high to low bits into <strong>Tag | Set Index | Block Offset</strong>.<span class="zh">一句话直觉：缓存把最近访问的内存块保存在高速 SRAM 中；地址从高位到低位依次拆分为：标记（Tag）| 组索引（Set Index）| 块内偏移（Block Offset）。</span></p>
+<p><img src="img/Lec05/p4.png" alt="General cache organization (S, E, B)" /></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Cache size &amp; address split<span class="zh">缓存容量与地址拆分</span></span></div><div class="callout-body"><p><span class="math display">\[C = S \times E \times B, \qquad m = t + s + b, \qquad s = \log_2 S, \quad b = \log_2 B\]</span>
+<span class="math display">\[\text{block} = \lfloor a / B \rfloor, \quad \text{index} = \text{block} \bmod S, \quad \text{tag} = \lfloor \text{block} / S \rfloor, \quad \text{offset} = a \bmod B\]</span></p>
+<ul>
+<li>\(C\): data capacity (bytes); \(S\): sets; \(E\): lines/set (\(E=1\) is direct mapped); \(B\): block size (bytes). :: \(E=1\) 为直接映射。</li>
+<li>\(m\): address width (bits); \(t, s, b\): tag, set-index, block-offset bit widths. :: \(t=m-s-b\)。</li>
+<li>Hit condition: <code>valid == 1</code> <strong>and</strong> <code>line.tag == addr.tag</code>. :: 命中条件：有效位为 1 且标记匹配。</li>
+</ul>
+<p>[!EXAMPLE] Direct-mapped trace (\(S=4\), \(E=1\), \(B=8\text{ B}\)) :: 直接映射命中追踪
+Byte addresses: <code>0, 4, 8, 32, 0, 36, 8, 40</code>. Here \(\text{block}=\lfloor a/8\rfloor\), \(\text{set}=\text{block}\bmod 4\), \(\text{tag}=\lfloor\text{block}/4\rfloor\).</p>
+<div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Addr</th>
+<th>Block</th>
+<th>Set</th>
+<th>Tag</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>miss (load blk 0)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td><strong>hit</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>8</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>miss (load blk 1)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>32</td>
+<td>4</td>
+<td>0</td>
+<td>1</td>
+<td>miss (evicts blk 0)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>miss (evicts blk 4)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>36</td>
+<td>4</td>
+<td>0</td>
+<td>1</td>
+<td>miss (evicts blk 0)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>8</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td><strong>hit</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>40</td>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+<td>miss (evicts blk 1)</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>Result: 2 hits, 6 misses (blocks 0 and 4 conflict at set 0).<span class="zh">先算块号 \(\lfloor a/B\rfloor\)，再对 \(S\) 取模得组号、整除 \(S\) 得标记；同组不同标记会相互逐出（冲突未命中）。</span></p>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>\(C=S\cdot E\cdot B\) counts <strong>data bytes only</strong> (ignore valid/tag bits). :: 容量只算数据字节，不算标记位和有效位。</li>
+<li>Offset width \(b=\log_2 B\) depends on <strong>block size \(B\)</strong>, not on <code>int</code>/<code>double</code> size. :: \(b\) 由块大小 \(B\) 决定，与数据类型无关。</li>
+</ul>
+</div></div>
+<h2 id="sec-03_architecture-2" data-num="3.2">Locality: row-wise vs column-wise (Assignment 1) <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">空间局部性（行遍历 vs 列遍历）</span></h2>
+<p><strong>One-line intuition:</strong> C stores 2-D arrays in <strong>row-major order</strong> (<code>&amp;a[i][j] = base + (i*N + j)*w</code>), so row-wise inner loops (<code>for j</code>) read consecutive addresses and use every word in a fetched cache block.<span class="zh">一句话直觉：C 语言按行主序存储二维数组，行优先遍历（内层循环 <code>j</code>）访问相邻地址，能充分利用整个缓存块；列优先遍历（内层 <code>i</code>）每次跳跃 \(Nw\) 字节，空间局部性差。</span></p>
+<pre><code class="language-c">// Good spatial locality: stride = w (e.g. 4 B for int)
+for (i = 0; i &lt; M; i++) for (j = 0; j &lt; N; j++) sum += a[i][j];
+
+// Poor spatial locality: stride = N*w (e.g. 400 B for N=100) -&gt; 1 element per block if N*w &gt;= B
+for (j = 0; j &lt; N; j++) for (i = 0; i &lt; M; i++) sum += a[i][j];
+</code></pre>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Exam sentence<span class="zh">英文答题标准句式</span></span></div><div class="callout-body"><p><em>&quot;C stores arrays in row-major order, so the row-wise loop reads consecutive addresses and uses all elements of each fetched block. The column-wise loop jumps \(Nw\) bytes per access and uses only one element per fetched block, so its spatial locality is worse.&quot;</em></p>
+</div></div>
+<h2 id="sec-03_architecture-3" data-num="3.3">Flynn's taxonomy <span class="prio p2">★★</span><span class="zh">Flynn 体系结构分类</span></h2>
+<p><strong>Rule:</strong> Count <strong>instruction streams</strong> and <strong>data streams</strong> (not cores or threads).<span class="zh">分类依据是<strong>指令流</strong>与<strong>数据流</strong>的数量，而非核数或线程数。</span></p>
+<div class="tw"><table>
+<thead><tr>
+<th>Class<span class="zh">类别</span></th>
+<th>Streams (I / D)</th>
+<th>Meaning &amp; example<span class="zh">含义与典型代表</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SISD</strong></td>
+<td>1 / 1</td>
+<td>Scalar single-core CPU<span class="zh">单核标量处理器</span></td>
+</tr>
+<tr>
+<td><strong>SIMD</strong></td>
+<td>1 / many</td>
+<td>Lockstep execution on multiple data: vector unit, <strong>GPU</strong> (SIMT model)<span class="zh">锁步执行：向量单元、GPU</span></td>
+</tr>
+<tr>
+<td><strong>MISD</strong></td>
+<td>many / 1</td>
+<td>Fault-tolerant voting; course also places <strong>systolic arrays / TPU</strong> here<span class="zh">容错表决；脉动阵列 / TPU</span></td>
+</tr>
+<tr>
+<td><strong>MIMD</strong></td>
+<td>many / many</td>
+<td>Independent instruction streams: <strong>multicore CPU</strong> (shared mem), <strong>cluster</strong> (distributed mem)<span class="zh">多核 CPU、集群</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Trap<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li>A GPU runs thousands of threads, <strong>not</strong> MIMD: the 32 threads in a warp share one instruction stream in lockstep \(\implies\) <strong>SIMD quadrant</strong> (NVIDIA calls it <strong>SIMT</strong>). :: GPU 属于 SIMD 象限（SIMT 模型），不是 MIMD。</li>
+</ul>
+</div></div>
+<h2 id="sec-03_architecture-4" data-num="3.4">Pipelining <span class="prio p2">★★</span><span class="zh">指令流水线</span></h2>
+<p><strong>One-line intuition:</strong> Overlapping \(k\) instruction stages (IF, RD, EX, WB) improves <strong>throughput</strong> (nearly 1 instruction/cycle), <strong>not</strong> single-instruction latency (\(\ge k\) cycles).<span class="zh">一句话直觉：流水线让 \(k\) 个阶段重叠执行，提高的是<strong>吞吐率</strong>（接近每周期 1 条指令），<strong>不能</strong>降低单条指令的延迟。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Pipeline cycles &amp; speedup<span class="zh">流水线周期数与加速比</span></span></div><div class="callout-body"><p><span class="math display">\[T_{\text{pipe}} = (k + n - 1)\,T_{\text{clock}}, \qquad T_{\text{no pipe}} = nk\,T_{\text{clock}}, \qquad S_{\text{pipe}} = \frac{nk}{k + n - 1} \xrightarrow{n\to\infty} k\]</span></p>
+<ul>
+<li>\(k\): pipeline stages; \(n\): instructions; \(\text{CPI} = (k+n-1)/n \to 1\); \(E_{\text{pipe}} = S_{\text{pipe}}/k\). :: \(k\) 为级数，\(n\) 为指令数。</li>
+</ul>
+<p>[!EXAMPLE] 5-stage pipeline, \(n=100\) instructions :: 流水线计算
+With pipeline: \(5+100-1 = 104\) cycles; without: \(100\times 5 = 500\) cycles.
+\(S_{\text{pipe}} = 500/104 = 4.81\), \(\text{CPI}=1.04\), \(E_{\text{pipe}}=4.81/5=0.96\).<span class="zh">流水线需要 \(k-1\) 个周期填满，因此加速比略小于 \(k\)。</span></p>
+</div></div>
+<h2 id="sec-03_architecture-5" data-num="3.5">Terms to recognise <span class="prio p1">★</span><span class="zh">术语速记</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Term<span class="zh">术语</span></th>
+<th>What to know<span class="zh">核心记忆点</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Von Neumann &amp; ILP<span class="zh">冯·诺依曼与指令级并行</span></td>
+<td>Fetch–decode–execute cycle; superscalar issues \(&gt;1\) independent instruction/cycle from one stream.<span class="zh">取指-译码-执行；超标量从单指令流并发发射多条指令。</span></td>
+</tr>
+<tr>
+<td>UMA vs NUMA<span class="zh">一致 vs 非一致内存访问</span></td>
+<td>UMA: equal access time to all memory; NUMA: local socket memory is faster than remote socket.<span class="zh">UMA 各核访存时间相同；NUMA 访问本地内存快于远端内存。</span></td>
+</tr>
+</tbody>
+</table></div>
+
+</section>
+<section class="chapter" id="ch-04_threads-sec">
+<h1 id="ch-04_threads"><span class="chnum">Chapter 4</span>Threads, Race Conditions &amp; Pthreads <span class="title-cn">线程、竞争条件与 Pthreads</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Race condition, lost update &amp; mutex<span class="zh">竞争条件、丢失更新与互斥锁</span></td>
+<td><code>count++</code> = LOAD, ADD, STORE; mutex fixes correctness but slows down (\(S&lt;1\)); fix = private counter</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Pthreads API &amp; skeleton<span class="zh">Pthreads 接口与模板</span></td>
+<td><code>pthread_create(&amp;h, NULL, f, (void*)rank)</code>, <code>pthread_join(h, NULL)</code>; compile with <code>-lpthread</code></td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Block partition<span class="zh">块划分</span></td>
+<td>\(b=\lceil N/t\rceil\), \(\text{start}_r=rb\), \(\text{end}_r=\min(\text{start}_r+b,N)\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Process vs thread<span class="zh">进程 vs 线程</span></td>
+<td>Threads share code, globals, heap, files; own stack, registers, PC; ~10K vs ~20K cycles</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-04_threads-1" data-num="4.1">Race conditions, mutexes &amp; private counters <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">竞争条件、互斥锁与私有计数器</span></h2>
+<p><strong>One-line intuition:</strong> <code>count++</code> is a 3-step read–modify–write (<strong>LOAD, ADD, STORE</strong>); interleaving two threads overwrites one update (<strong>lost update</strong>), while locking every increment serializes threads and makes it slower than serial.<span class="zh">一句话直觉：<code>count++</code> 包含“读-改-写”三步，多线程交错会导致<strong>丢失更新</strong>；每次自增都加锁会因锁开销和串行化比单线程更慢，正确高效的方法是<strong>先用私有变量累加，最后加锁合并一次</strong>。</span></p>
+<p><img src="img/Lec04/p3.png#crop=0.05,0.235,1.0,0.83" alt="Lost update interleaving" /></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Slowdown<span class="zh">减速比</span></span></div><div class="callout-body"><p><span class="math display">\[\text{slowdown} = \frac{T_t}{T_{\text{serial}}} = \frac{1}{S}\]</span></p>
+<ul>
+<li>\(T_t\): parallel time with \(t\) threads; \(S &lt; 1\) (\(\text{slowdown}&gt;1\)) means slower than serial. :: \(S&lt;1\) 表示并行比串行更慢。</li>
+</ul>
+</div></div>
+<ul>
+<li><strong>Why mutex-per-match is slower (\(S&lt;1\)):</strong> (1) <strong>Mutex overhead</strong> (lock/unlock library calls cost more than <code>count++</code>), (2) <strong>Serialization</strong> (only 1 thread in critical section), (3) <strong>Lock contention</strong> (threads wait for the lock). :: 锁每命中一次更慢的三大原因：锁调用开销、临界区串行化、锁竞争等待。</li>
+<li><strong>Fast fix (private counter):</strong> Each thread counts into a stack-local <code>local = 0</code> inside the loop, then locks <strong>once</strong> after the loop to do <code>count += local</code>. Lock calls drop from \(H\) (matches) to \(t\) (threads). :: 私有计数器把加锁次数从命中次数 \(H\) 降为线程数 \(t\)。</li>
+</ul>
+<div class="callout example"><div class="callout-head"><span class="kind">Worked Example</span><span class="title"><code>count = 5</code> lost update &amp; speedup comparison<span class="zh">丢失更新追踪与性能对比</span></span></div><div class="callout-body"><ul>
+<li><strong>Interleaving (<code>count=5</code>):</strong> A LOADs 5, B LOADs 5, A ADDs (6), B ADDs (6), A STOREs 6, B STOREs 6 \(\implies\) final <code>count = 6</code> (one increment lost!).</li>
+<li><strong>count3s timings (\(T_{\text{serial}}=0.4527\text{ s}\)):</strong> Mutex-per-3 at \(t=1\) takes \(2.1289\text{ s}\) (\(S=0.213\), slowdown \(4.70\times\)); at \(t=8\) takes \(5.9804\text{ s}\) (\(S=0.076\), slowdown \(13.21\times\)).<span class="zh">交错执行导致两次自增只加了 1；全程加锁即使 1 个线程也比串行慢 4.7 倍。</span></li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>A mutex only protects a shared variable if <strong>every</strong> access uses the same mutex. :: 所有线程必须使用同一把锁。</li>
+<li>Even on 1 core, time-slicing can interleave LOAD/ADD/STORE and cause a race. :: 单核时间片轮转也会发生竞争。</li>
+</ul>
+</div></div>
+<h2 id="sec-04_threads-2" data-num="4.2">The Pthreads API <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">Pthreads 编程接口</span></h2>
+<p><strong>Key calls &amp; skeleton:</strong> Create all threads in loop 1, join all threads in loop 2 (never join inside the create loop!).<span class="zh">核心模板：第一个循环创建所有线程，第二个循环统一 join（切勿在创建循环里直接 join，否则退化为串行）。</span></p>
+<pre><code class="language-c">#include &lt;pthread.h&gt;
+// Compile: gcc -g -Wall -o pth_hello pth_hello.c -lpthread
+
+void *Hello(void *rank) {                  // MUST take void* and return void*
+    long my_rank = (long) rank;            // cast back via long for 64-bit safety
+    printf(&quot;Hello from thread %ld of %d\n&quot;, my_rank, thread_count);
+    return NULL;
+}
+
+// In main:
+for (long t = 0; t &lt; thread_count; t++)
+    pthread_create(&amp;thread_handles[t], NULL, Hello, (void*) t); // &amp;handle, fn ptr, arg
+for (long t = 0; t &lt; thread_count; t++)
+    pthread_join(thread_handles[t], NULL);                      // handle BY VALUE
+</code></pre>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li><code>pthread_create</code> takes <strong><code>&amp;handle</code></strong> (pointer); <code>pthread_join</code> takes <strong><code>handle</code></strong> (by value). :: <code>create</code> 传指针 <code>&amp;h</code>，<code>join</code> 传值 <code>h</code>。</li>
+<li>Pass function name <code>f</code>, <strong>never</strong> <code>f(&amp;x)</code> (which calls <code>f</code> immediately in <code>main</code>). :: 传函数名 <code>f</code>，不要写 <code>f(&amp;x)</code>。</li>
+<li>Start routine signature must be <code>void* f(void*)</code>. :: 线程函数签名必须是 <code>void* f(void*)</code>。</li>
+</ul>
+</div></div>
+<h2 id="sec-04_threads-3" data-num="4.3">Block partition <span class="prio p2">★★</span><span class="zh">均匀块划分</span></h2>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Block partition of \(N\) elements over \(t\) threads<span class="zh">块划分公式</span></span></div><div class="callout-body"><p><span class="math display">\[b = \left\lceil \frac{N}{t} \right\rceil, \qquad \text{start}_r = r\,b, \qquad \text{end}_r = \min(\text{start}_r + b,\; N) \quad (r=0,\dots,t-1)\]</span></p>
+<ul>
+<li>Thread \(r\) processes half-open interval \([\text{start}_r, \text{end}_r)\). :: 线程 \(r\) 处理半开区间 \([\text{start}_r, \text{end}_r)\)。</li>
+</ul>
+<p>[!EXAMPLE] \(N=1000\), \(t=12\) :: 不整除时的划分
+Using integer division <code>1000/12 = 83</code> skips the last \(1000 \bmod 12 = 4\) elements (<code>996..999</code>).
+With \(b=\lceil 1000/12\rceil = 84\): thread 10 gets \([840, 924)\), thread 11 gets \([924, \min(1008, 1000)) = [924, 1000)\).<span class="zh">向下取整会漏掉末尾余数元素；向上取整并用 <code>min</code> 截断可覆盖全部元素。</span></p>
+</div></div>
+<h2 id="sec-04_threads-4" data-num="4.4">Processes vs threads <span class="prio p2">★★</span><span class="zh">进程 vs 线程</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Item<span class="zh">对比项</span></th>
+<th>Process<span class="zh">进程</span></th>
+<th>Thread (inside one process)<span class="zh">线程</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory / Address space<span class="zh">内存空间</span></td>
+<td>Private (<code>fork()</code> copies address space)<span class="zh">独立地址空间</span></td>
+<td><strong>Shared:</strong> code, globals/<code>static</code>, <strong>heap (<code>malloc</code>)</strong>, open files; <strong>Private:</strong> <strong>stack</strong> (locals), registers, <strong>PC</strong>, TID<span class="zh">共享代码/全局/堆/文件；私有栈/寄存器/PC</span></td>
+</tr>
+<tr>
+<td>Creation cost (Linux)<span class="zh">创建开销</span></td>
+<td>~20K cycles<span class="zh">约 20K 周期</span></td>
+<td>~10K cycles or less<span class="zh">约 10K 周期或更少</span></td>
+</tr>
+<tr>
+<td>Communication<span class="zh">通信方式</span></td>
+<td>Explicit (IPC / shared memory)<span class="zh">显式通信</span></td>
+<td>Direct read/write of shared vars (needs sync)<span class="zh">直接读写共享变量（需同步）</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Trap<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li>A buffer from <code>malloc</code> lives on the <strong>shared heap</strong> (only the local pointer variable <code>buf</code> is on the thread's private stack). :: <code>malloc</code> 分配的堆内存是所有线程共享的，只有局部指针变量在私有栈上。</li>
+</ul>
+</div></div>
+</section>
+<section class="chapter" id="ch-05_python-sec">
+<h1 id="ch-05_python"><span class="chnum">Chapter 5</span>Parallel Python: Processes, Threads &amp; the GIL <span class="title-cn">Python 并行：进程、线程与 GIL</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>GIL: threads vs processes<span class="zh">GIL 与选型</span></td>
+<td>GIL lets 1 thread run Python bytecode at a time; use <code>threading</code> for I/O, <code>multiprocessing</code> for CPU</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Shared state &amp; lost update<span class="zh">共享状态与丢失更新</span></td>
+<td><code>mp.Value</code> is private-by-default unless passed; <code>count.value += 1</code> is non-atomic (LOAD/ADD/STORE)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Lock acquisitions<span class="zh">加锁次数对比</span></td>
+<td>Per-match \(A_{\text{match}}=H\) vs per-process \(A_{\text{proc}}=t\); ratio \(=H/t\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Spawn-safe skeleton<span class="zh">多进程程序结构</span></td>
+<td>Importable worker; <code>if __name__ == &quot;__main__&quot;:</code>; create \(\to\) start \(\to\) join \(\to\) read</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-05_python-1" data-num="5.1">The GIL: threads vs processes <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">全局解释器锁（GIL）</span></h2>
+<p><strong>One-line intuition:</strong> The <strong>GIL</strong> allows only <strong>one thread</strong> per Python process to execute Python instructions at a time — so threads give <strong>concurrency</strong> (great for I/O waiting, where the GIL is released) but <strong>no CPU parallelism</strong> (use <code>multiprocessing</code>, where each process has its own interpreter and GIL).<span class="zh">一句话直觉：GIL 限制同一进程内同一时刻只能有一个线程执行 Python 字节码——因此线程适合 <strong>I/O 密集型</strong>（等待时释放 GIL，可重叠等待），<strong>CPU 密集型</strong>必须用多进程 <code>multiprocessing</code>。</span></p>
+<ul>
+<li><strong>CPU-bound:</strong> 2 threads take turns on the GIL \(\implies S \approx 1\) (plus switching overhead). Use <code>multiprocessing</code>. :: 计算密集型用多进程。</li>
+<li><strong>I/O-bound:</strong> Threads release the GIL during <code>read</code>/<code>write</code>/<code>recv</code>/<code>time.sleep</code> \(\implies\) waits overlap (e.g. 6 web fetches: \(3.31\text{ s} \to 0.51\text{ s}\), \(S=6.5\)). Use <code>threading</code>. :: I/O 密集型用多线程。</li>
+</ul>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li>The GIL protects the <strong>interpreter</strong>, <strong>not</strong> your shared data (it does not make <code>x += 1</code> safe), and it is <strong>not</strong> shared across processes. :: GIL 不保护用户共享数据，也不跨进程共享。</li>
+<li>Start all threads/processes first, then <code>join()</code> all of them; <code>join()</code> inside the start loop makes execution sequential. Also write <code>args=(url,)</code> (trailing comma for 1-tuple!). :: 先全部 <code>start()</code> 再全部 <code>join()</code>；单元素元组必须加逗号 <code>(url,)</code>。</li>
+</ul>
+</div></div>
+<h2 id="sec-05_python-2" data-num="5.2">Shared state &amp; lock acquisitions in multiprocessing <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">多进程共享状态与锁开销</span></h2>
+<p><strong>One-line intuition:</strong> Child processes have private memory (changes to normal variables stay in the child). Shared <code>mp.Value(&quot;i&quot;, 0)</code> still loses updates on <code>count.value += 1</code> unless protected by <code>with count.get_lock():</code>.<span class="zh">一句话直觉：子进程默认拥有独立内存拷贝；即使使用 <code>mp.Value</code>，<code>count.value += 1</code> 仍是“读-改-写”三步，必须用 <code>with count.get_lock():</code> 保护；最佳实践是局部累加后每个进程只加锁合并一次。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Lock acquisitions: per-match vs per-process<span class="zh">加锁次数对比</span></span></div><div class="callout-body"><p><span class="math display">\[A_{\text{match}} = H, \qquad A_{\text{proc}} = t, \qquad \frac{A_{\text{match}}}{A_{\text{proc}}} = \frac{H}{t}\]</span></p>
+<ul>
+<li>\(H\): total increments (matches); \(t\): number of processes. :: \(H\) 为命中次数，\(t\) 为进程数。</li>
+</ul>
+</div></div>
+<pre><code class="language-python">def count_block_reduced(data, start, stop, count):
+    local = 0
+    for i in range(start, stop):
+        if data[i] == 3:
+            local += 1                 # private: no lock needed
+    with count.get_lock():             # lock ONCE per process (t times total)
+        count.value += local
+</code></pre>
+<div class="callout example"><div class="callout-head"><span class="kind">Worked Example</span><span class="title">Lock count comparison<span class="zh">加锁次数计算</span></span></div><div class="callout-body"><p>\(N=4\times 10^6\) elements, \(5\%\) are 3s (\(H=200{,}000\)), \(t=8\) processes:</p>
+<ul>
+<li>Lock per match: \(A_{\text{match}} = 200{,}000\).</li>
+<li>Lock per process: \(A_{\text{proc}} = 8\).</li>
+<li>Reduction factor: \(200{,}000 / 8 = 25{,}000\times\) fewer lock acquisitions.<span class="zh">局部累加把加锁次数从 20 万次降到 8 次，减少 25,000 倍。</span></li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>A bare <code>count.value += 1</code> on <code>mp.Value</code> is <strong>not</strong> atomic even though <code>Value</code> has a built-in lock; you must explicitly write <code>with count.get_lock():</code>. :: <code>mp.Value</code> 自带锁但不会自动加锁，必须显式用 <code>with count.get_lock():</code>。</li>
+<li>Forgetting the lock on the final <code>count.value += local</code> still races! :: 最后合并 <code>local</code> 时同样必须加锁。</li>
+</ul>
+</div></div>
+<h2 id="sec-05_python-3" data-num="5.3">Program skeleton &amp; life cycle <span class="prio p2">★★</span><span class="zh">多进程程序骨架</span></h2>
+<p><strong>Life cycle (in order):</strong> <strong>create</strong> (<code>mp.Process(target=f, args=...)</code>) \(\to\) <strong>start</strong> (<code>p.start()</code>) \(\to\) <strong>join</strong> (<code>p.join()</code>) \(\to\) <strong>read result</strong>.
+Worker functions must be top-level (importable), and process creation must sit under <code>if __name__ == &quot;__main__&quot;:</code>.<span class="zh">生命周期：创建 \(\to\) <code>start()</code> \(\to\) <code>join()</code> \(\to\) 读结果；工作函数需在顶层可导入，进程创建必须放在 <code>if __name__ == &quot;__main__&quot;:</code> 保护块内。</span></p>
+
+</section>
+<section class="chapter" id="ch-06_matmul-sec">
+<h1 id="ch-06_matmul"><span class="chnum">Chapter 6</span>Matrix Products on the CPU <span class="title-cn">CPU 上的矩阵乘法</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>FLOPs &amp; GFLOP/s<span class="zh">运算量与算力</span></td>
+<td>\(y=Ax\): \(2mn\); \(C=AB\): \(2mnk\) (\(2n^3\)); \(\text{GFLOP/s}=\text{FLOPs}/(t\cdot 10^9)\)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Pthreads mat-vec (<code>sub</code>, timings)<span class="zh">Pthreads 矩阵向量乘</span></td>
+<td>Row-block split \(m_{\text{loc}}=m/p\); <code>sub++</code> avoids <code>i*n+j</code>; parallel time = slowest thread</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Loop order (\(C=AB\))<span class="zh">循环顺序与访存</span></td>
+<td>Fastest: <code>kij</code>/<code>ikj</code> (2 loads, 1 store); middle: <code>ijk</code>/<code>jik</code> (2, 0); slowest: <code>jki</code>/<code>kji</code> (2, 1)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Pthreads mat-mat<span class="zh">Pthreads 矩阵乘</span></td>
+<td>Splitting \(k\) races on <code>c[i][j]</code>; private sum cuts locks by \(n/p\)</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-06_matmul-1" data-num="6.1">FLOP counts &amp; GFLOP/s <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">浮点运算数与 GFLOP/s</span></h2>
+<p><strong>One-line intuition:</strong> Every term \(a_{ij}x_j\) or \(a_{ik}b_{kj}\) does 1 multiply + 1 add = <strong>2 FLOPs</strong>; divide total FLOPs by \((t_{\text{sec}} \times 10^9)\) to get GFLOP/s.<span class="zh">一句话直觉：每次乘加占 2 个 FLOP；总 FLOP 数除以（秒数 \(\times 10^9\)）即为 GFLOP/s。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Mat-vec, mat-mat FLOPs &amp; rate<span class="zh">矩阵乘运算量与速率</span></span></div><div class="callout-body"><p><span class="math display">\[\text{FLOPs}_{y=Ax} = 2mn, \qquad \text{FLOPs}_{C=AB} = 2mnk\ (2n^3\text{ if square}), \qquad \text{GFLOP/s} = \frac{\text{FLOPs}}{t\cdot 10^9}\]</span></p>
+<ul>
+<li>\(A\) is \(m\times n\) (for \(Ax\)) or \(m\times k\) and \(B\) is \(k\times n\) (for \(AB\)); \(t\): measured time in <strong>seconds</strong>. :: 注意时间 \(t\) 必须换算成秒。</li>
+</ul>
+<p>[!EXAMPLE] Mat-vec rate :: 矩阵向量乘速率计算
+\(m=n=2000\): \(\text{FLOPs}=2\cdot 2000\cdot 2000 = 8\times 10^6\). If \(t = 14.07\text{ ms} = 0.01407\text{ s}\):
+<span class="math display">\[\text{GFLOP/s} = \frac{8\times 10^6}{0.01407\times 10^9} = 0.568\text{ GFLOP/s}\]</span><span class="zh">先算总 FLOPs，再把毫秒换算成秒代入公式。</span></p>
+</div></div>
+<h2 id="sec-06_matmul-2" data-num="6.2">Pthreads matrix-vector product (Assignment 1) <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">Pthreads 矩阵向量乘法</span></h2>
+<p><strong>One-line intuition:</strong> Split the \(m\) rows evenly across \(p\) threads (\(m_{\text{loc}}=m/p\)); threads write disjoint <code>y[i]</code> (no lock needed), and <code>sub = my_first_row * n</code> with <code>sub++</code> avoids <code>i*n+j</code> multiplication in the inner loop.<span class="zh">一句话直觉：按行分块，各线程写不同的 <code>y[i]</code> 无需加锁；<code>sub</code> 预先算好起始偏移后只需自增，省去内层 <code>i*n+j</code> 计算。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Row-block partition<span class="zh">按行分块公式</span></span></div><div class="callout-body"><p><span class="math display">\[m_{\text{loc}} = \frac{m}{p}, \qquad r_{\text{first}}(q) = q\,m_{\text{loc}}, \qquad r_{\text{last}}(q) = (q+1)\,m_{\text{loc}} - 1\]</span></p>
+<ul>
+<li>\(q\in\{0,\dots,p-1\}\): thread rank; initial <code>sub</code> \(= r_{\text{first}}(q)\cdot n\); final <code>sub</code> \(= (r_{\text{last}}(q)+1)\cdot n\). :: <code>sub</code> 初始为首行首元素下标，结束时指向下一块首元素。</li>
+</ul>
+</div></div>
+<ul>
+<li><strong>Reading timings:</strong> Parallel loop time \(T_p\) = <strong>slowest thread</strong> (<code>max</code> over threads, since <code>pthread_join</code> waits for all). Job time <code>real</code> includes serial I/O &amp; thread setup (e.g. \(p=4\to 8\): loop drops \(7.0\to 3.7\text{ ms}\), but <code>real</code> stays \(65\to 63\text{ ms}\) due to ~58 ms serial work). :: 并行时间取<strong>最慢线程</strong>时间；<code>real</code> 总时间包含串行读写和线程创建开销。</li>
+</ul>
+<div class="callout example"><div class="callout-head"><span class="kind">Worked Example</span><span class="title">Index trace (\(m=6, n=4, p=3\))<span class="zh"><code>sub</code> 与行范围追踪</span></span></div><div class="callout-body"><p>\(m_{\text{loc}}=2\). Thread 1 (\(q=1\)): <code>my_first_row = 2</code>, <code>my_last_row = 3</code> (exclusive <code>4</code>), initial <code>sub = 2*4 = 8</code>, final <code>sub = 16</code> (reads <code>A[8..15]</code>).<span class="zh">线程 1 处理第 2、3 行，对应一维数组 <code>A[8..15]</code>。</span></p>
+</div></div>
+<h2 id="sec-06_matmul-3" data-num="6.3">Loop order for \(C = AB\) <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">矩阵乘法的六种循环顺序</span></h2>
+<p><strong>One-line intuition:</strong> All 6 loop orders do the exact same \(2n^3\) FLOPs, but differ hugely in speed (up to \(33\times\) at \(n=700\)) due to <strong>cache locality</strong> in the innermost loop.<span class="zh">一句话直觉：六种循环顺序的运算量都是 \(2n^3\)，但最内层循环的内存访问步长不同导致缓存局部性差异巨大（\(n=700\) 时最快与最慢相差约 33 倍）。</span></p>
+<div class="tw"><table>
+<thead><tr>
+<th>Orders<span class="zh">循环顺序</span></th>
+<th>Inner loop<span class="zh">最内层</span></th>
+<th>Loads / Stores per iter<span class="zh">每轮读/写次数</span></th>
+<th>Speed rank<span class="zh">速度排名</span></th>
+<th>Why<span class="zh">原因</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>kij</code>, <code>ikj</code></strong></td>
+<td>\(j\)</td>
+<td>2 loads, 1 store</td>
+<td><strong>Fastest (1st)</strong><span class="zh">最快</span></td>
+<td>Stride-1 row-major access on both <code>B[k][j]</code> and <code>C[i][j]</code><span class="zh">连续步长 1 访问</span></td>
+</tr>
+<tr>
+<td><strong><code>ijk</code>, <code>jik</code></strong></td>
+<td>\(k\)</td>
+<td>2 loads, 0 stores</td>
+<td><strong>Middle (2nd)</strong><span class="zh">中等</span></td>
+<td><code>A[i][k]</code> stride-1, <code>B[k][j]</code> stride-\(n\); <code>sum</code> in register<span class="zh"><code>B</code> 按列跳跃</span></td>
+</tr>
+<tr>
+<td><strong><code>jki</code>, <code>kji</code></strong></td>
+<td>\(i\)</td>
+<td>2 loads, 1 store</td>
+<td><strong>Slowest (3rd)</strong><span class="zh">最慢</span></td>
+<td>Stride-\(n\) column access on both <code>A[i][k]</code> and <code>C[i][j]</code><span class="zh">两个矩阵都按列跳跃</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li>Same FLOPs \(\neq\) same run time: memory access pattern dominates. :: FLOPs 相同不代表耗时相同。</li>
+<li><code>kij</code>/<code>ikj</code> and <code>jki</code>/<code>kji</code> use <code>c[i][j] += ...</code>, so <code>c</code> must be initialized to <strong>0</strong>. :: <code>+=</code> 累加前 <code>c</code> 必须清零。</li>
+</ul>
+</div></div>
+<h2 id="sec-06_matmul-4" data-num="6.4">Pthreads matrix-matrix product <span class="prio p2">★★</span><span class="zh">Pthreads 矩阵乘的锁优化</span></h2>
+<p>Splitting the <strong>\(k\) loop</strong> across \(p\) threads causes every thread to write to the same <code>c[i][j]</code> (<strong>race condition</strong>).</p>
+<ul>
+<li><strong>Lock per update:</strong> \(n^3\) critical sections \(\implies\) serialized, \(21\times\) slower than serial (\(93.0\text{ s}\) vs \(4.38\text{ s}\)).</li>
+<li><strong>Private partial sum:</strong> Accumulate in <code>thread_private_tmp</code>, lock once per <code>(i, j)</code> \(\implies\) \(p\,n^2\) critical sections (\(n/p\) fewer locks, \(1.54\text{ s}\)).<span class="zh">按求和维度 \(k\) 划分会导致所有线程写同一个 <code>c[i][j]</code>；在 <code>k</code> 循环内用私有变量累加后再加锁合并，可将加锁次数从 \(n^3\) 降为 \(p n^2\)（减少 \(n/p\) 倍）。</span></li>
+</ul>
+<h2 id="sec-06_matmul-5" data-num="6.5">Terms to recognise <span class="prio p1">★</span><span class="zh">术语速记</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Term<span class="zh">术语</span></th>
+<th>What to know<span class="zh">核心记忆点</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Row-major order<span class="zh">行主序</span></td>
+<td>2-D entry \(a_{ij}\) in \(m\times n\) array is at flat index \(i\cdot n + j\).<span class="zh">二维数组按行连续存放。</span></td>
+</tr>
+<tr>
+<td>Profiling<span class="zh">性能剖析</span></td>
+<td>Timing each phase to find the hotspot worth parallelizing (e.g. matmul = 98.4% of run).<span class="zh">测量各阶段耗时以定位热点。</span></td>
+</tr>
+</tbody>
+</table></div>
+
+</section>
+<section class="chapter" id="ch-07_dl_matmul-sec">
+<h1 id="ch-07_dl_matmul"><span class="chnum">Chapter 7</span>Matrix Products in Deep Learning <span class="title-cn">深度学习中的矩阵乘法</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Conv layer weights &amp; output<span class="zh">卷积层参数量与输出</span></td>
+<td>\(\#\text{weights}=KCRS\) (+ \(K\) biases), independent of \(H, W, N\)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>im2col shapes, FLOPs &amp; memory<span class="zh">im2col 形状、运算量与内存</span></td>
+<td>\(\mathbf Y_{K\times NH'W'}=\mathbf F_{K\times CRS}\mathbf P_{CRS\times NH'W'}\); \(2KCRSNH'W'\) FLOPs; \(\mathbf P\) is \(\approx RS\times\) input</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Backprop, SGD &amp; minibatch GEMMs<span class="zh">反向传播、SGD 与小批量</span></td>
+<td>3 GEMMs/layer: \(\mathbf W^T\mathbf X\), \(\mathbf W\boldsymbol\Delta\), \(\mathbf X\boldsymbol\Delta^T\), each \(2d_\ell d_{\ell-1}k\) FLOPs</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Model compression<span class="zh">模型压缩</span></td>
+<td>Weight sharing: \(n\lceil\lg k\rceil + kb\) bits; pruning + quantization + Huffman</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-07_dl_matmul-1" data-num="7.1">Convolution layers &amp; weights <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">卷积层与参数量</span></h2>
+<p><strong>One-line intuition:</strong> A conv layer slides \(K\) filters of size \(R\times S\times C\) across the image; each output value is a dot product (cross-correlation, <strong>not</strong> flipped) plus bias, and weights are <strong>shared</strong> across all positions.<span class="zh">一句话直觉：卷积层用 \(K\) 个大小为 \(R\times S\times C\) 的滤波器在图像上滑动做点积（互相关，不翻转）并加偏置；由于权重共享，参数量与图像高宽 \(H, W\) 及批大小 \(N\) 无关。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Convolution weights<span class="zh">卷积层权重数</span></span></div><div class="callout-body"><p><span class="math display">\[\#\text{weights} = K\,C\,R\,S \qquad (\text{plus } K \text{ biases})\]</span></p>
+<ul>
+<li>\(K\): number of filters; \(C\): input channels; \(R\times S\): filter height \(\times\) width. :: \(K\) 个滤波器，\(C\) 个输入通道，核尺寸 \(R\times S\)。</li>
+<li><strong>ReLU:</strong> \(\max(0, z)\) (keeps shape). <strong>Max pooling (\(2\times 2\)):</strong> keeps max of each \(2\times 2\) block, shrinking \(H\times W\) to \((H/2)\times(W/2)\). :: ReLU 置负为 0；\(2\times 2\) 最大池化使高宽各减半。</li>
+</ul>
+<p>[!EXAMPLE] Weight count :: 参数量计算
+\(K=64\) filters of \(3\times 3\) on \(C=3\) RGB channels:
+<span class="math display">\[\#\text{weights} = 64\times 3\times 3\times 3 = 1{,}728\text{ weights} + 64\text{ biases} = 1{,}792\text{ parameters}\]</span><span class="zh">64 个 \(3\times 3\times 3\) 滤波器共有 1,728 个权重和 64 个偏置。</span></p>
+</div></div>
+<h2 id="sec-07_dl_matmul-2" data-num="7.2">Convolution as a matrix product (im2col) <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">卷积转矩阵乘法（im2col）</span></h2>
+<p><strong>One-line intuition:</strong> <strong>im2col</strong> copies every \(R\times S\times C\) input window into a column of patch matrix \(\mathbf P\) and packs each filter as a row of \(\mathbf F\), turning a 7-loop convolution into <strong>one GEMM</strong> at the cost of \(\approx RS\times\) input memory.<span class="zh">一句话直觉：im2col 把每个 \(R\times S\times C\) 窗口拉成矩阵 \(\mathbf P\) 的一列、每个滤波器拉成 \(\mathbf F\) 的一行，把 7 层循环变成一次高效 GEMM，代价是输入显存膨胀约 \(RS\) 倍。</span></p>
+<p><img src="img/Lec08/p24.png" alt="im2col matrix layout" /></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">im2col matrix shapes &amp; FLOPs<span class="zh">im2col 矩阵形状与运算量</span></span></div><div class="callout-body"><p><span class="math display">\[\underbrace{\mathbf Y}_{K\times NH'W'} = \underbrace{\mathbf F}_{K\times CRS}\;\underbrace{\mathbf P}_{CRS\times NH'W'}, \qquad \text{FLOPs} = 2\,K\,(CRS)\,(NH'W')\]</span></p>
+<ul>
+<li>\(N\): batch size; \(H'\times W'\): output spatial size (\(H'=H, W'=W\) with same-size zero padding). :: \(N\) 为批大小；若零填充保持尺寸不变则 \(H'=H, W'=W\)。</li>
+<li>Storage: \(\mathbf P\) has \(CRS\cdot NH'W'\) entries vs input's \(CHWN\) entries (\(\approx R\times S\) times larger). :: \(\mathbf P\) 的元素数约为原输入的 \(RS\) 倍。</li>
+</ul>
+<p>[!EXAMPLE] im2col shapes &amp; cost (\(56\times 56\times 64\), \(K=128\), \(3\times 3\), \(N=1\), same-size padding) :: im2col 形状与内存计算</p>
+<ul>
+<li>\(H'=W'=56 \implies H'W'=3{,}136\); \(CRS = 64\times 9 = 576\).</li>
+<li>Shapes: \(\mathbf F\) is \(128\times 576\), \(\mathbf P\) is \(576\times 3{,}136\), \(\mathbf Y\) is \(128\times 3{,}136\).</li>
+<li>FLOPs: \(2\cdot 128\cdot 576\cdot 3{,}136 = 4.62\times 10^8 \approx 0.46\text{ GFLOP}\).</li>
+<li>Float32 storage: input \(= 56^2\cdot 64\cdot 4\text{ B} = 0.80\text{ MB}\); \(\mathbf P = 576\cdot 3{,}136\cdot 4\text{ B} = 7.23\text{ MB}\) (\(9\times = RS\)).<span class="zh">运算量不变，但窗口矩阵 \(\mathbf P\) 占用的内存是原输入的 \(RS=9\) 倍。</span></li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>Batch size \(N\) multiplies the <strong>columns</strong> of \(\mathbf P\) (\(NH'W'\)), not the rows (\(CRS\)). :: 批大小 \(N\) 乘在 \(\mathbf P\) 的列数上。</li>
+<li>im2col does <strong>not</strong> reduce FLOPs; it trades \(\approx RS\times\) extra memory for fast GEMM execution. :: im2col 不减少 FLOPs，是用内存换 GEMM 速度。</li>
+</ul>
+</div></div>
+<h2 id="sec-07_dl_matmul-3" data-num="7.3">Backpropagation &amp; minibatch SGD <span class="prio p2">★★</span><span class="zh">反向传播与小批量梯度下降</span></h2>
+<p><strong>One-line intuition:</strong> Forward computes activations \(z^{(\ell)}=\mathbf W^{(\ell)T}x^{(\ell-1)}\), \(x^{(\ell)}=\theta(z^{(\ell)})\); backward propagates error \(\delta^{(\ell)}\) from output to input using the chain rule; minibatch of size \(k\) turns all three steps into GEMMs.<span class="zh">一句话直觉：前向算激活，反向用链式法则把误差从输出层传回输入层并求权重梯度；使用大小为 \(k\) 的小批量时，每层训练对应三个 GEMM。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Forward, backprop &amp; minibatch GEMMs<span class="zh">前向、反向与小批量矩阵乘</span></span></div><div class="callout-body"><p><span class="math display">\[\delta^{(\ell-1)} = \theta^{(\ell-1)\prime}(z^{(\ell-1)}) \odot (\mathbf W^{(\ell)}\delta^{(\ell)}), \qquad \nabla_{\mathbf W^{(\ell)}}J = x^{(\ell-1)}\delta^{(\ell)T}, \qquad w \leftarrow w - \eta \nabla J_B(w)\]</span></p>
+<ul>
+<li>Three GEMMs per layer (minibatch \(k\), inputs \(d_{\ell-1}\), outputs \(d_\ell\)): forward \(\mathbf W^T\mathbf X\), error prop \(\mathbf W\boldsymbol\Delta\), weight gradient \(\mathbf X\boldsymbol\Delta^T\) — each costs <strong>\(2\,d_\ell d_{\ell-1}k\) FLOPs</strong>. :: 每层三个 GEMM 各自耗时均对应 \(2\,d_\ell d_{\ell-1}k\) FLOPs。</li>
+<li>Start at output (\(J=\tfrac{1}{2}\|x^{(L)}-y\|^2\)): \(\delta^{(L)} = x^{(L)} - y\). :: 输出层起始误差为 \(x^{(L)}-y\)。</li>
+</ul>
+<p>[!EXAM] Trap :: 易错点</p>
+<ul>
+<li>Error propagation \(\mathbf W^{(\ell)}\delta^{(\ell)}\) must use the <strong>old</strong> weights before applying the gradient-descent update! :: 误差反传必须使用更新前的旧权重。</li>
+</ul>
+</div></div>
+<h2 id="sec-07_dl_matmul-4" data-num="7.4">Model size &amp; 3-step compression <span class="prio p2">★★</span><span class="zh">模型大小与三步压缩</span></h2>
+<p><strong>Three-step compression pipeline (plus retraining after pruning &amp; clustering):</strong></p>
+<ol>
+<li><strong>Pruning:</strong> drop small weights, store survivors in CSR (values + position indices). :: 剪枝（保留非零权重与 CSR 索引）并微调。</li>
+<li><strong>Weight sharing (quantization):</strong> k-means clusters weights into \(k\) centroids; each weight stores a \(\lceil \lg k\rceil\)-bit index. :: 权重量化聚类为 \(k\) 个中心，每个权重只存 \(\lceil \lg k\rceil\) 位索引。</li>
+<li><strong>Huffman coding:</strong> variable-length codes for frequent indices/values. (VGG-16: \(552\text{ MB} \to 11.3\text{ MB}\), \(49\times\) smaller.) :: 霍夫曼编码进一步压缩。</li>
+</ol>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Weight-sharing storage<span class="zh">权重共享存储位数</span></span></div><div class="callout-body"><p><span class="math display">\[\text{bits}_{\text{shared}} = n\,\lceil\lg k\rceil + k\,b \qquad \text{vs} \qquad \text{bits}_{\text{dense}} = n\,b\]</span></p>
+<ul>
+<li>\(n\): number of weights; \(k\): centroids; \(b\): bits per float (32 for float32); \(\lg = \log_2\). For \(n\gg k\), ratio \(\approx b/\lceil\lg k\rceil\). :: \(n\) 为权重数，\(k\) 为聚类数，\(b=32\)。</li>
+</ul>
+<p>[!EXAMPLE] Quantizing \(10^6\) float32 weights to \(k=16\) centroids :: 量化压缩率计算
+Index bits: \(\lceil\lg 16\rceil = 4\) bits. Shared size \(= 10^6\cdot 4 + 16\cdot 32 = 4{,}000{,}512\text{ bits} \approx 500\text{ KB}\) vs dense \(32\times 10^6\text{ bits} = 4\text{ MB}\) \(\implies\) ratio \(\approx 8.0\times\).<span class="zh">32 位浮点压缩成 4 位索引，压缩比约 8 倍（码表 \(16\times 32\) 位可忽略）。</span></p>
+</div></div>
+</section>
+<section class="chapter" id="ch-08_transformer-sec">
+<h1 id="ch-08_transformer"><span class="chnum">Chapter 8</span>Transformers: Attention as Matrix Products <span class="title-cn">Transformer：注意力就是矩阵乘法</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Scaled dot-product attention &amp; softmax<span class="zh">缩放点积注意力</span></td>
+<td>\(Z=\operatorname{softmax}(QK^T/\sqrt{d_k})V\); \(S,A\) are \(n\times n\); softmax <strong>per row</strong></td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Multi-head attention &amp; shapes<span class="zh">多头注意力与矩阵形状</span></td>
+<td>\(d_k=d_v=d/h\); \(Z=[Z_1,\dots,Z_h]W^O\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>FLOPs &amp; memory of attention<span class="zh">注意力运算量与显存</span></td>
+<td>\(QKV\): \(6nd^2\); per head \(QK^T\) &amp; \(AV\): \(2n^2d_k\) each</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-08_transformer-1" data-num="8.1">Scaled dot-product attention <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">缩放点积注意力</span></h2>
+<p><strong>One-line intuition:</strong> Each token's <strong>query</strong> (\(q\)) dot-products with all <strong>keys</strong> (\(k\)) to get \(n\times n\) match scores; divide by \(\sqrt{d_k}\), take <strong>row-wise softmax</strong> to get weights summing to 1, and take a weighted sum of <strong>values</strong> (\(V\)).<span class="zh">一句话直觉：每个词元的 Query 与所有 Key 做点积得到 \(n\times n\) 分数矩阵，除以 \(\sqrt{d_k}\) 后按<strong>行</strong>做 softmax 变成权重，再对 Value 加权求和。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Attention &amp; softmax<span class="zh">注意力与 Softmax 公式</span></span></div><div class="callout-body"><p><span class="math display">\[Q = XW_q,\quad K = XW_k,\quad V = XW_v,\qquad Z = \operatorname{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]</span>
+<span class="math display">\[\sigma(\vec z)_i = \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}}\]</span></p>
+<ul>
+<li>\(X\in\mathbb R^{n\times d_{\text{model}}}\) (\(n\) tokens); \(Q,K\in\mathbb R^{n\times d_k}\); \(V,Z\in\mathbb R^{n\times d_v}\). :: \(n\) 为词元数，\(d_k\) 为 Q/K 维度，\(d_v\) 为 V 维度。</li>
+<li>\(S = QK^T/\sqrt{d_k}\in\mathbb R^{n\times n}\) and \(A = \operatorname{softmax}(S)\in\mathbb R^{n\times n}\) (<strong>rows</strong> of \(A\) sum to 1). :: \(S\) 和 \(A\) 均为 \(n\times n\)，按行归一化。</li>
+</ul>
+<p>[!EXAMPLE] Numeric trace (\(n=2, d_k=2\)) :: 数值计算示例
+\(Q=\begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix}\), \(K=\begin{pmatrix}1&amp;0\\0&amp;1\end{pmatrix}\), \(V=\begin{pmatrix}10&amp;0\\0&amp;20\end{pmatrix}\):</p>
+<ol>
+<li>\(QK^T=\begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix}\implies S = QK^T/\sqrt{2} = \begin{pmatrix}0.707&amp;1.414\\1.414&amp;0.707\end{pmatrix}\).</li>
+<li>Row 1 softmax: \(e^{0.707}=2.028\), \(e^{1.414}=4.113\), sum \(=6.141 \implies a_1=(0.330, 0.670)\); row 2 is \((0.670, 0.330)\).</li>
+<li>Output \(Z=AV\): \(z_1 = 0.330(10,0)+0.670(0,20) = (3.30, 13.40)\); \(z_2 = (6.70, 6.60)\).<span class="zh">依次计算 \(QK^T \to \div\sqrt{d_k} \to \text{逐行 softmax} \to \times V\)。</span></li>
+</ol>
+</div></div>
+<h2 id="sec-08_transformer-2" data-num="8.2">Multi-head attention &amp; shapes <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">多头注意力与形状检查</span></h2>
+<p><strong>One-line intuition:</strong> Split width \(d=d_{\text{model}}\) into \(h\) parallel heads of width \(d_k=d_v=d/h\), run attention per head, concatenate \([Z_1,\dots,Z_h]\) (free, no FLOPs), and mix with \(W^O\).<span class="zh">一句话直觉：把宽度 \(d\) 拆成 \(h\) 个并行头（每头宽度 \(d_k=d/h\)），各自算完注意力后直接拼接（无运算开销），再乘以输出矩阵 \(W^O\) 融合。</span></p>
+<p><img src="img/Lec09/p30.png#crop=0.02,0.15,0.98,0.92" alt="Multi-head shapes" /></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Multi-head shapes (\(n\) tokens, width \(d\), \(h\) heads, \(d_k=d_v=d/h\))<span class="zh">多头矩阵形状</span></span></div><div class="callout-body"><p><span class="math display">\[Z_i = \operatorname{softmax}\!\left(\frac{Q_iK_i^T}{\sqrt{d_k}}\right)V_i,\qquad Z = [Z_1,\dots,Z_h]W^O\]</span></p>
+<ul>
+<li>\(X\in\mathbb R^{n\times d}\); per head \(W_i^Q,W_i^K,W_i^V\in\mathbb R^{d\times d_k}\) (combined \(W^Q,W^K,W^V\in\mathbb R^{d\times d}\)). :: 单头投影 \(d\times d_k\)，合起来 \(d\times d\)。</li>
+<li>\(Q_i,K_i,V_i,Z_i\in\mathbb R^{n\times d_k}\); \(S_i,A_i\in\mathbb R^{n\times n}\); concat \([Z_1,\dots,Z_h]\in\mathbb R^{n\times d}\); \(W^O\in\mathbb R^{d\times d}\); output \(Z\in\mathbb R^{n\times d}\). :: 拼接后恢复为 \(n\times d\)，乘 \(W^O\) 后仍为 \(n\times d\)。</li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>Softmax is applied <strong>along each row</strong> of \(S\) (not column). :: Softmax 沿每一<strong>行</strong>计算。</li>
+<li>Score matrix \(S_i\) is \(n\times n\) per head, so memory and compute scale quadratically (\(O(n^2)\)) with sequence length \(n\). :: 显存和算力随序列长度 \(n\) 呈平方级增长。</li>
+</ul>
+</div></div>
+<h2 id="sec-08_transformer-3" data-num="8.3">FLOPs &amp; memory of attention <span class="prio p2">★★</span><span class="zh">注意力运算量与显存</span></h2>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Attention FLOPs (using \(2mkp\) per GEMM)<span class="zh">注意力各步 FLOPs</span></span></div><div class="callout-body"><p><span class="math display">\[\underbrace{6\,n\,d^2}_{Q,K,V\text{ projections}} \qquad \underbrace{2\,n^2\,d_k}_{QK^T\text{ (per head)}} \qquad \underbrace{2\,n^2\,d_k}_{AV\text{ (per head)}}\]</span></p>
+<ul>
+<li>\(Q,K,V\) together: \((n\times d)(d\times 3d) \implies 2\cdot n\cdot d\cdot 3d = 6nd^2\) FLOPs. :: \(Q,K,V\) 投影合起来是 \((n\times d)(d\times 3d)\)。</li>
+</ul>
+<p>[!EXAMPLE] \(n=2048\), \(d=768\), \(h=12\), \(d_k=64\) :: 运算量与 16-bit 显存计算</p>
+<ul>
+<li>\(QKV\) projections: \(6\cdot 2048\cdot 768^2 = 7.25\times 10^9\text{ FLOPs}\).</li>
+<li>Per head \(QK^T\) (and \(AV\)): \(2\cdot 2048^2\cdot 64 = 5.37\times 10^8\text{ FLOPs}\) each.</li>
+<li>Score matrix \(S_i\) in FP16 (2 B): \(2048^2\cdot 2\text{ B} = 8\text{ MiB}\) per head \(\implies 12\times 8 = 96\text{ MiB}\) total.<span class="zh">单头 \(S_i\) 在 FP16 下占 8 MiB，12 个头共占 96 MiB。</span></li>
+</ul>
+</div></div>
+</section>
+<section class="chapter" id="ch-09_openmp-sec">
+<h1 id="ch-09_openmp"><span class="chnum">Chapter 9</span>OpenMP: Parallel Regions, Scope &amp; Reduction <span class="title-cn">OpenMP：并行区、变量作用域与归约</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td><code>parallel</code> directive &amp; fork–join<span class="zh">并行区与分叉-汇合</span></td>
+<td><code>#pragma omp parallel</code> forks team; output order undefined; compile <code>gcc -fopenmp</code></td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Shared vs private &amp; <code>critical</code><span class="zh">变量作用域与临界区</span></td>
+<td>Declared before block = <strong>shared</strong>; inside / in called fn = <strong>private</strong>; <code>critical</code> serializes update</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td><code>reduction</code> clause<span class="zh">归约子句</span></td>
+<td><code>reduction(op: var)</code> replaces private var + <code>critical</code> (<code>+ * - &amp; | ^ &amp;&amp; ||</code>)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Trapezoidal rule &amp; Matmul<span class="zh">梯形积分与矩阵乘</span></td>
+<td>\(\text{local\_n}=n/p\), \(\text{local\_a}=a+r\cdot\text{local\_n}\cdot h\); <code>A[i*N+j]</code>, <code>collapse(2)</code></td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-09_openmp-1" data-num="9.1">The <code>parallel</code> directive &amp; fork–join <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">并行指令与分叉-汇合模型</span></h2>
+<p><strong>One-line intuition:</strong> <code>#pragma omp parallel</code> forks a team of threads that all run the structured block below it with their own rank (<code>omp_get_thread_num()</code>), then joins back to 1 thread at the end; compile with <code>gcc -fopenmp</code>.<span class="zh">一句话直觉：<code>#pragma omp parallel</code> 让主线程分叉出一组线程同时执行紧随其后的代码块，结束时自动汇合并只留主线程继续；编译加 <code>-fopenmp</code>。</span></p>
+<p><img src="img/Lec10/p22.png#crop=0.52,0.12,1.0,0.37" alt="Fork-join model" /></p>
+<pre><code class="language-c">#include &lt;omp.h&gt;
+// Compile: gcc -fopenmp -o omp_hello omp_hello.c
+int main(int argc, char* argv[]) {
+    int thread_count = strtol(argv[1], NULL, 10);
+#   pragma omp parallel num_threads(thread_count) // requests thread_count threads
+    {
+        int my_rank = omp_get_thread_num();       // 0 .. actual_threads-1
+        int actual  = omp_get_num_threads();      // actual team size (may &lt; requested)
+        printf(&quot;Hello from thread %d of %d\n&quot;, my_rank, actual);
+    }
+    return 0;
+}
+</code></pre>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li><code>num_threads(n)</code> is only a <strong>request</strong>; always use <code>omp_get_num_threads()</code> inside the block for the real team size. :: <code>num_threads</code> 只是请求，实际线程数以 <code>omp_get_num_threads()</code> 为准。</li>
+<li>Output order is <strong>undefined</strong> (e.g. ranks 0..3 can print in \(4!=24\) orders), but each thread runs the block once. :: 输出顺序不确定，但每个线程只执行一次。</li>
+</ul>
+</div></div>
+<h2 id="sec-09_openmp-2" data-num="9.2">Shared vs private scope, <code>critical</code> &amp; <code>reduction</code> <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">变量作用域、临界区与归约</span></h2>
+<p><strong>Scope rule:</strong></p>
+<ul>
+<li><strong>Shared:</strong> variables declared <strong>before</strong> the <code>parallel</code> block (and globals / heap).</li>
+<li><strong>Private:</strong> variables declared <strong>inside</strong> the <code>{ ... }</code> block, and local variables/parameters of any function called from the block (on each thread's stack).<span class="zh">作用域规则：并行块<strong>之前</strong>声明的变量（及全局/堆变量）为<strong>共享</strong>；并行块<strong>内部</strong>声明的变量及被调函数的局部变量/形参为<strong>私有</strong>。</span></li>
+</ul>
+<p><strong>Fixing race conditions (<code>global_result += my_result</code>):</strong></p>
+<ol>
+<li><strong><code>critical</code>:</strong> <code>#pragma omp critical</code> before the shared update lets only 1 thread update <code>global_result</code> at a time. (Never wrap the whole computation in <code>critical</code>, or parallelism disappears!)</li>
+<li><strong><code>reduction(op: var)</code>:</strong> Replaces the private variable + <code>critical</code> in one line. Allowed operators: <code>+ * - &amp; | ^ &amp;&amp; ||</code>.</li>
+</ol>
+<pre><code class="language-c">// Method 1: private var + critical        // Method 2: reduction clause (preferred)
+global_result = 0.0;                       global_result = 0.0;
+#pragma omp parallel num_threads(t)        #pragma omp parallel num_threads(t) reduction(+: global_result)
+{                                              global_result += Local_trap(a, b, n);
+    double my_result = Local_trap(a,b,n);
+#   pragma omp critical
+    global_result += my_result;
+}
+</code></pre>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li>A scratch variable declared <em>before</em> the <code>parallel</code> block is shared and causes a race! :: 临时变量若声明在并行块外面会变成共享变量，导致竞争。</li>
+<li>Put <code>critical</code> <strong>only</strong> around the shared update, not around <code>Local_trap(...)</code>. :: <code>critical</code> 只包住共享累加那一行，不要包住整个计算。</li>
+</ul>
+</div></div>
+<h2 id="sec-09_openmp-3" data-num="9.3">Trapezoidal rule &amp; OpenMP Matmul <span class="prio p2">★★</span><span class="zh">梯形积分与 OpenMP 矩阵乘</span></h2>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Trapezoidal rule &amp; per-thread split<span class="zh">梯形积分与线程区间划分</span></span></div><div class="callout-body"><p><span class="math display">\[h = \frac{b-a}{n}, \qquad \text{local\_n} = \frac{n}{p}, \qquad \text{local\_a} = a + r\cdot\text{local\_n}\cdot h, \qquad \text{local\_b} = \text{local\_a} + \text{local\_n}\cdot h\]</span>
+<span class="math display">\[\text{local\_result} = h\left[\frac{f(\text{local\_a}) + f(\text{local\_b})}{2} + \sum_{i=1}^{\text{local\_n}-1} f(\text{local\_a}+i\,h)\right]\]</span></p>
+<ul>
+<li>Requires \(n\) divisible by \(p\); parallel program makes \(n+p\) evaluations of \(f\) (\(p-1\) shared endpoints evaluated twice) vs \(n+1\) serial. :: 并行版共计算 \(n+p\) 次 \(f\)（相邻子区间端点重复算一次）。</li>
+</ul>
+</div></div>
+<p><strong>Contiguous 2-D matrix product in OpenMP:</strong> Allocate each matrix as 1 contiguous block (<code>A[i*N + j]</code>), and collapse the two outer loops so every <code>(i, j)</code> writes its own <code>C[i*N + j]</code> (no race, no lock):</p>
+<pre><code class="language-c">#pragma omp parallel for collapse(2) shared(A, B, C)
+for (int i = 0; i &lt; N; i++)
+    for (int j = 0; j &lt; N; j++) {
+        double sum = 0.0; // private to each iteration
+        for (int k = 0; k &lt; N; k++) sum += A[i*N + k] * B[k*N + j];
+        C[i*N + j] = sum;
+    }
+</code></pre>
+<p><span class="zh">用一维连续数组 <code>A[i*N+j]</code> 存矩阵，配合 <code>collapse(2)</code> 合并 <code>i, j</code> 两层循环，每个线程写不同的 <code>C</code> 元素无需加锁。</span></p>
+
+</section>
+<section class="chapter" id="ch-10_openmp_loops-sec">
+<h1 id="ch-10_openmp_loops"><span class="chnum">Chapter 10</span>OpenMP Loops: parallel for, Dependences &amp; Schedules <span class="title-cn">OpenMP 循环：parallel for、依赖与调度</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Legal <code>for</code> loop form<span class="zh">规范循环形式</span></td>
+<td>Integer/pointer index; <code>start</code>/<code>end</code>/<code>incr</code> invariant; body cannot modify index</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Loop dependences &amp; repair<span class="zh">循环依赖与修复</span></td>
+<td>Test: can iterations run in any order? Fix: compute from <code>k</code> + <code>private</code> + <code>reduction</code> + <code>default(none)</code></td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Loop schedules<span class="zh">循环调度</span></td>
+<td>Static: \(\text{thread}(i)=\lfloor i/c\rfloor\bmod p\); Guided: \(c_k=\max(\lceil R_k/p\rceil, c_{\min})\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Mat-vec shape &amp; efficiency<span class="zh">矩阵形状与效率</span></td>
+<td>\(E=T_1/(pT_p)\); \(8\times 8{,}000{,}000\) has worst \(E\) (too few rows)</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-10_openmp_loops-1" data-num="10.1">The <code>parallel for</code> directive &amp; legal form <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">parallel for 指令与规范形式</span></h2>
+<p><strong>One-line intuition:</strong> <code>#pragma omp parallel for</code> forks a team and splits the loop iterations across threads; the compiler must know the iteration count before the loop starts (<strong>legal form</strong>).<span class="zh">一句话直觉：<code>#pragma omp parallel for</code> 分叉线程组并划分迭代次数；循环头必须满足<strong>规范形式</strong>，以便运行前就能算出总迭代次数。</span></p>
+<ul>
+<li><strong>Legal form rules:</strong> (1) <code>index</code> is <strong>integer or pointer</strong> (never <code>float</code>/<code>double</code>), (2) <code>start</code>, <code>end</code>, <code>incr</code> are loop-invariant, (3) only the increment expression modifies <code>index</code>, (4) test and increment move in the same direction (<code>&lt;</code>/<code>&lt;=</code> with <code>++</code>/<code>+=</code>). :: 规范形式：整型或指针索引、边界和步长循环内不变、循环体不能修改索引。</li>
+</ul>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li><code>for (double x = 0.0; x &lt; 1.0; x += 0.1)</code> \(\implies\) <strong>illegal</strong> (<code>double</code> index). :: 浮点索引非法。</li>
+<li><code>for (i = 0; i &lt; n; i++) { ... i++; }</code> or <code>n = n - 1;</code> \(\implies\) <strong>illegal</strong> (body modifies index or bound). :: 循环体改了 <code>i</code> 或 <code>n</code> 非法。</li>
+</ul>
+</div></div>
+<h2 id="sec-10_openmp_loops-2" data-num="10.2">Loop dependences &amp; repair <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">循环携带依赖与修复</span></h2>
+<p><strong>Test before parallelizing:</strong> <em>If iterations could run in any order (or simultaneously) and give the same result, the loop is safe.</em> OpenMP <strong>does not</strong> check for dependences.<span class="zh">判断准则：如果把各次迭代乱序或同时执行结果不变，则安全；OpenMP 不会自动检查依赖。</span></p>
+<ul>
+<li><strong>Cannot parallelize (true flow dependence):</strong> <code>fibo[i] = fibo[i-1] + fibo[i-2];</code> (iteration \(i\) reads what \(i-1\) writes). :: 斐波那契存在真数据依赖，无法直接并行。</li>
+<li><strong>Can repair (\(\pi\) series \(\sum (-1)^k/(2k+1)\)):</strong> Original code flips <code>factor = -factor</code> (carried dependence). Fix in 3 steps:
+<ol>
+<li>Compute <code>factor</code> from loop index <code>k</code>: <code>factor = (k % 2 == 0) ? 1.0 : -1.0;</code> (removes dependence).</li>
+<li>Make <code>factor</code> <strong>private</strong> (<code>private(k, factor)</code>), otherwise threads overwrite shared <code>factor</code>.</li>
+<li>Use <code>reduction(+:sum)</code> and <strong><code>default(none)</code></strong> (forces explicit scope on every external variable, turning a forgotten <code>private</code> into a compile error).<span class="zh">修复 \(\pi\) 级数三步：用下标 <code>k</code> 直接算正负号、把 <code>factor</code> 设为 <code>private</code>、用 <code>reduction(+:sum)</code> 并加 <code>default(none)</code> 防止漏写作用域。</span></li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-c">#pragma omp parallel for num_threads(thread_count) \
+    default(none) reduction(+:sum) private(k, factor) shared(n)
+for (k = 0; k &lt; n; k++) {
+    factor = (k % 2 == 0) ? 1.0 : -1.0;
+    sum += factor / (2*k + 1);
+}
+</code></pre>
+<h2 id="sec-10_openmp_loops-3" data-num="10.3">Loop schedules <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">循环调度策略</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Schedule<span class="zh">调度方式</span></th>
+<th>When assigned<span class="zh">分配时机</span></th>
+<th>Chunk size<span class="zh">块大小</span></th>
+<th>Best for<span class="zh">适用场景</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>static</code> (default: block)</td>
+<td>Before loop<span class="zh">循环前静态分配</span></td>
+<td>\(c\) (default \(\approx n/p\))</td>
+<td>Equal-cost iterations (<code>static</code>); smoothly growing cost (<code>static, 1</code> cyclic)<span class="zh">等耗时用默认块调度；递增耗时用 <code>static, 1</code></span></td>
+</tr>
+<tr>
+<td><code>dynamic</code></td>
+<td>At runtime, on request<span class="zh">运行时动态领取</span></td>
+<td>\(c\) (default 1)</td>
+<td>Unpredictable / irregular iteration cost<span class="zh">迭代耗时极不均匀</span></td>
+</tr>
+<tr>
+<td><code>guided</code></td>
+<td>At runtime, on request<span class="zh">运行时动态领取</span></td>
+<td>Starts large, shrinks to \(c_{\min}\) (default 1)</td>
+<td>Low request overhead + load balance at tail<span class="zh">兼顾低调度开销与尾部负载均衡</span></td>
+</tr>
+<tr>
+<td><code>runtime</code></td>
+<td>Reads <code>OMP_SCHEDULE</code> env var<span class="zh">读取环境变量</span></td>
+<td><code>export OMP_SCHEDULE=&quot;static,1&quot;</code></td>
+<td>Testing schedules without recompiling<span class="zh">免重编译切换调度</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Static mapping &amp; Guided chunk size<span class="zh">静态映射与 Guided 块大小公式</span></span></div><div class="callout-body"><p><span class="math display">\[\text{thread}(i) = \left\lfloor \frac{i}{c} \right\rfloor \bmod p \qquad\qquad c_k = \max\!\left(\left\lceil \frac{R_k}{p} \right\rceil,\; c_{\min}\right),\quad R_{k+1} = R_k - c_k\]</span></p>
+<ul>
+<li><code>static</code>: \(i=0,\dots,n-1\); \(c\): chunk size; \(p\): threads. (<code>c=1</code> \(\implies i \bmod p\) cyclic). :: <code>static</code> 按块轮转分给各线程。</li>
+<li><code>guided</code>: \(R_k\): remaining unassigned iterations (\(R_1=n\)); last chunk is \(\min(c_k, R_k)\). :: <code>guided</code> 每次取剩余量除以线程数（向上取整），不小于 \(c_{\min}\)。</li>
+</ul>
+<p>[!EXAMPLE] <code>static, 2</code> &amp; <code>guided</code> trace :: 调度追踪示例</p>
+<ul>
+<li><strong><code>static, 2</code> (\(n=12, p=3\)):</strong> Chunks are \(\{0,1\},\{2,3\},\{4,5\},\{6,7\},\{8,9\},\{10,11\}\). Iteration 7 is in chunk \(\lfloor 7/2\rfloor=3 \implies \text{thread} = 3\bmod 3 = 0\). Thread 0 gets \(\{0,1,6,7\}\).</li>
+<li><strong><code>guided</code> (\(n=100, p=4, c_{\min}=5\)):</strong> \(R=100\to c_1=25\) (\(R=75\to 19\), \(56\to 14\), \(42\to 11\), \(31\to 8\), \(23\to 6\), \(17\to 5\), \(12\to 5\), \(7\to 5\), \(2\to 2\)): 10 chunks total.<span class="zh">静态调度套公式 \(\lfloor i/c\rfloor\bmod p\)；Guided 每次按 \(\max(\lceil R/p\rceil, c_{\min})\) 递减。</span></li>
+</ul>
+</div></div>
+<h2 id="sec-10_openmp_loops-4" data-num="10.4">Matrix-vector efficiency by shape <span class="prio p2">★★</span><span class="zh">不同矩阵形状的并行效率</span></h2>
+<p><code>Omp_mat_vect</code> parallelizes the outer row loop (\(i=0\dots m-1\)). For \(m\times n = 64\times 10^6\) entries, \(8\times 8{,}000{,}000\) has the <strong>lowest</strong> efficiency (at \(p=8\), only 1 row per thread, high thread/cache overhead and poor parallelism if \(p&gt;8\)).<span class="zh">并行化外层行循环时，行数极少（如 \(8\times 8{,}000{,}000\)）的矩阵效率最低。</span></p>
+
+</section>
+<section class="chapter" id="ch-11_gpu_arch-sec">
+<h1 id="ch-11_gpu_arch"><span class="chnum">Chapter 11</span>GPU Architecture &amp; the Roofline <span class="title-cn">GPU 体系结构与 Roofline 模型</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>CPU vs GPU design philosophy<span class="zh">CPU vs GPU 设计理念</span></td>
+<td>CPU: latency-oriented (large cache, branch pred); GPU: throughput-oriented (many ALUs, many warps hide latency)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>GPU peak FLOP/s from SM<span class="zh">GPU 峰值算力</span></td>
+<td>\(P_{\text{peak}} = N_{\text{SM}}\times n_{\text{core/SM}}\times 2\times f_{\text{clock}}\) (Ampere SM: 64 FP32, 32 FP64)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Arithmetic intensity &amp; Roofline<span class="zh">算术强度与 Roofline</span></td>
+<td>\(\text{AI}=\text{FLOPs}/\text{bytes}\); \(B_m=P_{\text{peak}}/BW\); \(P_{\text{att}}=\min(P_{\text{peak}}, \text{AI}\times BW)\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>5 steps of GPU computation<span class="zh">GPU 计算五步曲</span></td>
+<td>Load \(\to\) Copy H2D (PCIe) \(\to\) Kernel (parallel) \(\to\) Copy D2H (PCIe) \(\to\) Use</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-11_gpu_arch-1" data-num="11.1">CPU vs GPU &amp; SIMT <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">CPU 与 GPU 设计对比</span></h2>
+<p><strong>One-line intuition:</strong> A CPU spends silicon on <strong>minimizing latency</strong> for 1–2 threads (large caches, branch prediction, data forwarding). A GPU spends silicon on <strong>maximizing throughput</strong> (many pipelined ALUs + massive warp switching to hide memory latency).<span class="zh">一句话直觉：CPU 靠大缓存和复杂控制<strong>降低单线程延迟</strong>；GPU 靠大量流水线算术单元和海量线程束切换来<strong>隐藏延迟、最大化总吞吐量</strong>。</span></p>
+<div class="tw"><table>
+<thead><tr>
+<th>Feature<span class="zh">硬件部件</span></th>
+<th>CPU (Latency-oriented<span class="zh">延迟导向)</span></th>
+<th>GPU (Throughput-oriented<span class="zh">吞吐导向)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caches<span class="zh">缓存</span></td>
+<td>Large (turn DRAM misses into hits)<span class="zh">大缓存</span></td>
+<td>Small (reduce DRAM traffic)<span class="zh">小缓存</span></td>
+</tr>
+<tr>
+<td>Control<span class="zh">控制逻辑</span></td>
+<td>Branch prediction + data forwarding<span class="zh">分支预测 + 数据转发</span></td>
+<td>Simple (no branch pred, no forwarding)<span class="zh">极简控制</span></td>
+</tr>
+<tr>
+<td>ALUs<span class="zh">运算单元</span></td>
+<td>Few, powerful, low latency<span class="zh">少而强、低延迟</span></td>
+<td>Many, energy-efficient, heavily pipelined<span class="zh">多而省电、深流水线</span></td>
+</tr>
+<tr>
+<td>Threads<span class="zh">线程数</span></td>
+<td>Small number<span class="zh">少量</span></td>
+<td>Massive (hide latency via warp switching)<span class="zh">海量线程隐藏访存延迟</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>SIMT vs SIMD:</strong> In <strong>SIMT</strong> (GPU), the programmer writes 1-thread code; hardware runs 32 threads (<strong>warp</strong>) in lockstep, each with its own registers &amp; control flow. In <strong>SIMD</strong>, programmer/compiler uses fixed-width vector registers. :: SIMT 按单线程编程、硬件以 32 线程束锁步执行。</li>
+</ul>
+<h2 id="sec-11_gpu_arch-2" data-num="11.2">SM &amp; GPU peak FLOP/s <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">流多处理器（SM）与峰值算力</span></h2>
+<p><strong>Ampere SM facts:</strong> 4 processing blocks/SM; per SM = <strong>64 FP32 cores</strong>, <strong>32 FP64 cores</strong>, <strong>65,536 32-bit registers (256 KB)</strong>, 192 KB L1 + shared memory. Each core executes <strong>1 FMA = 2 FLOPs</strong> per cycle.<span class="zh">Ampere 单 SM 参数：64 个 FP32 核心、32 个 FP64 核心、65,536 个 32 位寄存器（256 KB）；每周期每核心 1 次 FMA = 2 FLOPs。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">GPU peak performance<span class="zh">GPU 理论峰值</span></span></div><div class="callout-body"><p><span class="math display">\[P_{\text{peak}} = N_{\text{SM}} \times n_{\text{core/SM}} \times 2 \times f_{\text{clock}}\]</span></p>
+<ul>
+<li>\(N_{\text{SM}}\): number of SMs; \(n_{\text{core/SM}}\): cores/SM (64 for FP32, 32 for FP64 on Ampere); \(f_{\text{clock}}\): clock rate (Hz). (Excludes Tensor Cores.) :: 因子 2 来自 FMA（乘加）。</li>
+</ul>
+<p>[!EXAMPLE] Hypothetical Ampere GPU (\(100\text{ SMs}\), \(1.5\text{ GHz}\)) :: GPU 峰值计算</p>
+<ul>
+<li>FP32: \(100 \times 64 \times 2 \times 1.5\times 10^9 = 19.2\text{ TFLOP/s}\).</li>
+<li>FP64: \(100 \times 32 \times 2 \times 1.5\times 10^9 = 9.6\text{ TFLOP/s}\) (half of FP32).<span class="zh">100 SM、1.5 GHz 下 FP32 峰值为 19.2 TFLOP/s，FP64 为一半（9.6 TFLOP/s）。</span></li>
+</ul>
+</div></div>
+<h2 id="sec-11_gpu_arch-3" data-num="11.3">Arithmetic intensity, machine balance &amp; Roofline <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">算术强度、机器平衡点与 Roofline 模型</span></h2>
+<p><strong>One-line intuition:</strong> Compare a kernel's <strong>arithmetic intensity (AI)</strong> against the GPU's <strong>machine balance (\(B_m\))</strong> — if \(\text{AI} &lt; B_m\), the kernel is <strong>memory-bound</strong> and capped by \(\text{AI}\times BW\); if \(\text{AI} &gt; B_m\), it is <strong>compute-bound</strong> and capped by \(P_{\text{peak}}\).<span class="zh">一句话直觉：用核函数的算术强度 \(\text{AI}\) 对比硬件平衡点 \(B_m\)：\(\text{AI} &lt; B_m\) 受<strong>带宽限制</strong>（上限 \(\text{AI}\times BW\)），\(\text{AI} &gt; B_m\) 受<strong>算力限制</strong>（上限 \(P_{\text{peak}}\)）。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Roofline formulas<span class="zh">Roofline 核心公式</span></span></div><div class="callout-body"><p><span class="math display">\[\text{AI} = \frac{\text{FLOPs executed}}{\text{bytes moved at device memory}},\qquad B_m = \frac{P_{\text{peak}}}{BW},\qquad P_{\text{att}} = \min\big(P_{\text{peak}},\; \text{AI}\times BW\big)\]</span></p>
+<ul>
+<li>\(\text{AI}\) &amp; \(B_m\) (ridge point): in <strong>FLOP/byte</strong>; \(P_{\text{peak}}, P_{\text{att}}\): FLOP/s; \(BW\): memory bandwidth (bytes/s). :: 算术强度与平衡点单位均为 FLOP/byte。</li>
+</ul>
+<p>[!EXAMPLE] Roofline check (\(P_{\text{peak}}=19.2\text{ TFLOP/s FP32}\), \(BW=900\text{ GB/s}\)) :: Roofline 实战判断</p>
+<ul>
+<li>Machine balance: \(B_m = 19{,}200\text{ GFLOP/s} \div 900\text{ GB/s} = 21.3\text{ FLOP/byte}\).</li>
+<li><strong>Vector add</strong> (\(c_i=a_i+b_i\), FP32): 1 FLOP, 3 accesses (read \(a,b\), write \(c\)) \(\times 4\text{ B} = 12\text{ B} \implies \text{AI}=1/12=0.083 &lt; 21.3\) (<strong>memory-bound</strong>). \(P_{\text{att}} = 0.083\times 900 = 75\text{ GFLOP/s}\) (\(0.39\%\) of peak!).</li>
+<li><strong>Ideal \(n\times n\) FP32 matmul:</strong> \(2n^3\) FLOPs, \(3\cdot 4n^2=12n^2\) B \(\implies \text{AI}=n/6\). Compute-bound when \(n/6 \ge 21.3 \implies n \ge 128\).<span class="zh">向量加法每次只算 1 次却搬 12 字节，\(\text{AI}=0.083\) 严重受限于带宽（仅发挥 0.39% 峰值）。</span></li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>Vector add \(c_i=a_i+b_i\) moves <strong>3</strong> arrays (12 B in FP32), not 2! Dot product \(\sum x_i y_i\) reads 2 arrays (8 B) for 2 FLOPs \(\implies \text{AI}=0.25\). :: 向量加是 2 读 1 写共 12 字节；点积是 2 读共 8 字节、2 FLOPs。</li>
+<li>A memory-bound kernel gains from <strong>higher bandwidth</strong>, not more cores. :: 受内存限制时加核心没用，必须提带宽或做数据复用。</li>
+</ul>
+</div></div>
+<h2 id="sec-11_gpu_arch-4" data-num="11.4">The 5 steps of a GPU computation <span class="prio p2">★★</span><span class="zh">GPU 计算的五个步骤</span></h2>
+<ol>
+<li>Load data into CPU memory \(\to\) 2. <strong>Copy CPU \(\to\) GPU (PCIe)</strong> \(\to\) 3. <strong>Execute kernel (parallel on GPU)</strong> \(\to\) 4. <strong>Copy GPU \(\to\) CPU (PCIe)</strong> \(\to\) 5. Use results on CPU.
+Only Step 3 is parallel; Steps 2 &amp; 4 cross the slow <strong>PCIe</strong> link (acting like serial overhead in Amdahl's law).<span class="zh">只有第 3 步核函数在 GPU 并行执行；第 2、4 步经过 PCIe 总线拷贝，类似 Amdahl 定律中的串行部分。</span></li>
+</ol>
+
+</section>
+<section class="chapter" id="ch-12_cuda-sec">
+<h1 id="ch-12_cuda"><span class="chnum">Chapter 12</span>The CUDA Programming Model <span class="title-cn">CUDA 编程模型</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Launch syntax &amp; legal block/grid<span class="zh">启动语法与合法尺寸</span></td>
+<td><code>k&lt;&lt;&lt;grid, block&gt;&gt;&gt;</code>; CC \(\ge 2.0\) max block \((1024,1024,64)\) &amp; total \(\le 1024\)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Global thread ID &amp; indexing bugs<span class="zh">全局线程号与越界/溢出</span></td>
+<td>\(\text{myID}=bT+t\); 2-D: <code>idx = row*W + col</code>; cast <code>uint64_t(blockIdx.x)*...</code></td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Warps, lane fill &amp; divergence<span class="zh">线程束、填充率与分支发散</span></td>
+<td>\(N_{\text{warp}}=N_{\text{blk}}\lceil T/32\rceil\); \(w=\lfloor t/32\rfloor, \ell=t\bmod 32\); branch costs sum of paths</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>SM occupancy vs lane fill<span class="zh">占用率 vs 通道填充率</span></td>
+<td>\(\text{Occ}=R W_{\text{blk}}/W_{\max}\); \(R=\min(\lfloor T_{\max}/B\rfloor, \lfloor\text{Reg}_{SM}/\text{Reg}_{\text{blk}}\rfloor, \lfloor\text{Smem}_{SM}/\text{Smem}_{\text{blk}}\rfloor)\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Qualifiers &amp; sync<span class="zh">限定符与同步</span></td>
+<td><code>__global__</code> (host\(\to\)dev, <code>void</code>), <code>__device__</code>, <code>__host__</code>; <code>cudaDeviceSynchronize()</code>, <code>__syncthreads()</code></td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-12_cuda-1" data-num="12.1">Grids, blocks &amp; legal launches <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">网格、线程块与合法启动尺寸</span></h2>
+<p><strong>Syntax:</strong> <code>kernel&lt;&lt;&lt;grid, block&gt;&gt;&gt;(args)</code> — <strong>blocks first, threads per block second</strong>. Omitted <code>dim3</code> axes default to <strong>1</strong>.<span class="zh">语法：<code>kernel&lt;&lt;&lt;网格块数, 每块线程数&gt;&gt;&gt;</code>，缺省维度默认为 <strong>1</strong>。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Thread count &amp; legal block limits<span class="zh">总线程数与块尺寸限制</span></span></div><div class="callout-body"><p><span class="math display">\[N_{\text{thr}} = (G_x G_y G_z)(B_x B_y B_z), \qquad B_x \le B_x^{\max},\; B_y \le B_y^{\max},\; B_z \le B_z^{\max},\; B_x B_y B_z \le B_{\text{tot}}^{\max}\]</span></p>
+<ul>
+<li><strong>CC \(\ge 2.0\):</strong> block max \((1024, 1024, 64)\), total \(\le 1024\). (CC 1.x: \((512, 512, 64)\), total \(\le 512\); grid \(x\le 65{,}535\) on CC 1.x/2.x, \(\le 2^{31}-1\) on CC \(\ge 3.x\); grid \(y,z\le 65{,}535\).) :: 四个条件必须<strong>同时</strong>满足。</li>
+</ul>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li>Block <code>(16, 16, 8)</code> has every axis within limits, but \(16\cdot 16\cdot 8 = 2048 &gt; 1024 \implies\) <strong>illegal</strong>. Block <code>(1, 1, 65)</code> \(\implies\) <strong>illegal</strong> (\(z &gt; 64\)). :: 轴上限和总数上限都必须满足。</li>
+</ul>
+</div></div>
+<h2 id="sec-12_cuda-2" data-num="12.2">Global thread ID &amp; 2-D indexing <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">全局线程编号与二维索引</span></h2>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Global ID (\(\text{myID}\)) &amp; 2-D element index<span class="zh">全局 ID 与二维下标</span></span></div><div class="callout-body"><p><span class="math display">\[\text{myID} = b\,T + t, \qquad b = b_z G_x G_y + b_y G_x + b_x, \qquad T = B_x B_y B_z, \qquad t = t_z B_x B_y + t_y B_x + t_x\]</span>
+<span class="math display">\[\text{col} = \text{blockIdx.x}\cdot\text{blockDim.x} + \text{threadIdx.x},\quad \text{row} = \text{blockIdx.y}\cdot\text{blockDim.y} + \text{threadIdx.y},\quad \text{idx} = \text{row}\cdot W + \text{col}\]</span></p>
+<ul>
+<li>Unused sizes = <strong>1</strong>, unused indices = <strong>0</strong>. Check bounds: <code>if (id &lt; n)</code> or <code>if (row &lt; H &amp;&amp; col &lt; W)</code>. :: 未用维度尺寸取 1、下标取 0；必须加越界保护。</li>
+</ul>
+<p>[!EXAMPLE] 3-D ID trace (<code>grid(4,3,2), block(3,2,2)</code>, <code>blockIdx=(2,1,1)</code>, <code>threadIdx=(1,1,1)</code>) :: 三维编号计算
+\(b = 1\cdot(4\cdot 3) + 1\cdot 4 + 2 = 18\); \(T = 3\cdot 2\cdot 2 = 12\); \(t = 1\cdot(3\cdot 2) + 1\cdot 3 + 1 = 10 \implies \text{myID} = 18\cdot 12 + 10 = 226\).<span class="zh">先算线性块号 \(b\)，再算块内线程数 \(T\) 和局部号 \(t\)，最后 \(bT+t\)。</span></p>
+<p>[!EXAM] Traps :: 易错点</p>
+<ul>
+<li><strong>32-bit overflow:</strong> <code>blockIdx.x * blockDim.x</code> overflows at \(2^{32}\) even if assigned to <code>uint64_t</code>. Fix: cast the <strong>first operand</strong>: <code>uint64_t(blockIdx.x) * blockDim.x + threadIdx.x</code>. :: 必须把第一个乘数强转为 <code>uint64_t</code>，否则乘法仍按 32 位溢出。</li>
+</ul>
+</div></div>
+<h2 id="sec-12_cuda-3" data-num="12.3">Warps, lane fill &amp; divergence <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">线程束、通道填充率与分支发散</span></h2>
+<p><strong>One-line intuition:</strong> Each block is sliced into <strong>warps of 32 threads</strong> (warps never cross blocks); a branch (<code>if/else</code>) only serializes a warp when lanes <em>inside the same warp</em> disagree.<span class="zh">一句话直觉：每个块独立按 32 个线程切成 warp（绝不跨块）；只有当<strong>同一个 warp 内</strong>的线程走不同分支时，才需要串行执行两条路径。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Warps, lane fill &amp; thread's warp/lane<span class="zh">Warp 数、填充率与定位</span></span></div><div class="callout-body"><p><span class="math display">\[W_{\text{blk}} = \left\lceil\frac{T}{32}\right\rceil,\quad N_{\text{warp}} = N_{\text{blk}}\left\lceil\frac{T}{32}\right\rceil,\quad \text{lane fill} = \frac{N_{\text{thr}}}{32\,N_{\text{warp}}},\quad w = \left\lfloor\frac{t}{32}\right\rfloor,\quad \ell = t \bmod 32\]</span></p>
+<ul>
+<li>\(w,\ell\) use <strong>local ID \(t\)</strong>, <strong>not</strong> \(\text{myID}\bmod 32\) (which fails whenever \(T\) is not a multiple of 32). :: \(w\) 和 \(\ell\) 必须用块内编号 \(t\) 计算，不能用全局 \(\text{myID}\)。</li>
+</ul>
+<p>[!EXAMPLE] <code>grid(4,3,2), block(3,2)</code> :: Warp 与填充率计算
+\(N_{\text{blk}}=24\), \(T=6\), \(N_{\text{thr}}=144\). \(W_{\text{blk}}=\lceil 6/32\rceil=1 \implies N_{\text{warp}}=24\) warps (26 idle lanes each).
+Lane fill \(= 144 / (24\cdot 32) = 18.75\%\). (Wrong: \(\lceil 144/32\rceil = 5\).)<span class="zh">切记按块向上取整，不能把总线程数直接除以 32。</span></p>
+</div></div>
+<h2 id="sec-12_cuda-4" data-num="12.4">SM scheduling &amp; occupancy <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">SM 调度与占用率</span></h2>
+<p><strong>One-line intuition:</strong> <strong>Occupancy</strong> = active warps on SM \(\div\) max warps on SM; <strong>resident blocks \(R\)</strong> is limited by the tightest of threads, registers, and shared memory.<span class="zh">一句话直觉：占用率看 SM 上驻留了多少 warp（受线程数、寄存器、共享内存三者中最紧的资源限制）；<strong>通道填充率 \(\ne\) 占用率</strong>。</span></p>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Occupancy<span class="zh">占用率公式</span></span></div><div class="callout-body"><p><span class="math display">\[\text{Occupancy} = \frac{R\,W_{\text{blk}}}{W_{\max}}, \qquad R = \min\!\left(\left\lfloor\frac{T_{\max}}{B}\right\rfloor,\; \left\lfloor\frac{\text{Reg}_{SM}}{\text{Reg}_{\text{blk}}}\right\rfloor,\; \left\lfloor\frac{\text{Smem}_{SM}}{\text{Smem}_{\text{blk}}}\right\rfloor\right)\]</span></p>
+<p>[!EXAMPLE] Occupancy (\(T_{\max}=2048\) [64 warps], \(\text{Reg}_{SM}=65536\), \(\text{Smem}_{SM}=48\text{ KB}\); \(B=256\), 40 reg/thr, \(12\text{ KB/blk}\)) :: 占用率计算
+Threads: \(\lfloor 2048/256\rfloor = 8\); Registers: \(\lfloor 65536/(40\cdot 256)\rfloor = \lfloor 6.4\rfloor = 6\); Smem: \(\lfloor 48/12\rfloor = 4\).
+\(R = \min(8, 6, 4) = 4\) blocks \(\implies\) \(4\times 8 = 32\) active warps \(\implies \text{Occupancy} = 32/64 = 50\%\) (limited by shared memory).<span class="zh">三个上限分别向下取整再取最小值，得到驻留块数 \(R=4\)，占用率 50%。</span></p>
+</div></div>
+<h2 id="sec-12_cuda-5" data-num="12.5">Qualifiers &amp; synchronization <span class="prio p2">★★</span><span class="zh">函数限定符与同步</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Qualifier<span class="zh">限定符</span></th>
+<th>Runs on<span class="zh">运行端</span></th>
+<th>Called from<span class="zh">调用端</span></th>
+<th>Notes<span class="zh">备注</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__global__</code></td>
+<td>Device</td>
+<td>Host (or dev CC \(\ge 3.5\))</td>
+<td>Kernel; <strong>must return <code>void</code></strong>; async launch!<span class="zh">核函数必须返回 <code>void</code>，异步启动</span></td>
+</tr>
+<tr>
+<td><code>__device__</code></td>
+<td>Device</td>
+<td>Device only</td>
+<td>Helper function on GPU<span class="zh">只能被核函数/设备函数调用</span></td>
+</tr>
+<tr>
+<td><code>__host__</code></td>
+<td>Host</td>
+<td>Host</td>
+<td>Default C function<span class="zh">普通主机函数</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><code>cudaDeviceSynchronize()</code>: host waits until kernel finishes (flushes device <code>printf</code>). <code>__syncthreads()</code>: barrier for <strong>threads inside one block</strong> only (never synchronizes across blocks!). :: <code>cudaDeviceSynchronize</code> 让主机等核函数结束；<code>__syncthreads()</code> 只同步<strong>同一线程块内</strong>的线程。</li>
+</ul>
+
+</section>
+<section class="chapter" id="ch-13_gpu_memory-sec">
+<h1 id="ch-13_gpu_memory"><span class="chnum">Chapter 13</span>GPU Memory: Spaces, Coalescing &amp; Bank Conflicts <span class="title-cn">GPU 存储：存储空间、合并访存与 Bank 冲突</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Memory spaces: scope vs placement<span class="zh">存储空间（作用域 vs 物理位置）</span></td>
+<td>Only <strong>registers</strong> and <strong>shared memory</strong> are on-chip; <strong>local</strong> = thread scope, <strong>off-chip</strong> device memory</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Coalesced global memory<span class="zh">全局内存合并访存</span></td>
+<td>Adjacent floats: 4 sectors (128 B), 100%; stride-8: 32 sectors (1024 B), 12.5%</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Shared memory bank conflicts<span class="zh">共享内存 Bank 冲突</span></td>
+<td>32 banks, \(\text{bank} = \text{word addr}\bmod 32\); pad <code>tile[32][33]</code> fixes column conflict</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Bandwidth &amp; memory-bound time<span class="zh">带宽与受内存限制时间</span></td>
+<td>\(t_{\min}=B/BW_{\text{peak}}\), \(BW_{\text{eff}}=B/t_{\text{meas}}\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Register pressure &amp; spills<span class="zh">寄存器压力与溢出</span></td>
+<td>\(W_{\text{reg}}=\lfloor R_{SM}/(32r)\rfloor\); \(&gt;255\) regs/thread spills to slow local memory</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-13_gpu_memory-1" data-num="13.1">Memory spaces: scope vs placement <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">存储空间：作用域 vs 物理位置</span></h2>
+<p><strong>One-line intuition:</strong> <strong>Scope</strong> (who can access it) \(\neq\) <strong>Placement</strong> (where it physically sits); only <strong>registers</strong> and <strong>shared memory</strong> are fast on-chip SRAM — <strong>local memory</strong> is private to 1 thread, yet sits <strong>off-chip</strong> in slow DRAM!<span class="zh">一句话直觉：<strong>作用域</strong>（谁能访问）和<strong>物理位置</strong>（放在哪）是两回事；只有<strong>寄存器</strong>和<strong>共享内存</strong>在片上（快），<strong>Local 内存</strong>虽归单线程私有，却在<strong>片外显存</strong>（慢）。</span></p>
+<p><img src="img/Lec16/p23.png#crop=0.07,0.30,0.93,0.82" alt="GPU memory hierarchy" /></p>
+<div class="tw"><table>
+<thead><tr>
+<th>Space<span class="zh">存储空间</span></th>
+<th>Physical placement<span class="zh">物理位置</span></th>
+<th>Scope (who accesses)<span class="zh">作用域</span></th>
+<th>Notes<span class="zh">备注</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Registers</strong><span class="zh">寄存器</span></td>
+<td><strong>On-chip</strong> register file<span class="zh">片上</span></td>
+<td>1 thread<span class="zh">单线程</span></td>
+<td>Fastest; compiler spills if \(&gt;255\)/thread<span class="zh">最快</span></td>
+</tr>
+<tr>
+<td><strong>Shared</strong> (<code>__shared__</code>)</td>
+<td><strong>On-chip</strong> SRAM<span class="zh">片上</span></td>
+<td>Thread block<span class="zh">线程块</span></td>
+<td>User-managed tile reuse; needs <code>__syncthreads()</code><span class="zh">显式复用</span></td>
+</tr>
+<tr>
+<td><strong>Local</strong></td>
+<td><strong>Off-chip</strong> device DRAM (cached)<span class="zh">片外显存</span></td>
+<td>1 thread<span class="zh">单线程</span></td>
+<td>Spilled registers, runtime-indexed thread arrays<span class="zh">溢出或局部数组</span></td>
+</tr>
+<tr>
+<td><strong>Global</strong></td>
+<td><strong>Off-chip</strong> HBM/GDDR (L1/L2 cached)<span class="zh">片外显存</span></td>
+<td>All threads (grid)<span class="zh">全局</span></td>
+<td>Main GPU memory<span class="zh">主显存</span></td>
+</tr>
+<tr>
+<td><strong>Constant / Texture</strong></td>
+<td><strong>Off-chip</strong> device DRAM + special cache<span class="zh">片外 + 专用缓存</span></td>
+<td>All threads (read-only)<span class="zh">全局只读</span></td>
+<td>Host updates constant memory<span class="zh">主机写入、核函数只读</span></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-13_gpu_memory-2" data-num="13.2">Coalesced global-memory access <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">全局内存合并访存</span></h2>
+<p><strong>One-line intuition:</strong> Device memory delivers data in <strong>32-byte sectors</strong>. When 32 lanes of a warp read 32 adjacent 4-byte floats (<code>a[t]</code>), all 128 B fit into <strong>4 sectors (100% efficiency)</strong>; striding by 8 floats (<code>a[8*t]</code>) touches <strong>32 sectors (1024 B, 12.5%)</strong>.<span class="zh">一句话直觉：显存以 <strong>32 字节扇区</strong>为单位传输。一个 warp 的 32 个线程读连续 4 字节 float（<code>a[t]</code>），128 B 刚好占 <strong>4 个扇区（100% 效率）</strong>；步长 8（<code>a[8*t]</code>）则分散到 <strong>32 个扇区（12.5%）</strong>。</span></p>
+<p><img src="img/Lec16/p29.png#crop=0.07,0.31,0.93,0.82" alt="Coalesced vs strided access" /></p>
+<h2 id="sec-13_gpu_memory-3" data-num="13.3">Shared memory &amp; bank conflicts <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">共享内存与 Bank 冲突</span></h2>
+<p><strong>One-line intuition:</strong> Shared memory has <strong>32 banks</strong> (\(\text{bank} = \text{word address}\bmod 32\)). If \(n\) lanes read <strong>different words</strong> in the same bank, access serializes into \(n\) passes (\(n\)-way conflict); reading the <strong>same word</strong> is a free broadcast.<span class="zh">一句话直觉：共享内存有 32 个 Bank（\(\text{bank}=\text{字地址}\bmod 32\)）。多条通道读同一 Bank 的<strong>不同字</strong>会串行化（\(n\) 路冲突）；读<strong>同一个字</strong>则是免费广播。</span></p>
+<pre><code class="language-cuda">__shared__ float tile[32][33];   // +1 column padding removes 32-way bank conflict!
+</code></pre>
+<ul>
+<li><strong>Unpadded <code>tile[32][32]</code> column read:</strong> word address \(= 32r + c \implies \text{bank} = c\bmod 32\) (independent of row \(r\)) \(\implies\) all 32 lanes hit 1 bank \(\implies\) <strong>32-way conflict</strong>.</li>
+<li><strong>Padded <code>tile[32][33]</code> column read:</strong> word address \(= 33r + c \implies \text{bank} = (r + c)\bmod 32 \implies\) 32 distinct banks \(\implies\) <strong>1 pass (conflict-free)</strong>. Cost: 128 B extra.<span class="zh">加 1 列填充后行跨度变为 33，列访问时 32 个线程落入 32 个不同 Bank，冲突消除。</span></li>
+</ul>
+<h2 id="sec-13_gpu_memory-4" data-num="13.4">Bandwidth, memory-bound time &amp; register pressure <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">带宽、受内存限制时间与寄存器压力</span></h2>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Memory-bound time, effective bandwidth &amp; register warp limit<span class="zh">访存时间下界、有效带宽与寄存器限制</span></span></div><div class="callout-body"><p><span class="math display">\[t_{\min} = \frac{B}{BW_{\text{peak}}}, \qquad BW_{\text{eff}} = \frac{B}{t_{\text{measured}}}, \qquad W_{\text{reg}} = \left\lfloor\frac{R_{SM}}{32\,r}\right\rfloor\]</span></p>
+<ul>
+<li>\(B\): total bytes read + written; \(BW_{\text{peak}}\): peak HBM bandwidth (e.g. 4.8 TB/s on H200); \(BW_{\text{eff}} \le BW_{\text{peak}}\). :: \(B\) 为读写总字节数；有效带宽不能超过峰值。</li>
+<li>\(R_{SM}\): 32-bit registers/SM (65,536); \(r\): registers/thread (max 255, else <strong>spills</strong> to local memory). :: 每线程最多 255 个寄存器，超出则溢出到本地内存。</li>
+</ul>
+<p>[!EXAMPLE] <code>y[i] = a * x[i] + y[i]</code> (\(n=10^8\) FP32, \(BW_{\text{peak}}=8\text{ TB/s}\)) &amp; PCIe :: 访存受限与寄存器计算</p>
+<ul>
+<li>Per element: 2 FLOPs, 12 B (read <code>x</code>, read <code>y</code>, write <code>y</code>) \(\implies \text{AI}=2/12=0.167\). Total \(B=1.2\text{ GB}\).</li>
+<li>\(t_{\min} = 1.2\times 10^9 / (8\times 10^{12}) = 0.15\text{ ms}\). If measured \(t=0.25\text{ ms}\), \(BW_{\text{eff}} = 1.2\text{ GB}/0.25\text{ ms} = 4.8\text{ TB/s}\) (\(60\%\)).</li>
+<li><strong>PCIe 5.0 ×16:</strong> ~63 GB/s per direction (128 GB/s = bidirectional sum). Copying 1.2 GB over PCIe takes ~19 ms vs 0.15 ms kernel \(\implies\) <strong>keep data on GPU</strong>.<span class="zh">记住核函数启动是异步的，计时前必须同步；PCIe 单向约 63 GB/s，拷贝常远慢于核函数本身。</span></li>
+</ul>
+</div></div>
+</section>
+<section class="chapter" id="ch-14_gpu_gemm-sec">
+<h1 id="ch-14_gpu_gemm"><span class="chnum">Chapter 14</span>Tiled Matrix Multiplication on the GPU <span class="title-cn">GPU 上的分块矩阵乘法</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Naive GEMM work &amp; traffic<span class="zh">朴素 GEMM 运算量与访存</span></td>
+<td>\(2MNK\) FLOPs; naive AI \(=2K/(8K+4)\approx 0.25\) FLOP/byte</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Shared-memory tiling (<code>tiled16</code>)<span class="zh">共享内存分块</span></td>
+<td>2 <code>__syncthreads()</code> per stage; partial sum in register; loads cut by \(T\)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Tile AI &amp; A100 Roofline<span class="zh">分块算术强度与 A100 屋顶线</span></td>
+<td>\(\text{AI}=B_M B_N/[2(B_M+B_N)]=T/4\); A100 ridge \(=9.56\) FLOP/B (\(T\ge 39\))</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Conditional time bound<span class="zh">计算/访存时间下界</span></td>
+<td>\(t\ge\max(2MNK/P_{\text{peak}},\; \text{bytes}/B_{\text{HBM}})\)</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Stage smem &amp; SM occupancy<span class="zh">共享内存预算与占用率</span></td>
+<td>\(S=4B_K(B_M+B_N)\) B; \(R=\min(\text{threads, regs, smem})\)</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Register tiling (<code>reg128</code>), shapes &amp; Tensor Cores<span class="zh">寄存器分块与张量核心</span></td>
+<td>64 accumulators/thread; <code>As[32][129]</code> padding; \(\text{TFLOP/s}=2MNK/(\text{ms}\cdot 10^9)\)</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-14_gpu_gemm-1" data-num="14.1">Naive GEMM vs Shared-Memory Tiling <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">朴素 GEMM 与共享内存分块</span></h2>
+<p><strong>One-line intuition:</strong> The naive kernel computes 1 output per thread and reloads rows of \(A\) and columns of \(B\) from HBM every time (\(\text{AI}\approx 0.25\) FLOP/byte). <strong>Tiling</strong> loads a \(T\times T\) block of \(A\) and \(B\) into fast <code>__shared__</code> memory once per stage, cutting HBM loads by <strong>\(T\times\)</strong>.<span class="zh">一句话直觉：朴素核每线程算 1 个输出并重复从显存读行列（\(\text{AI}\approx 0.25\)）；分块核把 \(T\times T\) 子块先集体加载到片上共享内存复用，把显存读取量降低 <strong>\(T\) 倍</strong>。</span></p>
+<pre><code class="language-cuda">// tiled16: 16x16 block, 2 barriers per stage
+__shared__ float As[16][16], Bs[16][16];
+float sum = 0.0f;                                        // stays in register
+for (int k0 = 0; k0 &lt; K; k0 += 16) {
+    As[y][x] = (r&lt;M &amp;&amp; k0+x&lt;K) ? A[r*K + k0+x] : 0.0f;   // zero-fill ragged edges
+    Bs[y][x] = (k0+y&lt;K &amp;&amp; c&lt;N) ? B[(k0+y)*N + c] : 0.0f;
+    __syncthreads();                                     // Barrier 1: wait until tiles loaded
+    for (int kk = 0; kk &lt; 16; ++kk)
+        sum = fmaf(As[y][kk], Bs[kk][x], sum);
+    __syncthreads();                                     // Barrier 2: wait until all finish reading
+}
+if (r&lt;M &amp;&amp; c&lt;N) C[r*N + c] = sum;
+</code></pre>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li><strong>Barrier 1</strong> prevents reading half-loaded tiles; <strong>Barrier 2</strong> prevents fast warps from overwriting <code>As</code>/<code>Bs</code> with the next stage while slow warps still compute. :: 两个 <code>__syncthreads()</code> 缺一不可：先“写完再读”，后“读完再覆写”。</li>
+<li>All threads in the block must reach both barriers (so zero-fill with <code>?:</code> instead of skipping the load with <code>if</code>). :: 不能用 <code>if</code> 跳过边界线程，必须填 0 让所有线程都到达栅栏。</li>
+</ul>
+</div></div>
+<h2 id="sec-14_gpu_gemm-2" data-num="14.2">Tile Arithmetic Intensity, A100 Roofline &amp; Time Model <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">分块算术强度、A100 屋顶线与时间模型</span></h2>
+<div class="callout formula"><div class="callout-head"><span class="kind">Formula</span><span class="title">Tile AI, shared-memory stage size &amp; time bound (FP32)<span class="zh">分块 AI、共享内存与时间下界</span></span></div><div class="callout-body"><p><span class="math display">\[\text{AI} = \frac{2B_M B_N B_K}{4B_K(B_M + B_N)} = \frac{B_M B_N}{2(B_M + B_N)} \;\Big(= \frac{T}{4}\text{ if square}\Big), \qquad S = 4B_K(B_M + B_N)\text{ bytes}\]</span>
+<span class="math display">\[t \ge \max\!\left(\frac{2MNK}{P_{\text{peak}}},\; \frac{\text{bytes}}{B_{\text{HBM}}}\right), \qquad \text{TFLOP/s} = \frac{2MNK}{\text{ms}\cdot 10^9}\]</span></p>
+<ul>
+<li>\(B_K\) <strong>cancels out</strong> in AI (deeper \(B_K\) cuts stages \(K/B_K\), not AI). :: \(B_K\) 在 AI 中被约掉，只影响阶段数和共享内存大小。</li>
+<li><strong>A100 FP32:</strong> \(P_{\text{peak}}=19.5\text{ TFLOP/s}\), \(B_{\text{HBM}}=2.039\text{ TB/s} \implies\) ridge point \(=19.5/2.039=9.56\text{ FLOP/B}\) (needs \(T/4 \ge 9.56 \implies T\ge 39\)). :: A100 FP32 脊点为 9.56。</li>
+</ul>
+</div></div>
+<p><img src="img/Lec17/p41.png#crop=0.03,0.30,0.96,0.90" alt="A100 FP32 Roofline" /></p>
+<div class="callout example"><div class="callout-head"><span class="kind">Worked Example</span><span class="title">\(4096^3\) FP32 GEMM on A100 (\(2\cdot 4096^3 = 137.44\text{ GFLOP}\))<span class="zh">A100 时间下界计算</span></span></div><div class="callout-body"><ul>
+<li>Compute bound: \(t_{\text{compute}} = 137.44\text{ GFLOP} / 19.5\text{ TFLOP/s} = 7.05\text{ ms}\).</li>
+<li><strong>\(16\times 16\) tile</strong> (\(\text{AI}=4 &lt; 9.56\)): \(P_{\text{att}} = 2.039\cdot 4 = 8.16\text{ TFLOP/s}\) (<strong>memory-bound</strong>). Bytes \(= 8\cdot 4096^3/16 + 4\cdot 4096^2 = 32.0625\text{ GiB} = 3.443\times 10^{10}\text{ B} \implies t_{\text{mem}} = 16.88\text{ ms} \implies t = \max(7.05, 16.88) = 16.88\text{ ms}\).</li>
+<li><strong>\(128\times 128\) tile</strong> (\(\text{AI}=32 &gt; 9.56\)): \(t_{\text{mem}} = 2.14\text{ ms} &lt; 7.05\text{ ms} \implies\) <strong>compute-bound</strong> at \(7.05\text{ ms}\) (\(19.5\text{ TFLOP/s}\)).<span class="zh">注意单位陷阱：矩阵字节数是 <strong>GiB</strong> (\(2^{30}\))，带宽是 <strong>TB/s</strong> (\(10^{12}\))，先统一换成字节再相除！</span></li>
+</ul>
+</div></div>
+<h2 id="sec-14_gpu_gemm-3" data-num="14.3">SM Resource Budgets &amp; Register Tiling <span class="prio p2">★★</span><span class="zh">SM 资源预算与寄存器分块</span></h2>
+<ul>
+<li><strong>A100 SM limits:</strong> 108 SMs, 64 warps (2,048 threads)/SM, 65,536 32-bit regs/SM (max 255/thread), up to 164 KiB shared memory/SM (default 48 KiB/block unless opt-in). :: A100 单 SM 上限：64 warp、65536 寄存器、164 KiB 共享内存。</li>
+<li><strong><code>reg128</code> (\(128\times 128\times 32\) tile, \(16\times 16=256\) threads/block):</strong>
+<ul>
+<li>Each thread computes an <strong>\(8\times 8\) strided fragment = 64 accumulators</strong> in registers (<code>acc[8][8]</code>).</li>
+<li>Per \(k\)-step: loads 8 from <code>As</code> + 8 from <code>Bs</code> (16 loads) for \(8\times 8 = 64\) FMAs \(\implies\) <strong>4 FMAs per shared-memory load</strong> (vs 0.5 in <code>tiled16</code>).</li>
+<li><strong><code>As[32][129]</code> padding:</strong> prevents 32-way bank conflicts when threads write transposed <code>As[q%32][q/32]</code>.</li>
+<li><strong>Double buffering:</strong> 2 stages in smem (\(2\times 32.125 = 64.25\text{ KiB}\)) to overlap load of stage \(s+1\) with compute of stage \(s\).</li>
+</ul>
+</li>
+<li><strong>Grid &amp; Tensor Cores:</strong> \(\text{blocks} = \lceil M/128\rceil \times \lceil N/128\rceil\) (need \(\ge 108\) blocks to fill A100 SMs). A100 Tensor Cores reach <strong>312 TFLOP/s</strong> (FP16/BF16, ridge \(153\text{ FLOP/B}\)) via warp-level <code>wmma</code> (\(16\times 16\times 16\)).</li>
+<li><strong>Tiled Attention:</strong> \(QK^T\) and \(PV\) are GEMMs; Flash-style tiling keeps score tiles on-chip so the \(n\times n\) score matrix is never written to HBM.<span class="zh"><code>reg128</code> 让每线程算 64 个输出以提升寄存器复用（4 FMA/读），<code>As[32][129]</code> 消除 bank 冲突；Attention 分块避免把 \(n\times n\) 分数矩阵写回显存。</span></li>
+</ul>
+
+</section>
+<section class="chapter" id="ch-15_mpi-sec">
+<h1 id="ch-15_mpi"><span class="chnum">Chapter 15</span>MPI: Message Passing between Processes <span class="title-cn">MPI：进程间的消息传递</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Skeleton, compile &amp; run<span class="zh">程序骨架、编译与运行</span></td>
+<td><code>#include &quot;mpi.h&quot;</code>; <code>MPI_Init</code> … <code>MPI_Finalize</code>; <code>mpicc -g -Wall -o prog prog.c</code>; <code>mpiexec -n 4 ./prog</code></td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Communicator, size &amp; rank<span class="zh">通信子、进程数与编号</span></td>
+<td><code>MPI_COMM_WORLD</code>; ranks \(0\dots p-1\); <code>MPI_Comm_size(comm, &amp;sz)</code>, <code>MPI_Comm_rank(comm, &amp;rank)</code></td>
+</tr>
+<tr>
+<td>★★★</td>
+<td><code>MPI_Send</code> &amp; <code>MPI_Recv</code><span class="zh">发送与接收参数</span></td>
+<td><code>(buf, count, type, dest/src, tag, comm)</code> + <code>&amp;status</code> (or <code>MPI_STATUS_IGNORE</code>) in Recv</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td>Greetings program trace<span class="zh">Greetings 程序追踪</span></td>
+<td>Ranks \(1\dots p-1\) send <code>strlen(g)+1</code> chars to 0; rank 0 receives from <code>q=1..p-1</code> in order</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Shared vs distributed, <code>MPI_Status</code>, Trapezoid<span class="zh">内存模型、状态与梯形积分</span></td>
+<td><code>status.MPI_SOURCE</code>, <code>status.MPI_TAG</code>, <code>MPI_Get_count(&amp;status, type, &amp;cnt)</code>; <code>local_n = n/comm_sz</code></td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-15_mpi-1" data-num="15.1">Shared vs distributed memory <span class="prio p2">★★</span><span class="zh">共享内存 vs 分布式内存</span></h2>
+<div class="tw"><table>
+<thead><tr>
+<th>Model<span class="zh">模型</span></th>
+<th>Hardware<span class="zh">硬件</span></th>
+<th>API<span class="zh">编程接口</span></th>
+<th>How data moves<span class="zh">数据交互</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Shared memory</strong><span class="zh">共享内存</span></td>
+<td>All CPUs share <strong>one</strong> memory<span class="zh">所有 CPU 共享同一内存</span></td>
+<td>Pthreads, OpenMP</td>
+<td>Read/write shared variables (needs mutex/<code>critical</code>)<span class="zh">直接读写共享变量</span></td>
+</tr>
+<tr>
+<td><strong>Distributed memory</strong><span class="zh">分布式内存</span></td>
+<td>Each CPU has <strong>private</strong> memory<span class="zh">每个 CPU 独立内存</span></td>
+<td><strong>MPI</strong></td>
+<td>Explicit <strong>message passing</strong> (<code>MPI_Send</code> / <code>MPI_Recv</code>)<span class="zh">显式收发消息</span></td>
+</tr>
+</tbody>
+</table></div>
+<p><img src="img/Lec18/p3.png#crop=0.0,0.29,1.0,0.62" alt="Shared vs distributed memory" /></p>
+<h2 id="sec-15_mpi-2" data-num="15.2">Skeleton, communicators, size &amp; rank <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">程序骨架、通信子与进程编号</span></h2>
+<pre><code class="language-c">#include &quot;mpi.h&quot;
+#include &lt;stdio.h&gt;
+// Compile: mpicc -g -Wall -o mpi_hello mpi_hello.c   (without -o: defaults to a.out)
+// Run:     mpiexec -n 4 ./mpi_hello
+int main(int argc, char *argv[]) {
+    int comm_sz, my_rank;
+    MPI_Init(&amp;argc, &amp;argv);                   // 1st MPI call: setup (or NULL, NULL)
+    MPI_Comm_size(MPI_COMM_WORLD, &amp;comm_sz);  // out: total processes p (pass &amp;comm_sz)
+    MPI_Comm_rank(MPI_COMM_WORLD, &amp;my_rank);  // out: my rank in 0 .. p-1 (pass &amp;my_rank)
+    printf(&quot;Hello from process %d of %d\n&quot;, my_rank, comm_sz);
+    MPI_Finalize();                           // last MPI call: cleanup
+    return 0;
+}
+</code></pre>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li>MPI names are case-sensitive: <code>MPI_Init</code>, <code>MPI_Finalize</code> (capital <code>MPI_</code> + capital first letter). :: 严格区分大小写。</li>
+<li>Ranks run from <strong>\(0\) to \(p-1\)</strong> (never \(p\)). Both <code>Comm_size</code> and <code>Comm_rank</code> take pointers (<code>&amp;comm_sz</code>, <code>&amp;my_rank</code>). :: 编号从 0 到 \(p-1\)；输出参数传地址。</li>
+</ul>
+</div></div>
+<h2 id="sec-15_mpi-3" data-num="15.3"><code>MPI_Send</code>, <code>MPI_Recv</code> &amp; Greetings program <span class="prio p3"><span class="prio p2">★★</span>★</span><span class="zh">消息收发与 Greetings 追踪</span></h2>
+<pre><code class="language-c">MPI_Send(void* buf, int count, MPI_Datatype type, int dest,   int tag, MPI_Comm comm);
+MPI_Recv(void* buf, int size,  MPI_Datatype type, int source, int tag, MPI_Comm comm, MPI_Status* status_p);
+</code></pre>
+<ul>
+<li><strong>Common <code>MPI_Datatype</code>:</strong> <code>MPI_CHAR</code> (<code>signed char</code>), <code>MPI_INT</code>, <code>MPI_LONG</code>, <code>MPI_FLOAT</code>, <code>MPI_DOUBLE</code>, <code>MPI_BYTE</code>. :: 常见 MPI 类型。</li>
+<li><strong>Greetings trace (<code>mpiexec -n 4 ./mpi_hello</code>):</strong>
+<ul>
+<li>Ranks <code>1..comm_sz-1</code> format <code>greeting</code> and call <code>MPI_Send(greeting, strlen(greeting)+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);</code> (<code>+1</code> includes null terminator <code>'\0'</code>).</li>
+<li>Rank <code>0</code> prints its own line, then loops <code>q = 1 .. comm_sz-1</code> calling <code>MPI_Recv(greeting, MAX_STRING, MPI_CHAR, q, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);</code> and prints each \(\implies\) output always appears in rank order <code>0, 1, 2, 3</code> (<code>comm_sz - 1</code> sends &amp; receives total).<span class="zh">发送方填实际数据量（<code>strlen+1</code> 含 <code>'\0'</code>）；接收方填缓冲区上限 <code>MAX_STRING</code>；进程 0 按 <code>q=1..p-1</code> 顺序接收并打印，因此输出有序。</span></li>
+</ul>
+</li>
+</ul>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li><code>MPI_Send</code> has <strong>6</strong> args (<code>dest</code>, exact count <code>strlen+1</code>); <code>MPI_Recv</code> has <strong>7</strong> args (<code>source</code>, buffer capacity <code>MAX_STRING</code>, plus <code>status_p</code>). :: Send 6 个参数填实际长度，Recv 7 个参数填缓冲区大小。</li>
+</ul>
+</div></div>
+<h2 id="sec-15_mpi-4" data-num="15.4"><code>MPI_Status</code> &amp; Trapezoidal rule <span class="prio p2">★★</span><span class="zh">消息状态与 MPI 梯形积分</span></h2>
+<ul>
+<li><strong>Reading status:</strong> Declare <code>MPI_Status status;</code>, pass <code>&amp;status</code> to <code>MPI_Recv</code>, then read <code>status.MPI_SOURCE</code>, <code>status.MPI_TAG</code>, and call <code>MPI_Get_count(&amp;status, MPI_CHAR, &amp;count);</code> to get the actual received count. :: 用 <code>&amp;status</code> 接收后，通过 <code>MPI_Get_count</code> 查实际收到的数据量。</li>
+<li><strong>Trapezoidal rule with MPI:</strong> Every process computes <code>local_n = n / comm_sz</code>, <code>local_a = a + my_rank * local_n * h</code>, <code>local_b = local_a + local_n * h</code>, and <code>local_int = Trap(...)</code>. Ranks <code>!= 0</code> send <code>local_int</code> (<code>1, MPI_DOUBLE</code>) to <code>0</code>; rank <code>0</code> receives from <code>q = 1..comm_sz-1</code> and sums into <code>total_int</code>. :: 各进程算完局部积分后发给进程 0 汇总。</li>
+</ul>
+
+</section>
+<section class="chapter" id="ch-A_ku_hpc-sec">
+<h1 id="ch-A_ku_hpc"><span class="chnum">Appendix A</span>Slurm Cheat Sheet (KU HPC) <span class="title-cn">Slurm 作业调度速查</span></h1>
+<div class="callout note"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh">考点速览</span></span></div><div class="callout-body"><div class="tw"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>What can be asked<span class="zh">考点</span></th>
+<th>Key formula or fact<span class="zh">核心公式 / 结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★</td>
+<td>Slurm commands &amp; job scripts<span class="zh">命令与作业脚本</span></td>
+<td><code>sbatch</code>, <code>squeue</code>, <code>scancel</code>, <code>sacct</code>, <code>sinfo</code>, <code>srun</code>, <code>salloc</code>; <code>#SBATCH</code> must precede commands</td>
+</tr>
+<tr>
+<td>★</td>
+<td>Job arrays &amp; dependencies<span class="zh">作业数组与依赖</span></td>
+<td><code>--array=1-100%10</code> (100 tasks, max 10 concurrent); <code>afterok:ID</code> checks exit code 0</td>
+</tr>
+</tbody>
+</table></div></div>
+</div></div>
+<h2 id="sec-A_ku_hpc-1" data-num="A.1">Commands &amp; job scripts <span class="prio p2">★★</span><span class="zh">常用命令与作业脚本</span></h2>
+<ul>
+<li><strong>Login vs Compute nodes:</strong> Edit/submit on <strong>login node</strong>; never run heavy jobs there — Slurm schedules them onto <strong>compute nodes</strong>. (<code>--cpus-per-task=16</code> requests 16 cores.) :: 登录节点只做编辑和提交，计算由调度器分配到计算节点。</li>
+</ul>
+<div class="tw"><table>
+<thead><tr>
+<th>Command<span class="zh">命令</span></th>
+<th>What it does<span class="zh">作用</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sbatch script.sh</code></td>
+<td>Submit batch job, prints Job ID<span class="zh">提交批处理脚本</span></td>
+</tr>
+<tr>
+<td><code>squeue -u &quot;$USER&quot;</code></td>
+<td>List pending (<code>PD</code>) / running (<code>R</code>) jobs<span class="zh">查看排队或运行中作业</span></td>
+</tr>
+<tr>
+<td><code>scancel &lt;ID&gt;</code></td>
+<td>Cancel/kill job<span class="zh">取消作业</span></td>
+</tr>
+<tr>
+<td><code>sacct -j &lt;ID&gt;</code></td>
+<td>Accounting record of finished/active job<span class="zh">查看已完成/运行中作业记录</span></td>
+</tr>
+<tr>
+<td><code>sinfo -p prod</code></td>
+<td>Show partitions &amp; node states<span class="zh">查看分区和节点状态</span></td>
+</tr>
+<tr>
+<td><code>srun</code> / <code>salloc</code></td>
+<td>Run inside allocation / reserve interactive test<span class="zh">分配内启动 / 交互式申请</span></td>
+</tr>
+</tbody>
+</table></div>
+<pre><code class="language-bash">#!/bin/bash -l                         # -l loads login profile (needed for `module`)
+#SBATCH --job-name=bam_check           # name in squeue
+#SBATCH --partition=prod               # CPU partition
+#SBATCH --cpus-per-task=1              # cores per task
+#SBATCH --mem=4G                       # memory per node
+#SBATCH --time=00:30:00                # wall-time limit (killed after 30 min)
+#SBATCH --output=logs/check.%j.out     # %j = job ID; logs/ MUST exist beforehand!
+
+module load amd_9655_cpu miniconda     # commands start here -&gt; no #SBATCH allowed below!
+</code></pre>
+<div class="callout exam"><div class="callout-head"><span class="kind">Traps & Exam</span><span class="title">Traps<span class="zh">易错点</span></span></div><div class="callout-body"><ul>
+<li>Any <code>#SBATCH</code> line <strong>after</strong> the first shell command (e.g. <code>module load</code>) is <strong>silently ignored</strong>. :: <code>#SBATCH</code> 必须写在第一条命令之前。</li>
+<li>Slurm does <strong>not</strong> create the <code>--output</code> directory (<code>mkdir -p logs</code> before <code>sbatch</code>). :: 不会自动创建日志目录，需提前 <code>mkdir -p logs</code>。</li>
+<li><code>--array=1-100%10</code> runs 100 tasks (<code>$SLURM_ARRAY_TASK_ID</code>), at most 10 concurrently; <code>--dependency=afterok:ID</code> starts only if job <code>ID</code> exits with status 0. :: <code>afterok</code> 仅检查退出码为 0。</li>
+</ul>
+</div></div>
+</section>
+</main>
+<div id="lightbox" hidden><img alt=""></div>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/contrib/auto-render.min.js"></script>
+<script src="assets/hljs/highlight.min.js"></script>
+<script>
+// 把每个带译文的段落 / 列表项 / 单元格里的英文部分包进 span.en，供「仅中文」隐藏
+document.querySelectorAll("main :is(p, li, td) > span.zh:not(.inline)").forEach(zh => {
+  const en = document.createElement("span");
+  en.className = "en";
+  while (zh.parentNode.firstChild !== zh) en.appendChild(zh.parentNode.firstChild);
+  if (en.textContent.trim()) zh.parentNode.insertBefore(en, zh);
+  else while (en.firstChild) zh.parentNode.insertBefore(en.firstChild, zh);
+});
+
+if (window.renderMathInElement) {
+  renderMathInElement(document.body, {
+    delimiters: [{left: "\\[", right: "\\]", display: true}, {left: "\\(", right: "\\)", display: false}],
+    ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+    throwOnError: false
+  });
+}
+if (window.hljs) {
+  document.querySelectorAll("pre code").forEach(el => {
+    el.className = el.className.replace(/\blanguage-(cuda|cu)\b/, "language-cpp");
+    if (!/language-/.test(el.className)) el.classList.add("nohighlight");
+  });
+  hljs.highlightAll();
+}
+
+const lightbox = document.getElementById("lightbox");
+document.addEventListener("click", e => {
+  const link = e.target.closest("a.zoom");
+  if (!link) return;
+  e.preventDefault();
+  lightbox.querySelector("img").src = link.getAttribute("href");
+  lightbox.hidden = false;
+});
+lightbox.addEventListener("click", () => { lightbox.hidden = true; });
+document.addEventListener("keydown", e => { if (e.key === "Escape") lightbox.hidden = true; });
+
+document.getElementById("menu").addEventListener("click", () => document.body.classList.toggle("nav-open"));
+document.getElementById("nav").addEventListener("click", e => {
+  if (e.target.closest("a")) document.body.classList.remove("nav-open");
+});
+document.getElementById("totop").addEventListener("click", () => window.scrollTo({top: 0}));
+
+// 语言三档：双语 / 仅英文 / 仅中文。localStorage 里沿用旧键：on / off / only
+const zhToggle = document.getElementById("zhtoggle");
+const LANG = {on: "语言：双语", off: "语言：仅英文", only: "语言：仅中文"};
+let lang = "on";
+function setLang(mode) {
+  lang = LANG[mode] ? mode : "on";
+  document.body.classList.toggle("no-zh", lang === "off");
+  document.body.classList.toggle("zh-only", lang === "only");
+  zhToggle.textContent = LANG[lang];
+}
+try { setLang(localStorage.getItem("hpc-notes-zh")); } catch (e) { setLang("on"); }
+zhToggle.addEventListener("click", () => {
+  setLang({on: "off", off: "only", only: "on"}[lang]);
+  try { localStorage.setItem("hpc-notes-zh", lang); } catch (e) {}
+});
+
+const answers = document.getElementById("answers");
+answers.addEventListener("click", () => {
+  const all = [...document.querySelectorAll("main details")];
+  const open = all.some(d => !d.open);
+  all.forEach(d => { d.open = open; });
+  answers.textContent = open ? "收起全部答案" : "展开全部答案";
+});
+
+// 打印时展开全部答案，打印完恢复
+let closedBeforePrint = [];
+window.addEventListener("beforeprint", () => {
+  closedBeforePrint = [...document.querySelectorAll("main details:not([open])")];
+  closedBeforePrint.forEach(d => { d.open = true; });
+});
+window.addEventListener("afterprint", () => { closedBeforePrint.forEach(d => { d.open = false; }); });
+
+// 复习版：一键只看 ★★★ 小节（不记忆，刷新后恢复显示全部）
+const coreBtn = document.getElementById("coreonly");
+if (document.querySelector("section.chapter > h2 .prio")) {
+  coreBtn.hidden = false;
+  let coreOnly = false;
+  coreBtn.addEventListener("click", () => {
+    coreOnly = !coreOnly;
+    document.querySelectorAll("section.chapter").forEach(sec => {
+      let hide = false;
+      [...sec.children].forEach(el => {
+        if (el.tagName === "H2") {
+          const p = el.querySelector(".prio");
+          hide = coreOnly && !!p && !p.classList.contains("p3");
+          const nav = document.querySelector('.toc a[href="#' + el.id + '"]');
+          if (nav) nav.parentElement.classList.toggle("core-hide", hide);
+        }
+        if (el.tagName !== "H1") el.classList.toggle("core-hide", hide);
+      });
+    });
+    coreBtn.textContent = coreOnly ? "显示全部小节" : "只看 ★★★ 必考";
+    coreBtn.classList.toggle("on", coreOnly);
+  });
+}
+
+const links = new Map([...document.querySelectorAll(".toc a")].map(a => [a.getAttribute("href").slice(1), a]));
+const marks = [...document.querySelectorAll("section.chapter, h2[id]")].filter(el => links.has(el.id));
+let pending = false;
+function markActive() {
+  pending = false;
+  let current = null;
+  for (const el of marks) {
+    if (el.getBoundingClientRect().top < 120) current = el; else break;
+  }
+  links.forEach(a => a.classList.remove("active"));
+  if (current) {
+    const a = links.get(current.id);
+    a.classList.add("active");
+    const nav = document.getElementById("nav");
+    const r = a.getBoundingClientRect();
+    if (r.top < 80 || r.bottom > window.innerHeight - 20) nav.scrollTop += r.top - window.innerHeight / 3;
+  }
+}
+window.addEventListener("scroll", () => { if (!pending) { pending = true; requestAnimationFrame(markActive); } }, {passive: true});
+markActive();
+</script>
+</body>
+</html>
