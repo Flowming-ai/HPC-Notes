@@ -312,7 +312,7 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <button id="menu" class="tool" type="button">☰ 目录</button>
 <nav id="nav">
   <div class="brand">ECCE 738 考前极简版</div>
-  <div class="sub">更新于 2026-11-15 16:27</div>
+  <div class="sub">更新于 2026-11-15 17:38</div>
   <div class="tools">
     <button class="tool" id="zhtoggle" type="button">语言：双语</button>
     <button class="tool" id="answers" type="button">展开全部答案</button>
@@ -825,16 +825,7 @@ With \(B = 8\) and \(S = 4\): \(\text{block} = \lfloor a/8\rfloor\), \(\text{set
 <li><strong>Row-wise loop (<code class="nw">for j</code> innermost):</strong> each step moves forward by \(w\) bytes (e.g., 4 bytes for <code class="nw">int</code>), reading consecutive elements from the same cache block \(\implies\) <strong>high hit rate</strong>.<span class="zh"><strong>按行遍历（<code class="nw">for j</code> 在最内层）：</strong>每一步向前移动 \(w\) 字节（例如 <code class="nw">int</code> 为 4 字节），连续读取同一缓存块里的相邻元素 \(\implies\) <strong>命中率高</strong>。</span></li>
 <li><strong>Column-wise loop (<code class="nw">for i</code> innermost):</strong> each step jumps forward by \(N \times w\) bytes (an entire row). If \(N \times w \ge B\), every single access lands in a different cache block and uses only one element per block \(\implies\) <strong>poor spatial locality</strong>.<span class="zh"><strong>按列遍历（<code class="nw">for i</code> 在最内层）：</strong>每一步向前跳 \(N \times w\) 字节（整整一行）。若 \(N \times w \ge B\)，每次访问都落在不同的缓存块，每个块只用到一个元素 \(\implies\) <strong>空间局部性差</strong>。</span></li>
 </ul>
-<pre><code class="language-c">// Good spatial locality: stride = w bytes (reads consecutive addresses)
-for (i = 0; i &lt; M; i++)
-    for (j = 0; j &lt; N; j++)
-        sum += a[i][j];
-
-// Poor spatial locality: stride = N * w bytes (jumps one full row per step)
-for (j = 0; j &lt; N; j++)
-    for (i = 0; i &lt; M; i++)
-        sum += a[i][j];
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/PSET1/p3.png" title="点击看大图 Click to enlarge"><img src="img/PSET1/p3_c0.1114_0.6727_0.8863_0.8048.png" alt="Row-wise (left) and column-wise (right) sum of a 2-D array" loading="lazy"></a><figcaption><span class="en">Row-wise (left) and column-wise (right) sum of a 2-D array</span><span class="zh">按行（左）和按列（右）对二维数组求和</span></figcaption></figure></div>
 <h2 id="sec-03_architecture-3" data-num="3.3"><span class="en">Flynn's Taxonomy</span> <span class="prio p2">★★</span><span class="zh">Flynn 体系结构分类</span></h2>
 <p>Flynn's taxonomy classifies parallel computers by counting how many independent <strong>instruction streams</strong> and <strong>data streams</strong> are active at the same time (not by counting cores or threads).<span class="zh">Flynn 分类法按同时存在的<strong>指令流</strong>和<strong>数据流</strong>数量来划分计算机体系结构（不是按核心数或线程数）。</span></p>
 <div class="tw"><table>
@@ -1144,44 +1135,15 @@ for (j = 0; j &lt; N; j++)
 <p>Two threads may run <code class="nw">count++</code> at the same time, even on a single core, where the operating system (OS) switches between threads in short time slices. Their steps interleave, both read the old value and overwrite each other. This is a <strong>lost update</strong>, and the bug is a <strong>race condition</strong>.<span class="zh">两个线程可能同时执行 <code class="nw">count++</code>，单核上也会，因为操作系统（OS）以很短的时间片轮流切换线程。它们的步骤交错，两个线程读到同一个旧值并互相覆盖。这就是<strong>丢失更新</strong>，这种错误叫<strong>竞争条件</strong>（race condition）。</span></p>
 <div class="figs n1"><figure><a class="zoom" href="img/Lec04/p3.png" title="点击看大图 Click to enlarge"><img src="img/Lec04/p3_c0.05_0.235_1_0.83.png" alt="Lost update interleaving" loading="lazy"></a><figcaption><span class="en">Lost update interleaving</span><span class="zh">丢失更新的交错过程</span></figcaption></figure></div>
 <p>A <strong>mutex</strong> (mutual exclusion lock; <code class="nw">pthread_mutex_lock</code> / <code class="nw">unlock</code>) lets only one thread at a time into the <strong>critical section</strong>, the code that touches the shared variable. All threads must use the <strong>same</strong> mutex. Locking on every match is correct:<span class="zh"><strong>互斥锁</strong>（<code class="nw">pthread_mutex_lock</code> / <code class="nw">unlock</code>）一次只允许一个线程进入<strong>临界区</strong>，即访问共享变量的那段代码。所有线程必须使用<strong>同一把</strong>锁。每次命中都加锁是正确的：</span></p>
-<pre><code class="language-c">void count3s_thread(int id) {
-    int i;
-    int length_per_thread = length / t;
-    int start = id * length_per_thread;
-
-    for (i = start; i &lt; (start + length_per_thread); i++) {
-        if (3 == array[i]) {
-            mutex_lock(m);          // one lock for every 3 found
-            count++;
-            mutex_unlock(m);
-        }
-    }
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec04/p4.png" title="点击看大图 Click to enlarge"><img src="img/Lec04/p4_c0.0793_0.1636_0.92_0.8809.png" alt="count3s with a lock for every 3 found" loading="lazy"></a><figcaption><span class="en">count3s with a lock for every 3 found</span><span class="zh">每找到一个 3 就加一次锁的 count3s</span></figcaption></figure></div>
 <p>But it is <strong>slower than serial</strong> (\(S &lt; 1\), <a class="xref" href="#sec-02_performance-1">§2.1</a>), for three reasons:<span class="zh">但它<strong>比串行还慢</strong>（\(S &lt; 1\)，<a class="xref" href="#sec-02_performance-1">§2.1</a>），原因有三点：</span></p>
 <ol>
 <li><strong>Mutex overhead:</strong> locking and unlocking takes far more CPU cycles than <code class="nw">count++</code>.<span class="zh"><strong>锁的开销：</strong>加锁和解锁消耗的 CPU 周期远多于 <code class="nw">count++</code> 本身。</span></li>
 <li><strong>Serialization:</strong> threads cannot run the critical section concurrently.<span class="zh"><strong>串行化：</strong>各线程无法并发执行临界区。</span></li>
 <li><strong>Lock contention:</strong> threads waste time waiting for the lock.<span class="zh"><strong>锁竞争：</strong>线程把时间浪费在等待锁上。</span></li>
 </ol>
-<p>The fast solution is a <strong>private counter</strong>. Lock calls drop from \(H\) (the number of matches, i.e., array elements equal to 3) to \(t\) (the number of threads):<span class="zh">快速的办法是<strong>私有计数器</strong>。加锁次数从 \(H\)（命中次数，即等于 3 的数组元素个数）降到 \(t\)（线程数）：</span></p>
-<pre><code class="language-c">void count3s_thread(int id) {
-    int i;
-    int length_per_thread = length / t;
-    int start = id * length_per_thread;
-    int local = 0;                  // private: on this thread's stack
-
-    for (i = start; i &lt; (start + length_per_thread); i++) {
-        if (3 == array[i]) {
-            local++;                // no shared write, no lock
-        }
-    }
-
-    mutex_lock(m);                  // one short critical section per thread
-    count += local;
-    mutex_unlock(m);
-}
-</code></pre>
+<p>The fast solution is a <strong>private counter</strong>: each thread counts the 3s of its own block in a local count, without locks, and adds it to the shared count once at the end, under the lock. Lock calls drop from \(H\) (the number of matches, i.e., array elements equal to 3) to \(t\) (the number of threads):<span class="zh">快速的办法是<strong>私有计数器</strong>：每个线程把自己那一块里的 3 数到一个局部计数里，不加锁；最后加锁一次，把它加到共享计数上。加锁次数从 \(H\)（命中次数，即等于 3 的数组元素个数）降到 \(t\)（线程数）：</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec03/p17.png" title="点击看大图 Click to enlarge"><img src="img/Lec03/p17_c0.058_0.1084_0.924_0.9067.png" alt="Each thread counts its own block; the counts are combined once at the end" loading="lazy"></a><figcaption><span class="en">Each thread counts its own block; the counts are combined once at the end</span><span class="zh">每个线程只数自己那一块，最后合并一次</span></figcaption></figure></div>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Slowdown</span><span class="zh">减速比</span></span></div><div class="callout-body"><p class="inwords"><strong>In words:</strong> slowdown = time with \(t\) threads ÷ serial time. It is the inverse of the speedup.<span class="zh"><strong>一句话：</strong>减速比 = \(t\) 个线程的耗时 ÷ 串行耗时，它是加速比的倒数。</span>
 <span class="math display">\[\text{slowdown} = \frac{T_t}{T_{\text{serial}}} = \frac{1}{S}\]</span></p>
 <ul>
@@ -1196,22 +1158,8 @@ for (j = 0; j &lt; N; j++)
 </div></div>
 <h2 id="sec-04_threads-2" data-num="4.2"><span class="en">The Pthreads API</span> <span class="prio p3">★★★</span><span class="zh">Pthreads 编程接口</span></h2>
 <p><strong>Pthreads</strong> (POSIX threads) is the C thread library of POSIX, the standard interface of Unix-like operating systems. Its API (application programming interface) is the set of functions the library offers. One loop creates all threads, a second loop joins them. Never call <code class="nw">pthread_join</code> inside the <code class="nw">pthread_create</code> loop: each thread would finish before the next one starts, and the run becomes serial.<span class="zh"><strong>Pthreads</strong>（POSIX 线程）是 POSIX（类 Unix 系统的标准接口）中供 C 语言使用的线程库。API（应用程序编程接口）就是库提供的一组函数。第一个循环创建所有线程，第二个循环等待它们结束。切勿在 <code class="nw">pthread_create</code> 的循环里调用 <code class="nw">pthread_join</code>：那样每个线程都在下一个线程开始前结束，运行就变成了串行。</span></p>
-<pre><code class="language-c">#include &lt;pthread.h&gt;
-// Compile: gcc -g -Wall -o pth_hello pth_hello.c -lpthread
-
-void *Hello(void *rank) {                  // signature MUST be void* f(void*)
-    long my_rank = (long) rank;            // cast through long for 64-bit pointer safety
-    printf(&quot;Hello from thread %ld of %d\n&quot;, my_rank, thread_count);
-    return NULL;
-}
-
-// In main:
-for (long t = 0; t &lt; thread_count; t++)
-    pthread_create(&amp;thread_handles[t], NULL, Hello, (void*) t); // passes &amp;handle and function pointer
-for (long t = 0; t &lt; thread_count; t++)
-    pthread_join(thread_handles[t], NULL);                      // passes handle BY VALUE
-</code></pre>
-<p>Two details: <code class="nw">pthread_create</code> takes <strong><code class="nw">&amp;thread_handles[t]</code></strong> (a pointer, so it can write the new handle) and the function name <code class="nw">Hello</code> (no parentheses), whereas <code class="nw">pthread_join</code> takes <strong><code class="nw">thread_handles[t]</code></strong> by value.<span class="zh">两个细节：<code class="nw">pthread_create</code> 传句柄指针 <code class="nw">&amp;thread_handles[t]</code> 和函数名 <code class="nw">Hello</code>（不加括号），而 <code class="nw">pthread_join</code> 按值传句柄 <code class="nw">thread_handles[t]</code>。</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec04/p7.png" title="点击看大图 Click to enlarge"><img src="img/Lec04/p7_c0.0733_0.112_0.976_0.944.png" alt="Creating and joining the threads (in main) and the thread function Hello" loading="lazy"></a><figcaption><span class="en">Creating and joining the threads (in main) and the thread function Hello</span><span class="zh">创建和等待线程的两个循环（在 main 中）以及线程函数 Hello</span></figcaption></figure></div>
+<p>Compile with <code>gcc -g -Wall -o pth_hello pth_hello.c -lpthread</code>; <code class="nw">-lpthread</code> links the Pthreads library. Two details: <code class="nw">pthread_create</code> takes <strong><code class="nw">&amp;thread_handles[thread]</code></strong> (a pointer, so it can write the new handle) and the function name <code class="nw">Hello</code> (no parentheses), whereas <code class="nw">pthread_join</code> takes <strong><code class="nw">thread_handles[thread]</code></strong> by value.<span class="zh">编译命令是 <code>gcc -g -Wall -o pth_hello pth_hello.c -lpthread</code>，<code class="nw">-lpthread</code> 表示链接 Pthreads 库。两个细节：<code class="nw">pthread_create</code> 传句柄指针 <code class="nw">&amp;thread_handles[thread]</code> 和函数名 <code class="nw">Hello</code>（不加括号），而 <code class="nw">pthread_join</code> 按值传句柄 <code class="nw">thread_handles[thread]</code>。</span></p>
 <h2 id="sec-04_threads-3" data-num="4.3"><span class="en">Block Partition</span> <span class="prio p2">★★</span><span class="zh">均匀块划分</span></h2>
 <p>When \(N\) is not divisible by \(t\), integer division <code class="nw">N / t</code> drops the remainder elements. Round the block size <strong>up</strong> with \(\lceil N/t \rceil\) and clamp the last end with \(\min(\dots, N)\).<span class="zh">当 \(N\) 不能被 \(t\) 整除时，整除 <code class="nw">N / t</code> 会漏掉余数元素。块大小要向上取整 \(\lceil N/t \rceil\)，再用 \(\min(\dots, N)\) 截断最后的结束位置。</span></p>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Block partition of \(N\) elements over \(t\) threads</span><span class="zh">\(N\) 个元素在 \(t\) 个线程间的块划分公式</span></span></div><div class="callout-body"><p class="inwords"><strong>In words:</strong> block size = \(N/t\) rounded up; thread \(r\) starts after \(r\) whole blocks and ends one block later, but never past the last element.<span class="zh"><strong>一句话：</strong>块大小 = \(N/t\) 向上取整；线程 \(r\) 从 \(r\) 个整块之后开始，一块之后结束，但不会越过最后一个元素。</span>
@@ -1382,14 +1330,7 @@ void *work(void *arg) {
 <li>\(N\): array length; it is not in the formula but sets \(H\) (\(H\) = share of threes × \(N\)).<span class="zh">\(N\)：数组长度；它不在公式里，但决定 \(H\)（\(H\) = 3 所占比例 × \(N\)）。</span></li>
 </ul>
 </div></div>
-<pre><code class="language-python">def count_block_reduced(data, start, stop, count):
-    local = 0
-    for i in range(start, stop):
-        if data[i] == 3:
-            local += 1                 # private to this process: no lock needed
-    with count.get_lock():             # lock ONCE per process (t locks total)
-        count.value += local
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec04/p18.png" title="点击看大图 Click to enlarge"><img src="img/Lec04/p18_c0.072_0.1084_0.9287_0.9076.png" alt="Accumulate locally, then lock once" loading="lazy"></a><figcaption><span class="en">Accumulate locally, then lock once</span><span class="zh">先在本地累加，最后只加锁一次</span></figcaption></figure></div>
 <div class="callout example"><div class="callout-head"><span class="kind"><span class="en">Worked Example</span><span class="zo">例题</span></span><span class="title"><span class="en">Lock count reduction</span><span class="zh">加锁次数的减少</span></span></div><div class="callout-body"><p>An array of \(N = 4 \times 10^6\) integers contains 5% threes (\(H = 200{,}000\) matches), processed by \(t = 8\) processes:<span class="zh">一个含 \(N = 4 \times 10^6\) 个整数的数组中有 5% 的 3（\(H = 200{,}000\) 次命中），由 \(t = 8\) 个进程处理：</span></p>
 <ul>
 <li>Locking on every match: \(A_{\text{match}} = 200{,}000\) lock acquisitions.<span class="zh">每次命中都加锁：\(A_{\text{match}} = 200{,}000\) 次加锁。</span></li>
@@ -1399,33 +1340,9 @@ void *work(void *arg) {
 </div></div>
 <h2 id="sec-05_python-3" data-num="5.3"><span class="en">Program Skeleton &amp; Life Cycle</span> <span class="prio p2">★★</span><span class="zh">多进程程序结构与生命周期</span></h2>
 <p>A <code class="nw">multiprocessing</code> program goes through four stages in order: <strong>create</strong>, <strong>start</strong>, <strong>join</strong> (wait until the process has finished) and <strong>read the result</strong> after all processes have joined. The driver below does all four:<span class="zh"><code class="nw">multiprocessing</code> 程序按顺序经历四个阶段：<strong>创建</strong>、<strong>启动</strong>、<strong>等待结束</strong>（join，等进程运行完）和所有进程都 join 之后<strong>读取结果</strong>。下面的驱动函数把四步都做了：</span></p>
-<pre><code class="language-python">import multiprocessing as mp
-
-def parallel_count_no_lock(data, t):
-    count = mp.Value(&quot;i&quot;, 0, lock=False)   # shared integer; lock=False leaves it unprotected
-    block = (len(data) + t - 1) // t
-    workers = []
-    for pid in range(t):
-        start = pid * block
-        stop = min(start + block, len(data))
-        p = mp.Process(                    # 1. create
-            target=count_block_no_lock,
-            args=(data, start, stop, count))
-        workers.append(p); p.start()       # 2. start
-    for p in workers: p.join()             # 3. join
-    return count.value                     # 4. read the result
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec04/p14.png" title="点击看大图 Click to enlarge"><img src="img/Lec04/p14_c0.072_0.1147_0.9047_0.952.png" alt="The driver: create, start, join, read the result" loading="lazy"></a><figcaption><span class="en">The driver: create, start, join, read the result</span><span class="zh">驱动函数：创建、启动、等待结束、读取结果</span></figcaption></figure></div>
 <p>A <strong>worker</strong> (here <code class="nw">count_block_no_lock</code>) is the function each process runs. Define it at the top level of the module, so that spawned processes can import it. Create processes only under the <code class="nw">__main__</code> guard, so that children do not recursively spawn more processes:<span class="zh"><strong>工作函数</strong>（worker，这里是 <code class="nw">count_block_no_lock</code>）是每个进程运行的函数。要定义在模块顶层，这样新建的进程才能导入它。只在 <code class="nw">__main__</code> 保护下创建进程，这样子进程不会递归地再创建更多进程：</span></p>
-<pre><code class="language-python">def main():
-    data = [7, 3, 9, 1, 3, 5, 3, 8]
-    workers = 4
-    result = parallel_count_locked(data, workers)
-    print(result)
-
-if __name__ == &quot;__main__&quot;:
-    mp.freeze_support()    # Windows only: no effect on macOS or Linux
-    main()
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec04/p19.png" title="点击看大图 Click to enlarge"><img src="img/Lec04/p19_c0.0273_0.1129_0.94_0.9013.png" alt="A spawn-safe main program" loading="lazy"></a><figcaption><span class="en">A spawn-safe main program</span><span class="zh">能安全创建子进程的主程序</span></figcaption></figure></div>
 
 <h2 id="sec-05_python-practice" class="practice-h"><span class="en">Practice questions</span><span class="zh">练习题</span></h2>
 <p class="lead">8 questions from the full notes; click “Answer” to unfold the model answer.<span class="zh">共 8 题，来自完整版笔记；点击“Answer / 答案”展开参考答案。</span></p>
@@ -1511,21 +1428,7 @@ if __name__ == &quot;__main__&quot;:
 </div></div>
 <h2 id="sec-06_matmul-2" data-num="6.2"><span class="en">Pthreads Matrix-Vector Product</span> <span class="prio p3">★★★</span><span class="zh">Pthreads 矩阵向量乘法</span></h2>
 <p>Split the \(m\) rows of \(y = Ax\) into \(p\) equal blocks, one per thread (Pthreads: <a class="xref" href="#sec-04_threads-2">§4.2</a>). Each thread writes only its own elements <code class="nw">y[i]</code>, so <strong>no mutex is needed</strong>. The thread function (the number of rows is a multiple of the number of threads):<span class="zh">把 \(y = Ax\) 的 \(m\) 行平均分成 \(p\) 块，每个线程一块（Pthreads 见 <a class="xref" href="#sec-04_threads-2">§4.2</a>）。每个线程只写自己那部分 <code class="nw">y[i]</code>，所以<strong>不需要互斥锁</strong>。线程函数如下（假设行数是线程数的整数倍）：</span></p>
-<pre><code class="language-c">void *Pth_mat_vect(void* rank) {
-   long my_rank = (long) rank;
-   int i, j;
-   int local_m = m/thread_count;                 // rows per thread
-   int my_first_row = my_rank*local_m;
-   int my_last_row = (my_rank+1)*local_m - 1;    // last row, included
-
-   for (i = my_first_row; i &lt;= my_last_row; i++) {
-      y[i] = 0.0;
-      for (j = 0; j &lt; n; j++)
-         y[i] += A[i*n+j]*x[j];                  // A is stored row by row
-   }
-   return NULL;
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p13.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p13_c0.0067_0.1209_0.99_0.9529.png" alt="The thread function" loading="lazy"></a><figcaption><span class="en">The thread function</span><span class="zh">线程函数</span></figcaption></figure></div>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Row-block partition</span><span class="zh">按行分块</span></span></div><div class="callout-body"><p class="inwords"><strong>In words:</strong> rows per thread = rows ÷ threads; thread \(q\) starts at row \(q\) × (rows per thread).<span class="zh"><strong>一句话：</strong>每线程行数 = 总行数 ÷ 线程数；线程 \(q\) 从第 \(q\) ×（每线程行数）行开始。</span>
 <span class="math display">\[m_{\text{loc}} = \frac{m}{p}, \qquad r_{\text{first}}(q) = q\,m_{\text{loc}}, \qquad r_{\text{last}}(q) = (q+1)\,m_{\text{loc}} - 1\]</span></p>
 <ul>
@@ -1534,85 +1437,24 @@ if __name__ == &quot;__main__&quot;:
 </ul>
 </div></div>
 <p>The timed version (the one the exercises use) differs in two places. <code class="nw">my_last_row</code> is <strong>exclusive</strong>: \((q+1)\,m_{\text{loc}}\), one past the last row. A running index <code class="nw">sub</code> replaces <code class="nw">i*n+j</code>: it is computed once and then only incremented, and at the end of a row it already points to the start of the next row.<span class="zh">计时版（练习题用的是它）有两处不同。<code class="nw">my_last_row</code> <strong>不包含</strong>在内：等于 \((q+1)\,m_{\text{loc}}\)，即最后一行的下一行。用运行下标 <code class="nw">sub</code> 代替 <code class="nw">i*n+j</code>：它只算一次，之后只做自增；一行结束时，它正好指向下一行的开头。</span></p>
-<pre><code class="language-c">   int my_last_row = my_first_row + local_m;     // exclusive
-   register int sub = my_first_row*n;            // flat index of the thread's first element
-   ...
-   for (i = my_first_row; i &lt; my_last_row; i++) {
-      y[i] = 0.0;
-      for (j = 0; j &lt; n; j++) {
-         temp = A[sub++];
-         temp *= x[j];
-         y[i] += temp;
-      }
-   }
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p19.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p19_c0_0.0231_0.9807_0.9698.png" alt="The timed version with sub and temp" loading="lazy"></a><figcaption><span class="en">The timed version with sub and temp</span><span class="zh">带 sub 和 temp 的计时版</span></figcaption></figure></div>
 <div class="callout example"><div class="callout-head"><span class="kind"><span class="en">Worked Example</span><span class="zo">例题</span></span><span class="title"><span class="en">Index trace (\(m = 6,\; n = 4,\; p = 3\))</span><span class="zh">索引追踪（\(m = 6,\; n = 4,\; p = 3\)）</span></span></div><div class="callout-body"><p>\(m_{\text{loc}} = 6 / 3 = 2\). Thread \(q = 1\) takes rows \(2\) and \(3\): <code class="nw">my_last_row</code> is \(2 \times 2 - 1 = 3\) in the first version and \(4\) in the timed one. <code class="nw">sub</code> runs from \(2 \times 4 = 8\) to \(16\), i.e. over <code class="nw">A[8..15]</code>.<span class="zh">\(m_{\text{loc}} = 6 / 3 = 2\)。线程 \(q = 1\) 负责第 \(2\)、\(3\) 行：第一个版本里 <code class="nw">my_last_row</code> 是 \(2 \times 2 - 1 = 3\)，计时版里是 \(4\)。<code class="nw">sub</code> 从 \(2 \times 4 = 8\) 走到 \(16\)，即遍历 <code class="nw">A[8..15]</code>。</span></p>
 </div></div>
 <p><strong>Reading the timings.</strong> The loop time \(T_p\) is the time of the <strong>slowest thread</strong>, because <code class="nw">pthread_join</code> waits for all of them. The <code class="nw">real</code> time of the whole program also contains serial file reading and thread start-up, so it can barely move while the loop gets faster. Example: when \(p\) goes from 4 to 8, the loop drops from \(7.0\) to \(3.7\) ms, but <code class="nw">real</code> may only go from \(65\) to \(63\) ms if about \(58\) ms are serial. Speedup, efficiency and Amdahl's law: <a class="xref" href="#sec-02_performance-1">§2.1</a> and <a class="xref" href="#sec-02_performance-3">§2.3</a>.<span class="zh"><strong>怎么读计时结果。</strong>循环时间 \(T_p\) 是<strong>最慢线程</strong>的时间，因为 <code class="nw">pthread_join</code> 要等所有线程结束。整个程序的 <code class="nw">real</code> 时间还包括串行的读文件和线程创建，所以循环变快时它几乎不动。例如 \(p\) 从 4 增加到 8 时，循环从 \(7.0\) ms 降到 \(3.7\) ms，但如果约 \(58\) ms 是串行部分，<code class="nw">real</code> 可能只从 \(65\) ms 降到 \(63\) ms。加速比、效率和阿姆达尔定律见 <a class="xref" href="#sec-02_performance-1">§2.1</a> 和 <a class="xref" href="#sec-02_performance-3">§2.3</a>。</span></p>
 <h2 id="sec-06_matmul-3" data-num="6.3"><span class="en">Loop Order for \(C = AB\)</span> <span class="prio p3">★★★</span><span class="zh">矩阵乘法 \(C = AB\) 的循环顺序</span></h2>
 <p>All 6 orders of the loops <code class="nw">i, j, k</code> perform the same \(2n^3\) FLOPs, yet their run times differ by up to <strong>\(33\times\)</strong> (at \(n = 700\)). The <strong>innermost loop</strong> decides the access pattern. C stores a matrix in row-major order (<a class="xref" href="#sec-03_architecture-2">§3.2</a>). An index that moves along a row gives <strong>stride 1</strong>: the next element, which uses the cache well. An index that moves down a column gives <strong>stride \(n\)</strong>: a jump of \(n\) elements.<span class="zh">循环 <code class="nw">i, j, k</code> 的 6 种顺序做的 FLOP 一样多，都是 \(2n^3\)，运行时间却最多相差 <strong>\(33\times\)</strong>（\(n = 700\) 时）。<strong>最内层循环</strong>决定访问方式。C 按行主序存放矩阵（<a class="xref" href="#sec-03_architecture-2">§3.2</a>）。沿一行移动的下标是<strong>步长 1</strong>：访问下一个元素，能充分利用缓存。沿一列移动的下标是<strong>步长 \(n\)</strong>：一次跳过 \(n\) 个元素。</span></p>
 <p><strong>1. Fastest: <code class="nw">kij</code> (or <code class="nw">ikj</code>), inner loop <code class="nw">j</code>.</strong> <code class="nw">a[i][k]</code> does not change in the inner loop, so it is kept in the register <code class="nw">r</code>. <code class="nw">b[k][j]</code> and <code class="nw">c[i][j]</code> both move along a row: <strong>stride 1</strong>. Per inner iteration: 2 loads, 1 store. <code class="nw">c</code> must start at 0.<span class="zh"><strong>1. 最快：<code class="nw">kij</code>（或 <code class="nw">ikj</code>），最内层是 <code class="nw">j</code>。</strong><code class="nw">a[i][k]</code> 在内层循环里不变，所以先放进寄存器 <code class="nw">r</code>。<code class="nw">b[k][j]</code> 和 <code class="nw">c[i][j]</code> 都沿行移动：<strong>步长 1</strong>。内层每轮：2 次读、1 次写。<code class="nw">c</code> 必须先清零。</span></p>
-<pre><code class="language-c">for (k = 0; k &lt; n; k++) {
-    for (i = 0; i &lt; n; i++) {
-        r = a[i][k];                 // fixed in the inner loop: kept in a register
-        for (j = 0; j &lt; n; j++)
-            c[i][j] += r * b[k][j];  // b and c: stride 1
-    }
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p24.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p24_c0.1367_0.4622_0.8547_0.7378.png" alt="kij (and ikj)" loading="lazy"></a><figcaption><span class="en">kij (and ikj)</span><span class="zh">kij（及 ikj）</span></figcaption></figure></div>
 <p><code class="nw">ikj</code> only swaps the two outer loops: the inner loop, and the speed, stay the same.<span class="zh"><code class="nw">ikj</code> 只是交换外面两层循环：内层循环不变，速度也一样。</span></p>
 <p><strong>2. Middle: <code class="nw">ijk</code> (or <code class="nw">jik</code>), inner loop <code class="nw">k</code></strong> (the textbook form). <code class="nw">sum</code> stays in a register, so the inner loop stores nothing. <code class="nw">a[i][k]</code> has stride 1, <code class="nw">b[k][j]</code> stride \(n\). Per inner iteration: 2 loads, 0 stores. <code class="nw">c[i][j]</code> is written once after the inner loop, so <code class="nw">c</code> needs no zeroing.<span class="zh"><strong>2. 中等：<code class="nw">ijk</code>（或 <code class="nw">jik</code>），最内层是 <code class="nw">k</code></strong>（教科书常见写法）。<code class="nw">sum</code> 留在寄存器里，所以内层循环不写内存。<code class="nw">a[i][k]</code> 步长 1，<code class="nw">b[k][j]</code> 步长 \(n\)。内层每轮：2 次读、0 次写。<code class="nw">c[i][j]</code> 在内层循环结束后只写一次，所以 <code class="nw">c</code> 不用先清零。</span></p>
-<pre><code class="language-c">for (i = 0; i &lt; n; i++) {
-    for (j = 0; j &lt; n; j++) {
-        sum = 0.0;                     // kept in a register
-        for (k = 0; k &lt; n; k++)
-            sum += a[i][k] * b[k][j];  // a: stride 1, b: stride n
-        c[i][j] = sum;                 // one store per (i, j)
-    }
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p24.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p24_c0.1367_0.1476_0.866_0.4676.png" alt="ijk (and jik)" loading="lazy"></a><figcaption><span class="en">ijk (and jik)</span><span class="zh">ijk（及 jik）</span></figcaption></figure></div>
 <p><strong>3. Slowest: <code class="nw">jki</code> (or <code class="nw">kji</code>), inner loop <code class="nw">i</code>.</strong> <code class="nw">b[k][j]</code> is fixed and kept in <code class="nw">r</code>. <code class="nw">a[i][k]</code> and <code class="nw">c[i][j]</code> both move down a column: <strong>stride \(n\)</strong>. Per inner iteration: 2 loads, 1 store. <code class="nw">c</code> must start at 0.<span class="zh"><strong>3. 最慢：<code class="nw">jki</code>（或 <code class="nw">kji</code>），最内层是 <code class="nw">i</code>。</strong><code class="nw">b[k][j]</code> 固定不变，放在 <code class="nw">r</code> 里。<code class="nw">a[i][k]</code> 和 <code class="nw">c[i][j]</code> 都沿列移动：<strong>步长 \(n\)</strong>。内层每轮：2 次读、1 次写。<code class="nw">c</code> 必须先清零。</span></p>
-<pre><code class="language-c">for (j = 0; j &lt; n; j++) {
-    for (k = 0; k &lt; n; k++) {
-        r = b[k][j];                 // fixed in the inner loop
-        for (i = 0; i &lt; n; i++)
-            c[i][j] += a[i][k] * r;  // a and c: stride n
-    }
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p24.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p24_c0.1367_0.7324_0.8547_1.png" alt="jki (and kji)" loading="lazy"></a><figcaption><span class="en">jki (and kji)</span><span class="zh">jki（及 kji）</span></figcaption></figure></div>
 <h2 id="sec-06_matmul-4" data-num="6.4"><span class="en">Pthreads Matrix-Matrix Product</span> <span class="prio p2">★★</span><span class="zh">Pthreads 矩阵乘法的锁优化</span></h2>
 <p>Splitting the summation loop <code class="nw">k</code> (instead of the rows <code class="nw">i</code>) over \(p\) threads makes all threads update the same <code class="nw">matrix_c[i][j]</code>: a race condition (<a class="xref" href="#sec-04_threads-1">§4.1</a>), and the printed result changes from run to run. A mutex around every update makes the result right, but with \(n^3\) critical sections (\(n\) = <code class="nw">DIM</code>) the program runs \(21\times\) slower than serial (\(93.0\) s vs \(4.38\) s):<span class="zh">如果按求和循环 <code class="nw">k</code>（而不是按行 <code class="nw">i</code>）把工作分给 \(p\) 个线程，所有线程都会更新同一个 <code class="nw">matrix_c[i][j]</code>：这是竞争条件（<a class="xref" href="#sec-04_threads-1">§4.1</a>），每次运行打印的结果都不一样。每次更新都加锁，结果就对了，但有 \(n^3\) 个临界区（\(n\) = <code class="nw">DIM</code>），程序比串行慢 \(21\times\)（\(93.0\) s 对 \(4.38\) s）：</span></p>
-<pre><code class="language-c">pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-
-void *multiply(void *arg) {
-    struct thread_args * range = (struct thread_args *) arg;
-    for (int i = 0; i &lt; DIM; i++) {
-        for (int j = 0; j &lt; DIM; j++) {
-            for (int k = range-&gt;start; k &lt; range-&gt;end; k++) {
-                pthread_mutex_lock(&amp;lock);        // a lock for every single update
-                matrix_c[i][j] += matrix_a[i][k] * matrix_b[k][j];
-                pthread_mutex_unlock(&amp;lock);
-            }
-        }
-    }
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p33.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p33_c0.1047_0.1182_0.8947_0.6098.png" alt="A lock around every single update" loading="lazy"></a><figcaption><span class="en">A lock around every single update</span><span class="zh">每次更新都加锁</span></figcaption></figure></div>
 <p>Summing over <code class="nw">k</code> into the private variable <code class="nw">thread_private_tmp</code> and locking <strong>once per <code class="nw">(i, j)</code></strong> leaves \(p\,n^2\) critical sections (\(n/p\) times fewer); the run takes \(1.54\) s:<span class="zh">先在私有变量 <code class="nw">thread_private_tmp</code> 里对 <code class="nw">k</code> 求和，再<strong>每个 <code class="nw">(i, j)</code> 只加锁一次</strong>，临界区就只剩 \(p\,n^2\) 个（少 \(n/p\) 倍），用时 \(1.54\) s：</span></p>
-<pre><code class="language-c">void *multiply(void *arg) {
-    struct thread_args * range = (struct thread_args *) arg;
-    for (int i = 0; i &lt; DIM; i++) {
-        for (int j = 0; j &lt; DIM; j++) {
-            long thread_private_tmp = 0;          // private partial sum
-            for (int k = range-&gt;start; k &lt; range-&gt;end; k++) {
-                thread_private_tmp += matrix_a[i][k] * matrix_b[k][j];
-            }
-            pthread_mutex_lock(&amp;lock);            // one critical section per (i, j)
-            matrix_c[i][j] += thread_private_tmp;
-            pthread_mutex_unlock(&amp;lock);
-        }
-    }
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p34.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p34_c0.134_0.5093_0.947_0.986.png" alt="Private partial sum, one lock per (i, j)" loading="lazy"></a><figcaption><span class="en">Private partial sum, one lock per (i, j)</span><span class="zh">私有部分和，每个 (i, j) 只加锁一次</span></figcaption></figure></div>
 <h2 id="sec-06_matmul-5" data-num="6.5"><span class="en">Key Terms</span> <span class="prio p1">★</span><span class="zh">核心术语</span></h2>
 <div class="tw"><table>
 <thead>
@@ -1978,19 +1820,7 @@ At <code class="nw">#pragma omp parallel</code>, the <strong>master thread</stro
 <code class="nw">num_threads(n)</code> only <strong>requests</strong> \(n\) threads; the system may grant fewer. So call <code class="nw">omp_get_num_threads()</code> inside the block for the actual team size. The order in which threads print or finish is <strong>undefined</strong>: four threads can print in \(4! = 24\) orders.<span class="zh"><code class="nw">num_threads(n)</code> 只是<strong>请求</strong> \(n\) 个线程，系统可能给得更少。所以要在代码块内调用 <code class="nw">omp_get_num_threads()</code> 得到实际线程数。线程打印或结束的顺序是<strong>未定义</strong>的：4 个线程可以有 \(4! = 24\) 种顺序。</span>
 In the code, <code class="nw">argv[1]</code> is the first command-line argument and <code class="nw">my_rank</code> is the calling thread's number, from 0 to (team size − 1).<span class="zh">代码里，<code class="nw">argv[1]</code> 是命令行的第一个参数，<code class="nw">my_rank</code> 是当前线程的编号，从 0 到（线程组大小 − 1）。</span></p>
 <div class="figs n1"><figure><a class="zoom" href="img/Lec10/p22.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p22_c0.52_0.12_1_0.37.png" alt="Fork-join model" loading="lazy"></a><figcaption><span class="en">Fork-join model</span><span class="zh">分叉-汇合模型</span></figcaption></figure></div>
-<pre><code class="language-c">#include &lt;omp.h&gt;
-// Compile: gcc -fopenmp -o omp_hello omp_hello.c
-int main(int argc, char* argv[]) {
-    int thread_count = strtol(argv[1], NULL, 10);
-#   pragma omp parallel num_threads(thread_count)
-    {
-        int my_rank = omp_get_thread_num();       // 0 .. actual_threads - 1
-        int actual  = omp_get_num_threads();      // actual team size
-        printf(&quot;Hello from thread %d of %d\n&quot;, my_rank, actual);
-    }
-    return 0;
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec10/p20.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p20_c0.0227_0.1147_0.9733_0.8427.png" alt="Hello world with OpenMP" loading="lazy"></a><figcaption><span class="en">Hello world with OpenMP</span><span class="zh">OpenMP 版 Hello world</span></figcaption></figure></div>
 <h2 id="sec-09_openmp-2" data-num="9.2"><span class="en">Shared vs Private Scope, <code class="nw">critical</code> &amp; <code class="nw">reduction</code></span> <span class="prio p3">★★★</span><span class="zh">变量作用域、临界区与归约</span></h2>
 <p>Knowing which variables are shared and which are private prevents race conditions (<a class="xref" href="#sec-04_threads-1">§4.1</a>):<span class="zh">弄清哪些变量是共享的、哪些是私有的，可以避免竞争条件（<a class="xref" href="#sec-04_threads-1">§4.1</a>）：</span></p>
 <ul>
@@ -2002,16 +1832,9 @@ int main(int argc, char* argv[]) {
 <li><strong><code class="nw">#pragma omp critical</code>:</strong> only one thread at a time runs the statement after it (critical section, <a class="xref" href="#sec-04_threads-1">§4.1</a>). Place it <strong>only</strong> right before the shared update. Never wrap the whole <code class="nw">Local_trap(...)</code> computation in <code class="nw">critical</code>, or parallelism is lost.<span class="zh"><strong><code class="nw">#pragma omp critical</code>：</strong>同一时刻只有一个线程执行它后面的语句（临界区，<a class="xref" href="#sec-04_threads-1">§4.1</a>）。只把它放在共享变量更新的<strong>正前方</strong>。绝不要把整个 <code class="nw">Local_trap(...)</code> 计算包进 <code class="nw">critical</code>，否则就失去并行性。</span></li>
 <li><strong><code class="nw">reduction(op: var)</code>:</strong> gives each thread a private copy of <code class="nw">var</code> and combines the copies safely at the end; <code class="nw">op</code> is the combining operator. Allowed operators: <code class="nw">+</code>, <code class="nw">*</code>, <code class="nw">-</code>, <code class="nw">&amp;</code>, <code class="nw">|</code>, <code class="nw">^</code>, <code class="nw">&amp;&amp;</code>, <code class="nw">||</code>.<span class="zh"><strong><code class="nw">reduction(op: var)</code>：</strong>给每个线程一个 <code class="nw">var</code> 的私有副本，最后安全地合并这些副本；<code class="nw">op</code> 是合并用的运算符。允许的运算符：<code class="nw">+</code>、<code class="nw">*</code>、<code class="nw">-</code>、<code class="nw">&amp;</code>、<code class="nw">|</code>、<code class="nw">^</code>、<code class="nw">&amp;&amp;</code>、<code class="nw">||</code>。</span></li>
 </ol>
-<p>In the code, <code class="nw">t</code> is the number of threads; <code class="nw">a</code>, <code class="nw">b</code>, <code class="nw">n</code> are defined in the next section.<span class="zh">代码里，<code class="nw">t</code> 是线程数；<code class="nw">a</code>、<code class="nw">b</code>、<code class="nw">n</code> 在下一节定义。</span></p>
-<pre><code class="language-c">// Method 1: private variable + critical     // Method 2: reduction clause (cleanest)
-global_result = 0.0;                       global_result = 0.0;
-#pragma omp parallel num_threads(t)        #pragma omp parallel num_threads(t) reduction(+: global_result)
-{                                              global_result += Local_trap(a, b, n);
-    double my_result = Local_trap(a,b,n);
-#   pragma omp critical
-    global_result += my_result;
-}
-</code></pre>
+<p>In the code, <code class="nw">a</code>, <code class="nw">b</code>, <code class="nw">n</code> are the interval ends and the number of trapezoids (next section).<span class="zh">代码里，<code class="nw">a</code>、<code class="nw">b</code>、<code class="nw">n</code> 是区间端点和梯形个数（见下一节）。</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec10/p30.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p30_c0.048_0.2844_0.904_0.672.png" alt="critical: one thread at a time" loading="lazy"></a><figcaption><span class="en">critical: one thread at a time</span><span class="zh">critical：一次只让一个线程执行</span></figcaption></figure></div>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec11/p8.png" title="点击看大图 Click to enlarge"><img src="img/Lec11/p8_c0.0287_0.1076_0.9813_0.7991.png" alt="The reduction clause and its operators" loading="lazy"></a><figcaption><span class="en">The reduction clause and its operators</span><span class="zh">reduction 子句及其运算符</span></figcaption></figure></div>
 <h2 id="sec-09_openmp-3" data-num="9.3"><span class="en">Trapezoidal Rule &amp; OpenMP Matrix Multiply</span> <span class="prio p2">★★</span><span class="zh">梯形积分与 OpenMP 矩阵乘</span></h2>
 <p>The <strong>trapezoidal rule</strong> estimates the integral of a function \(f(x)\) over an interval \([a, b]\). It cuts the interval into \(n\) equal strips, each a trapezoid under a straight line; the sum of their areas is the estimate.<span class="zh"><strong>梯形法则</strong>用来估算函数 \(f(x)\) 在区间 \([a, b]\) 上的积分。它把区间切成 \(n\) 个等宽的小条，每条是直线下的一个梯形；所有梯形面积之和就是估算值。</span>
 To parallelize it with \(p\) threads (\(n\) divisible by \(p\)), each thread \(r\) (\(r = 0, \dots, p-1\)) integrates its own subinterval \([\text{local\_a}, \text{local\_b}]\) of \(\text{local\_n} = n/p\) trapezoids. Adjacent threads both evaluate \(f\) at their shared boundary, so the parallel program evaluates \(f\) \(n + p\) times, against \(n + 1\) serially.<span class="zh">用 \(p\) 个线程并行（\(n\) 能被 \(p\) 整除）时，每个线程 \(r\)（\(r = 0, \dots, p-1\)）对自己的子区间 \([\text{local\_a}, \text{local\_b}]\) 积分，这个子区间含 \(\text{local\_n} = n/p\) 个梯形。相邻线程都在共同的边界点计算 \(f\)，所以并行程序共计算 \(n + p\) 次 \(f\)，串行为 \(n + 1\) 次。</span></p>
@@ -2026,15 +1849,7 @@ To parallelize it with \(p\) threads (\(n\) divisible by \(p\)), each thread \(r
 </div></div>
 <p>Speedup \(S\) and efficiency \(E\) (<a class="xref" href="#sec-02_performance-1">§2.1</a>) judge the gain; \(T_{\text{serial}}\) and \(T_{\text{parallel}}\) (on \(p\) threads) are run times in seconds.<span class="zh">加速比 \(S\) 和效率 \(E\)（<a class="xref" href="#sec-02_performance-1">§2.1</a>）衡量收益；\(T_{\text{serial}}\) 和 \(T_{\text{parallel}}\)（\(p\) 个线程）是运行时间，单位秒。</span></p>
 <p>For matrix multiplication \(C = A \times B\) (all matrices \(N \times N\)), \(C_{ij}\) is the sum over \(k\) of \(A_{ik} B_{kj}\); \(i\) is the row, \(j\) the column. Storing each matrix as a contiguous 1-D array (<code class="nw">A[i*N + j]</code>) improves cache locality (<a class="xref" href="#sec-03_architecture-2">§3.2</a>). The clause <code class="nw">collapse(2)</code> merges the <code class="nw">i</code> and <code class="nw">j</code> loops into one large iteration space. Each iteration writes to its own <code class="nw">C[i*N + j]</code>, so no lock is needed:<span class="zh">做矩阵乘法 \(C = A \times B\)（矩阵都是 \(N \times N\)），\(C_{ij}\) 等于 \(A_{ik} B_{kj}\) 对 \(k\) 求和；\(i\) 是行号，\(j\) 是列号。把每个矩阵存成连续的一维数组（<code class="nw">A[i*N + j]</code>）可以改善缓存局部性（<a class="xref" href="#sec-03_architecture-2">§3.2</a>）。<code class="nw">collapse(2)</code> 把 <code class="nw">i</code> 和 <code class="nw">j</code> 两层循环合并成一个大的迭代空间。每次迭代写入自己的 <code class="nw">C[i*N + j]</code>，不需要任何锁：</span></p>
-<pre><code class="language-c">#pragma omp parallel for collapse(2) shared(A, B, C)
-for (int i = 0; i &lt; N; i++)
-    for (int j = 0; j &lt; N; j++) {
-        double sum = 0.0; // private to each iteration
-        for (int k = 0; k &lt; N; k++)
-            sum += A[i*N + k] * B[k*N + j];
-        C[i*N + j] = sum;
-    }
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec10/p36.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p36_c0.352_0.0676_0.9733_0.4622.png" alt="Matrix multiply with collapse(2)" loading="lazy"></a><figcaption><span class="en">Matrix multiply with collapse(2)</span><span class="zh">用 collapse(2) 的矩阵乘法</span></figcaption></figure></div>
 
 <h2 id="sec-09_openmp-practice" class="practice-h"><span class="en">Practice questions</span><span class="zh">练习题</span></h2>
 <p class="lead">7 questions from the full notes; click “Answer” to unfold the model answer.<span class="zh">共 7 题，来自完整版笔记；点击“Answer / 答案”展开参考答案。</span></p>
@@ -2125,13 +1940,8 @@ for (int i = 0; i &lt; N; i++)
 </ol>
 </li>
 </ul>
-<pre><code class="language-c">#pragma omp parallel for num_threads(thread_count) \
-    default(none) reduction(+:sum) private(k, factor) shared(n)
-for (k = 0; k &lt; n; k++) {
-    factor = (k % 2 == 0) ? 1.0 : -1.0;
-    sum += factor / (2*k + 1);
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec11/p17.png" title="点击看大图 Click to enlarge"><img src="img/Lec11/p17_c0.1027_0.2676_0.928_0.736.png" alt="Wrong: factor = -factor links the iterations" loading="lazy"></a><figcaption><span class="en">Wrong: factor = -factor links the iterations</span><span class="zh">错误：factor = -factor 让各轮迭代相互依赖</span></figcaption></figure></div>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec11/p20.png" title="点击看大图 Click to enlarge"><img src="img/Lec11/p20_c0.1327_0.5493_0.9233_0.9724.png" alt="Corrected, with default(none)" loading="lazy"></a><figcaption><span class="en">Corrected, with default(none)</span><span class="zh">改正后的写法（用 default(none)）</span></figcaption></figure></div>
 <h2 id="sec-10_openmp_loops-3" data-num="10.3"><span class="en">Loop Schedules</span> <span class="prio p3">★★★</span><span class="zh">循环调度策略</span></h2>
 <p>A <strong>schedule</strong> is the rule that decides which thread runs which iterations. A <strong>chunk</strong> is a group of consecutive iterations handed to one thread at once. The default is equal contiguous blocks (<code class="nw">static</code>). When iteration costs differ a lot, the load is unbalanced (<a class="xref" href="#sec-02_performance-2">§2.2</a>) and fast threads wait for slow ones. Choose another schedule with <code class="nw">schedule(type, chunk)</code>:<span class="zh"><strong>调度（schedule）</strong>是决定哪个线程执行哪些迭代的规则。<strong>块（chunk）</strong>是一次交给一个线程的一组连续迭代。默认是均等分块（<code class="nw">static</code>）。如果各迭代耗时差别很大，负载就不均衡（<a class="xref" href="#sec-02_performance-2">§2.2</a>），快的线程要等慢的线程。这时用 <code class="nw">schedule(type, chunk)</code> 指定别的调度策略：</span></p>
 <div class="tw"><table>
@@ -2468,15 +2278,8 @@ Attainable speed: \(P_{\text{att}} = 0.083 \times 900 = 75\text{ GFLOP/s}\) (onl
 <h2 id="sec-12_cuda-1" data-num="12.1"><span class="en">Grids, Blocks &amp; Legal Launch Limits</span> <span class="prio p3">★★★</span><span class="zh">网格、线程块与合法启动尺寸</span></h2>
 <p><strong>CUDA</strong> (Compute Unified Device Architecture) is NVIDIA's programming model for GPUs. The <strong>host</strong> is the CPU and its memory; the <strong>device</strong> is the GPU. A kernel (<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>) runs on the device. Its threads are grouped into <strong>blocks</strong>, and all blocks of one launch form a <strong>grid</strong>.<span class="zh"><strong>CUDA</strong>（Compute Unified Device Architecture，统一计算设备架构）是 NVIDIA 的 GPU 编程模型。<strong>主机（host）</strong>是 CPU 及其内存；<strong>设备（device）</strong>是 GPU。核函数（kernel，<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>）在设备上运行。它的线程被分成<strong>块（block）</strong>，一次启动的所有块组成一个<strong>网格（grid）</strong>。</span>
 A CUDA kernel is launched from the host using <code>kernel&lt;&lt;&lt;grid, block&gt;&gt;&gt;(args)</code>, where <strong><code class="nw">grid</code></strong> is the number of blocks and <strong><code class="nw">block</code></strong> is the number of threads per block. Both are of type <code class="nw">dim3</code>, a triple of three numbers, one for each axis \(x\), \(y\), \(z\). Any omitted <code class="nw">dim3</code> axis defaults to <strong>1</strong> (e.g., <code class="nw">dim3(4, 3)</code> means <code class="nw">(4, 3, 1)</code>).<span class="zh">CUDA 核函数在主机端用 <code>kernel&lt;&lt;&lt;grid, block&gt;&gt;&gt;(args)</code> 启动，其中 <strong><code class="nw">grid</code></strong> 是块的数量，<strong><code class="nw">block</code></strong> 是每块的线程数。两者的类型都是 <code class="nw">dim3</code>，即三个数的组合，分别对应 \(x\)、\(y\)、\(z\) 三个维度。省略的 <code class="nw">dim3</code> 维度默认为 <strong>1</strong>（例如 <code class="nw">dim3(4, 3)</code> 表示 <code class="nw">(4, 3, 1)</code>）。</span></p>
-<p>For example, a vector addition on 24 elements with 3 blocks of 8 threads:<span class="zh">例如，用 3 个块、每块 8 个线程做 24 个元素的向量加法：</span></p>
-<pre><code class="language-cuda">__global__ void vecAdd(const float *a, const float *b, float *c, int n)
-{
-    int i = blockIdx.x * blockDim.x + threadIdx.x;   // global thread index (next section)
-    if (i &lt; n) c[i] = a[i] + b[i];                   // guard: surplus threads do nothing
-}
-
-vecAdd&lt;&lt;&lt;3, 8&gt;&gt;&gt;(d_a, d_b, d_c, 24);   // blocks first, then threads per block
-</code></pre>
+<p>Examples, with <code class="nw">b</code> and <code class="nw">g</code> of type <code class="nw">dim3</code>:<span class="zh">例子（<code class="nw">b</code> 和 <code class="nw">g</code> 是 <code class="nw">dim3</code> 类型）：</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec14/p7.png" title="点击看大图 Click to enlarge"><img src="img/Lec14/p7_c0.0227_0.2107_0.9867_0.7076.png" alt="Execution configurations" loading="lazy"></a><figcaption><span class="en">Execution configurations</span><span class="zh">执行配置的例子</span></figcaption></figure></div>
 <p>The <strong>Compute Capability (CC)</strong> is the version number of a GPU's hardware features. For CC \(\ge 2.0\), a launch is legal only if <strong>every</strong> axis is within limits <strong>and</strong> the total threads per block does not exceed 1024. For example, <code class="nw">block(16, 16, 8)</code> has every axis within limits, yet \(16 \times 16 \times 8 = 2048 &gt; 1024\) (illegal), and <code class="nw">block(1, 1, 65)</code> exceeds \(B_z^{\max} = 64\) (illegal).<span class="zh"><strong>计算能力（Compute Capability，CC）</strong>是 GPU 硬件功能的版本号。对于 CC \(\ge 2.0\)，只有<strong>每个</strong>维度都在上限内，<strong>并且</strong>每块总线程数不超过 1024，启动才合法。例如 <code class="nw">block(16, 16, 8)</code> 每个维度都在上限内，但 \(16 \times 16 \times 8 = 2048 &gt; 1024\)（非法）；<code class="nw">block(1, 1, 65)</code> 超过 \(B_z^{\max} = 64\)（非法）。</span></p>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Total threads &amp; block/grid limits</span><span class="zh">总线程数与尺寸限制</span></span></div><div class="callout-body"><p class="inwords"><strong>In words:</strong> the number of threads = blocks in the grid × threads per block. Each axis of the block, and the total threads per block, must stay under the limits.<span class="zh"><strong>一句话：</strong>线程总数 = 网格里的块数 × 每块的线程数。块的每个维度以及每块的线程总数都不能超过上限。</span>
 <span class="math display">\[N_{\text{thr}} = (G_x G_y G_z)(B_x B_y B_z), \qquad B_x \le 1024,\; B_y \le 1024,\; B_z \le 64,\; B_x B_y B_z \le 1024\]</span></p>
@@ -2541,22 +2344,7 @@ vecAdd&lt;&lt;&lt;3, 8&gt;&gt;&gt;(d_a, d_b, d_c, 24);   // blocks first, then t
 </div></div>
 <h2 id="sec-12_cuda-5" data-num="12.5"><span class="en">Function Qualifiers &amp; Synchronization</span> <span class="prio p2">★★</span><span class="zh">函数限定符与同步</span></h2>
 <p>The first CUDA program: one block of 10 threads, each printing a line.<span class="zh">第一个 CUDA 程序：1 个块、10 个线程，每个线程打印一行。</span></p>
-<pre><code class="language-cuda">// File : hello.cu
-#include &lt;stdio.h&gt;
-#include &lt;cuda.h&gt;
-
-__global__ void hello()          // a kernel: always void
-{
-    printf(&quot;Hello world\n&quot;);     // device printf: CC 2.0 and above
-}
-
-int main()
-{
-    hello&lt;&lt;&lt;1,10&gt;&gt;&gt;();           // 1 block of 10 threads
-    cudaDeviceSynchronize();     // wait until the kernel has finished
-    return 1;
-}
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec13/p33.png" title="点击看大图 Click to enlarge"><img src="img/Lec13/p33_c0.058_0.2071_0.9213_0.8613.png" alt="The first CUDA program, with notes" loading="lazy"></a><figcaption><span class="en">The first CUDA program, with notes</span><span class="zh">第一个 CUDA 程序（带标注）</span></figcaption></figure></div>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -2815,8 +2603,7 @@ fill&lt;&lt;&lt;(n + 1023) / 1024, 1024&gt;&gt;&gt;(a, n);
 <li><strong>Unpadded <code class="nw">tile[32][32]</code>:</strong> element <code class="nw">(r, c)</code> is at word address \(32r + c\), so \(\text{bank} = (32r + c) \bmod 32 = c \bmod 32\)—every row \(r\) lands in the <strong>same bank \(c\)</strong>, causing a <strong>32-way conflict</strong>!<span class="zh"><strong>未填充的 <code class="nw">tile[32][32]</code>：</strong> 元素 <code class="nw">(r, c)</code> 的字地址是 \(32r + c\)，所以 \(\text{bank} = (32r + c) \bmod 32 = c \bmod 32\)，每一行 \(r\) 都落在<strong>同一个 bank \(c\)</strong>，造成 <strong>32 路冲突</strong>！</span></li>
 <li><strong>Padded <code class="nw">tile[32][33]</code>:</strong> adding 1 dummy column shifts the word address to \(33r + c\), so \(\text{bank} = (r + c) \bmod 32\)—each row \(r=0\dots 31\) hits a <strong>distinct bank</strong>, completely eliminating the conflict at a cost of just \(32 \times 4 = 128\) extra bytes.<span class="zh"><strong>填充后的 <code class="nw">tile[32][33]</code>：</strong> 多加 1 个哑列，字地址变为 \(33r + c\)，所以 \(\text{bank} = (r + c) \bmod 32\)，每一行 \(r=0\dots 31\) 都落在<strong>不同的 bank</strong>，冲突被完全消除，代价只是多 \(32 \times 4 = 128\) 字节。</span></li>
 </ul>
-<pre><code class="language-cuda">__shared__ float tile[32][33];   // +1 padding column eliminates 32-way bank conflict
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec16/p30.png" title="点击看大图 Click to enlarge"><img src="img/Lec16/p30_c0.0973_0.2578_0.904_0.7173.png" alt="Padding the tile with one extra column" loading="lazy"></a><figcaption><span class="en">Padding the tile with one extra column</span><span class="zh">给 tile 多加一列</span></figcaption></figure></div>
 <h2 id="sec-13_gpu_memory-4" data-num="13.4"><span class="en">Bandwidth, Memory-Bound Time &amp; Register Pressure</span> <span class="prio p3">★★★</span><span class="zh">带宽、受访存限制时间与寄存器压力</span></h2>
 <p>For a memory-bound kernel (<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>) that moves \(B\) total bytes (read + written), the minimum possible run time and the effective bandwidth are:<span class="zh">对于受访存限制（<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>）的核函数，设总读写字节数为 \(B\)，则理论最短耗时和实际有效带宽为：</span></p>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Memory-bound time, effective bandwidth &amp; register warp limit</span><span class="zh">访存时间下界、有效带宽与寄存器限制</span></span></div><div class="callout-body"><p class="inwords"><strong>In words:</strong> minimum time = bytes moved ÷ peak bandwidth; effective bandwidth = bytes moved ÷ measured time; warps allowed by registers = registers per SM ÷ (32 × registers per thread), rounded down.<span class="zh"><strong>一句话：</strong>最短时间 = 搬运字节数 ÷ 峰值带宽；有效带宽 = 搬运字节数 ÷ 实测时间；寄存器允许的 warp 数 = 每个 SM 的寄存器数 ÷（32 × 每线程寄存器数），向下取整。</span>
@@ -2924,19 +2711,8 @@ fill&lt;&lt;&lt;(n + 1023) / 1024, 1024&gt;&gt;&gt;(a, n);
 <h2 id="sec-14_gpu_gemm-1" data-num="14.1"><span class="en">Naive GEMM vs Shared-Memory Tiling</span> <span class="prio p3">★★★</span><span class="zh">朴素 GEMM 与共享内存分块</span></h2>
 <p>GEMM (<a class="xref" href="#sec-07_dl_matmul-2">§7.2</a>) computes <code class="nw">C = A * B</code>: <code class="nw">A</code> is \(M \times K\), <code class="nw">B</code> is \(K \times N\), and <code class="nw">C</code> is \(M \times N\). In a <strong>naive</strong> GPU version, each thread computes 1 element of <code class="nw">C</code> by looping over <code class="nw">k = 0..K-1</code> and reading <code class="nw">A[row][k]</code> and <code class="nw">B[k][col]</code> directly from slow HBM (<a class="xref" href="#sec-13_gpu_memory-4">§13.4</a>) every time. That gives an arithmetic intensity of only \(\text{AI} \approx 0.25\text{ FLOP/byte}\), so the kernel is heavily memory-bound (<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>).<span class="zh">GEMM（<a class="xref" href="#sec-07_dl_matmul-2">§7.2</a>）计算 <code class="nw">C = A * B</code>：<code class="nw">A</code> 是 \(M \times K\)，<code class="nw">B</code> 是 \(K \times N\)，<code class="nw">C</code> 是 \(M \times N\)。在<strong>朴素</strong>的 GPU 实现中，每个线程计算 <code class="nw">C</code> 的 1 个元素：循环 <code class="nw">k = 0..K-1</code>，每次都直接从慢速 HBM（<a class="xref" href="#sec-13_gpu_memory-4">§13.4</a>）读取 <code class="nw">A[row][k]</code> 和 <code class="nw">B[k][col]</code>。算术强度因此只有 \(\text{AI} \approx 0.25\text{ FLOP/byte}\)，核函数严重受限于访存（memory-bound，<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>）。</span></p>
 <p><strong>Shared-memory tiling</strong> fixes this: a \(T \times T\) thread block (<a class="xref" href="#sec-12_cuda-1">§12.1</a>) cooperatively loads a \(T \times T\) tile of <code class="nw">A</code> and of <code class="nw">B</code> into fast on-chip <code class="nw">__shared__</code> memory (<a class="xref" href="#sec-12_cuda-4">§12.4</a>) once per stage, and reuses them \(T\) times before the next stage. This cuts HBM loads by <strong>\(T\times\)</strong>.<span class="zh"><strong>共享内存分块（tiling）</strong>解决这个问题：让一个 \(T \times T\) 线程块（<a class="xref" href="#sec-12_cuda-1">§12.1</a>）协作地把 <code class="nw">A</code> 和 <code class="nw">B</code> 各一个 \(T \times T\) 子块，每个阶段一次性载入快速的片上 <code class="nw">__shared__</code> 内存（<a class="xref" href="#sec-12_cuda-4">§12.4</a>），并复用 \(T\) 次，再进入下一阶段。这样 HBM 读取量减少 <strong>\(T\) 倍</strong>。</span></p>
-<pre><code class="language-cuda">// tiled16: 16x16 block, 2 barriers per stage
-__shared__ float As[16][16], Bs[16][16];
-float sum = 0.0f;                                        // stays in register
-for (int k0 = 0; k0 &lt; K; k0 += 16) {
-    As[y][x] = (r&lt;M &amp;&amp; k0+x&lt;K) ? A[r*K + k0+x] : 0.0f;   // zero-fill out-of-bounds
-    Bs[y][x] = (k0+y&lt;K &amp;&amp; c&lt;N) ? B[(k0+y)*N + c] : 0.0f;
-    __syncthreads();                                     // Barrier 1: wait until tiles are loaded
-    for (int kk = 0; kk &lt; 16; ++kk)
-        sum = fmaf(As[y][kk], Bs[kk][x], sum);
-    __syncthreads();                                     // Barrier 2: wait until all finish reading
-}
-if (r&lt;M &amp;&amp; c&lt;N) C[r*N + c] = sum;
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec17/p29.png" title="点击看大图 Click to enlarge"><img src="img/Lec17/p29_c0.06_0.2791_0.675_0.9111.png" alt="tiled16, part 1: loading a stage" loading="lazy"></a><figcaption><span class="en">tiled16, part 1: loading a stage</span><span class="zh">tiled16 第 1 部分：加载一个阶段</span></figcaption></figure></div>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec17/p30.png" title="点击看大图 Click to enlarge"><img src="img/Lec17/p30_c0.06_0.2791_0.7035_0.9111.png" alt="tiled16, part 2: reuse, store and launch" loading="lazy"></a><figcaption><span class="en">tiled16, part 2: reuse, store and launch</span><span class="zh">tiled16 第 2 部分：复用、写回和启动</span></figcaption></figure></div>
 <p>In the code, <code class="nw">x, y</code> are a thread's position in the block. <code class="nw">r, c</code> are the row and column of its output element. <code class="nw">k0</code> is the start of the current stage. <code class="nw">fmaf</code> is an FMA. <code class="nw">__syncthreads()</code> is the block barrier (<a class="xref" href="#sec-12_cuda-5">§12.5</a>). Notice why <strong>both</strong> barriers are required, and why boundary threads use <code class="nw">?: 0.0f</code> instead of <code class="nw">if (...)</code>:<span class="zh">代码里，<code class="nw">x, y</code> 是线程在块内的位置。<code class="nw">r, c</code> 是它负责的输出元素的行和列。<code class="nw">k0</code> 是当前阶段的起点。<code class="nw">fmaf</code> 是融合乘加（FMA）。<code class="nw">__syncthreads()</code> 是块内栅栏（<a class="xref" href="#sec-12_cuda-5">§12.5</a>）。注意为什么<strong>两个</strong>栅栏都必须有，以及为什么边界线程要用 <code class="nw">?: 0.0f</code> 而不是 <code class="nw">if (...)</code>：</span></p>
 <ul>
 <li><strong>Barrier 1</strong> prevents threads from computing on half-loaded <code class="nw">As</code>/<code class="nw">Bs</code>.<span class="zh"><strong>栅栏 1</strong>防止线程在 <code class="nw">As</code>/<code class="nw">Bs</code> 只加载了一半时就开始计算。</span></li>
@@ -3077,57 +2853,23 @@ if (r&lt;M &amp;&amp; c&lt;N) C[r*N + c] = sum;
 <div class="figs n1"><figure><a class="zoom" href="img/Lec18/p3.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p3_c0_0.29_1_0.62.png" alt="Shared vs distributed memory" loading="lazy"></a><figcaption><span class="en">Shared vs distributed memory</span><span class="zh">共享内存与分布式内存对比</span></figcaption></figure></div>
 <h2 id="sec-15_mpi-2" data-num="15.2"><span class="en">Program Skeleton, Communicators, Size &amp; Rank</span> <span class="prio p3">★★★</span><span class="zh">程序骨架、通信子与进程编号</span></h2>
 <p><strong>MPI</strong> (Message Passing Interface) is the standard library for programs whose processes communicate by messages. An MPI program starts all \(p\) processes together (<code class="nw">mpiexec -n p ./prog</code>; <code class="nw">mpiexec</code> is the launcher; in code \(p\) is <code class="nw">comm_sz</code>). Every process runs the same <code class="nw">main</code> with its own private variables. A <strong>communicator</strong> is a group of processes that can exchange messages; <code class="nw">MPI_COMM_WORLD</code> is the default one with all \(p\) processes. The <strong>size</strong> is the number of processes in it. Each process has a <strong>rank</strong>, its number in the communicator, from <strong><code class="nw">0</code> through <code class="nw">p - 1</code></strong>.<span class="zh"><strong>MPI</strong>（Message Passing Interface，消息传递接口）是进程间靠消息通信的程序所用的标准库。MPI 程序同时启动 \(p\) 个进程（<code class="nw">mpiexec -n p ./prog</code>；<code class="nw">mpiexec</code> 是启动命令；代码里 \(p\) 写作 <code class="nw">comm_sz</code>）。每个进程运行同一个 <code class="nw">main</code>，变量各自私有。<strong>通信子</strong>（communicator）是一组可以互相发消息的进程；默认通信子 <code class="nw">MPI_COMM_WORLD</code> 含全部 \(p\) 个进程。<strong>大小</strong>（size）是其中的进程数。每个进程有一个<strong>编号</strong>（rank），即它在通信子里的序号，从 <strong><code class="nw">0</code> 到 <code class="nw">p - 1</code></strong>。</span>
-MPI names are case-sensitive (<code class="nw">MPI_Init</code>, <code class="nw">MPI_Finalize</code>). <code class="nw">MPI_Comm_size</code> and <code class="nw">MPI_Comm_rank</code> take pointers (<code class="nw">&amp;comm_sz</code>, <code class="nw">&amp;my_rank</code>): the addresses where they write their answer.<span class="zh">MPI 函数名严格区分大小写（<code class="nw">MPI_Init</code>、<code class="nw">MPI_Finalize</code>）。<code class="nw">MPI_Comm_size</code> 与 <code class="nw">MPI_Comm_rank</code> 需传入变量地址（<code class="nw">&amp;comm_sz</code>、<code class="nw">&amp;my_rank</code>），它们把结果写进这些地址。</span></p>
-<pre><code class="language-c">#include &quot;mpi.h&quot;
-#include &lt;stdio.h&gt;
-// Compile: mpicc -g -Wall -o mpi_hello mpi_hello.c   (without -o, defaults to a.out)
-// Run:     mpiexec -n 4 ./mpi_hello
-int main(int argc, char *argv[]) {
-    int comm_sz, my_rank;
-    MPI_Init(&amp;argc, &amp;argv);                   // 1st MPI call (or pass NULL, NULL)
-    MPI_Comm_size(MPI_COMM_WORLD, &amp;comm_sz);  // total number of processes p
-    MPI_Comm_rank(MPI_COMM_WORLD, &amp;my_rank);  // my process ID: 0 .. p-1
-    printf(&quot;Hello from process %d of %d\n&quot;, my_rank, comm_sz);
-    MPI_Finalize();                           // last MPI call: cleanup
-    return 0;
-}
-</code></pre>
+MPI names are case-sensitive (<code class="nw">MPI_Init</code>, <code class="nw">MPI_Finalize</code>). <code class="nw">MPI_Comm_size</code> and <code class="nw">MPI_Comm_rank</code> take pointers (<code class="nw">&amp;nproc</code>, <code class="nw">&amp;rank</code> below): the addresses where they write their answer. Compile with <code>mpicc -g -Wall -o mpi_hello mpi_hello.c</code> (without <code class="nw">-o</code> the program is called <code class="nw">a.out</code>) and run with <code class="nw">mpiexec -n 4 ./mpi_hello</code>.<span class="zh">MPI 函数名严格区分大小写（<code class="nw">MPI_Init</code>、<code class="nw">MPI_Finalize</code>）。<code class="nw">MPI_Comm_size</code> 与 <code class="nw">MPI_Comm_rank</code> 需传入变量地址（下面代码里的 <code class="nw">&amp;nproc</code>、<code class="nw">&amp;rank</code>），它们把结果写进这些地址。编译用 <code>mpicc -g -Wall -o mpi_hello mpi_hello.c</code>（不加 <code class="nw">-o</code> 时程序名为 <code class="nw">a.out</code>），运行用 <code class="nw">mpiexec -n 4 ./mpi_hello</code>。</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p10.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p10_c0.0273_0.2231_0.9727_0.9102.png" alt="Hello world with MPI" loading="lazy"></a><figcaption><span class="en">Hello world with MPI</span><span class="zh">MPI 版 Hello world</span></figcaption></figure></div>
 <h2 id="sec-15_mpi-3" data-num="15.3"><span class="en"><code class="nw">MPI_Send</code>, <code class="nw">MPI_Recv</code> &amp; the Greetings Program</span> <span class="prio p3">★★★</span><span class="zh">消息收发与 Greetings 程序追踪</span></h2>
-<p><code class="nw">buf</code> is the data buffer; <code class="nw">count</code> and <code class="nw">size</code> are numbers of elements; <code class="nw">type</code> is the MPI data type of one element; <code class="nw">dest</code> and <code class="nw">source</code> are ranks; <code class="nw">tag</code> is an integer label the receiver can match on; <code class="nw">comm</code> is the communicator.<span class="zh"><code class="nw">buf</code> 是数据缓冲区；<code class="nw">count</code> 和 <code class="nw">size</code> 是元素个数；<code class="nw">type</code> 是单个元素的 MPI 数据类型；<code class="nw">dest</code> 和 <code class="nw">source</code> 是进程编号；<code class="nw">tag</code> 是接收方可匹配的整数标签；<code class="nw">comm</code> 是通信子。</span></p>
-<pre><code class="language-c">MPI_Send(void* buf, int count, MPI_Datatype type, int dest,   int tag, MPI_Comm comm);
-MPI_Recv(void* buf, int size,  MPI_Datatype type, int source, int tag, MPI_Comm comm, MPI_Status* status_p);
-</code></pre>
+<p><code class="nw">msg_buf_p</code> is the data buffer; <code class="nw">msg_size</code> and <code class="nw">buf_size</code> count elements; <code class="nw">msg_type</code> and <code class="nw">buf_type</code> give the MPI data type of one element; <code class="nw">dest</code> and <code class="nw">source</code> are ranks; <code class="nw">tag</code> is an integer label the receiver can match on; <code class="nw">communicator</code> is the communicator; <code class="nw">status_p</code> receives the status of the message (<a class="xref" href="#sec-15_mpi-4">§15.4</a>).<span class="zh"><code class="nw">msg_buf_p</code> 是数据缓冲区；<code class="nw">msg_size</code> 和 <code class="nw">buf_size</code> 是元素个数；<code class="nw">msg_type</code> 和 <code class="nw">buf_type</code> 是单个元素的 MPI 数据类型；<code class="nw">dest</code> 和 <code class="nw">source</code> 是进程编号；<code class="nw">tag</code> 是接收方可匹配的整数标签；<code class="nw">communicator</code> 是通信子；<code class="nw">status_p</code> 接收消息的状态（<a class="xref" href="#sec-15_mpi-4">§15.4</a>）。</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p16.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p16_c0.092_0.272_0.92_0.8453.png" alt="MPI_Send" loading="lazy"></a><figcaption><span class="en">MPI_Send</span><span class="zh">MPI_Send</span></figcaption></figure></div>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p17.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p17_c0.092_0.272_0.924_0.8587.png" alt="MPI_Recv" loading="lazy"></a><figcaption><span class="en">MPI_Recv</span><span class="zh">MPI_Recv</span></figcaption></figure></div>
 <ul>
 <li><strong>Common <code class="nw">MPI_Datatype</code> values:</strong> <code class="nw">MPI_CHAR</code> (<code class="nw">signed char</code>), <code class="nw">MPI_INT</code>, <code class="nw">MPI_LONG</code>, <code class="nw">MPI_FLOAT</code>, <code class="nw">MPI_DOUBLE</code>, <code class="nw">MPI_BYTE</code>.<span class="zh"><strong>常用 <code class="nw">MPI_Datatype</code> 取值：</strong><code class="nw">MPI_CHAR</code>（<code class="nw">signed char</code>）、<code class="nw">MPI_INT</code>、<code class="nw">MPI_LONG</code>、<code class="nw">MPI_FLOAT</code>、<code class="nw">MPI_DOUBLE</code>、<code class="nw">MPI_BYTE</code>。</span></li>
 <li><strong>Key difference in arguments:</strong> <code class="nw">MPI_Send</code> takes <strong>6</strong> arguments (<code class="nw">dest</code>, and the <strong>exact</strong> number of elements being sent, e.g. <code class="nw">strlen(greeting) + 1</code> to include <code class="nw">'\0'</code>). <code class="nw">MPI_Recv</code> takes <strong>7</strong> arguments (<code class="nw">source</code>, the <strong>maximum buffer capacity</strong> <code class="nw">MAX_STRING</code>, plus <code class="nw">&amp;status</code> or <code class="nw">MPI_STATUS_IGNORE</code>).<span class="zh"><strong>参数上的关键区别：</strong><code class="nw">MPI_Send</code> 有 <strong>6 个</strong>参数（<code class="nw">dest</code>，以及实际发送的元素个数，<strong>必须精确</strong>，例如 <code class="nw">strlen(greeting) + 1</code> 以包含 <code class="nw">'\0'</code>）。<code class="nw">MPI_Recv</code> 有 <strong>7 个</strong>参数（<code class="nw">source</code>、接收缓冲区的<strong>最大容量</strong> <code class="nw">MAX_STRING</code>，再加上 <code class="nw">&amp;status</code> 或 <code class="nw">MPI_STATUS_IGNORE</code>）。</span></li>
 <li><strong>Greetings trace (<code class="nw">mpiexec -n 4 ./mpi_hello</code>):</strong> Ranks <code class="nw">1 .. comm_sz-1</code> each send their greeting string to rank <code class="nw">0</code>. Rank <code class="nw">0</code> prints its own greeting first, then loops <code class="nw">q = 1 .. comm_sz-1</code> calling <code class="nw">MPI_Recv(..., source=q, ...)</code> and printing each received string. Rank <code class="nw">0</code> receives in order <code class="nw">q = 1, 2, 3</code>, so the output is always in rank order <code class="nw">0, 1, 2, 3</code>; there are <code class="nw">comm_sz - 1</code> sends and receives.<span class="zh"><strong>Greetings 程序追踪（<code class="nw">mpiexec -n 4 ./mpi_hello</code>）：</strong>编号 <code class="nw">1 .. comm_sz-1</code> 的进程各自把问候字符串发给进程 <code class="nw">0</code>。进程 <code class="nw">0</code> 先打印自己的问候，再按 <code class="nw">q = 1 .. comm_sz-1</code> 循环调用 <code class="nw">MPI_Recv(..., source=q, ...)</code>，打印收到的每个字符串。进程 <code class="nw">0</code> 按 <code class="nw">q = 1, 2, 3</code> 的顺序接收，所以输出总是按编号 <code class="nw">0, 1, 2, 3</code> 排列；共 <code class="nw">comm_sz - 1</code> 次发送和接收。</span></li>
 </ul>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p21.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p21_c0.0293_0.2996_0.9947_0.8044.png" alt="The greetings program: processes 1 to p - 1 send, process 0 receives in rank order" loading="lazy"></a><figcaption><span class="en">The greetings program: processes 1 to p - 1 send, process 0 receives in rank order</span><span class="zh">greetings 程序：1 到 p - 1 号进程发送，0 号进程按编号顺序接收</span></figcaption></figure></div>
 <h2 id="sec-15_mpi-4" data-num="15.4"><span class="en"><code class="nw">MPI_Status</code> &amp; MPI Trapezoidal Rule</span> <span class="prio p2">★★</span><span class="zh">消息状态与 MPI 梯形积分</span></h2>
 <p><strong>Inspecting a received message.</strong> Declare an <code class="nw">MPI_Status</code>, pass its address to <code class="nw">MPI_Recv</code>, then read <code class="nw">status.MPI_SOURCE</code> and <code class="nw">status.MPI_TAG</code>, or ask <code class="nw">MPI_Get_count</code> how many elements actually arrived:<span class="zh"><strong>查看收到的消息。</strong>声明一个 <code class="nw">MPI_Status</code>，把它的地址传给 <code class="nw">MPI_Recv</code>，然后读 <code class="nw">status.MPI_SOURCE</code> 和 <code class="nw">status.MPI_TAG</code>，或者用 <code class="nw">MPI_Get_count</code> 查实际收到了多少个元素：</span></p>
-<pre><code class="language-c">MPI_Status status;
-MPI_Recv(recv_buf_p, recv_buf_sz, recv_type, src, recv_tag, recv_comm, &amp;status);
-/* status.MPI_SOURCE: sender's rank; status.MPI_TAG: the message's tag */
-MPI_Get_count(&amp;status, MPI_CHAR, &amp;count);    /* elements actually received */
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p24.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p24_c0.0767_0.2489_0.9553_0.8471.png" alt="MPI_Status and MPI_Get_count" loading="lazy"></a><figcaption><span class="en">MPI_Status and MPI_Get_count</span><span class="zh">MPI_Status 与 MPI_Get_count</span></figcaption></figure></div>
 <p><strong>Trapezoidal rule in MPI.</strong> The integral of \(f(x)\) over \([a, b]\) is estimated with \(n\) trapezoids of width \(h = (b-a)/n\) (<a class="xref" href="#sec-09_openmp-3">§9.3</a>). Each process integrates its own subinterval of <code class="nw">local_n</code> trapezoids; the others send their results to process 0, which adds them up:<span class="zh"><strong>MPI 梯形积分。</strong>用 \(n\) 个宽度为 \(h = (b-a)/n\) 的梯形估计 \(f(x)\) 在 \([a, b]\) 上的积分（<a class="xref" href="#sec-09_openmp-3">§9.3</a>）。每个进程算自己那段子区间（<code class="nw">local_n</code> 个梯形）；其他进程把结果发给 0 号进程，由它加起来：</span></p>
-<pre><code class="language-c">Get a, b, n;
-h = (b-a)/n;
-local_n = n/comm_sz;
-local_a = a + my_rank*local_n*h;
-local_b = local_a + local_n*h;
-local_integral = Trap(local_a, local_b, local_n, h);
-if (my_rank != 0)
-   Send local_integral to process 0;         /* MPI_Send: count 1, MPI_DOUBLE */
-else {  /* my_rank == 0 */
-   total_integral = local_integral;
-   for (proc = 1; proc &lt; comm_sz; proc++) {
-      Receive local_integral from proc;      /* MPI_Recv with source = proc */
-      total_integral += local_integral;
-   }
-}
-if (my_rank == 0)
-   print result;
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p30.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p30_c0.0007_0.2169_0.9827_0.8276.png" alt="Parallel pseudo-code of the trapezoidal rule" loading="lazy"></a><figcaption><span class="en">Parallel pseudo-code of the trapezoidal rule</span><span class="zh">梯形积分的并行伪代码</span></figcaption></figure></div>
 
 <h2 id="sec-15_mpi-practice" class="practice-h"><span class="en">Practice questions</span><span class="zh">练习题</span></h2>
 <p class="lead">15 questions from the full notes; click “Answer” to unfold the model answer.<span class="zh">共 15 题，来自完整版笔记；点击“Answer / 答案”展开参考答案。</span></p>
@@ -3294,16 +3036,7 @@ Greetings from process 2 of 3!
 </tr>
 </tbody>
 </table></div>
-<pre><code class="language-bash">#!/bin/bash -l                         # first line: bash; -l loads the login profile (needed for `module`)
-#SBATCH --job-name=bam_check           # job name shown in squeue
-#SBATCH --partition=prod               # target CPU partition (queue of nodes)
-#SBATCH --cpus-per-task=1              # cores per task
-#SBATCH --mem=4G                       # memory per node (G = gigabytes)
-#SBATCH --time=00:30:00                # wall-time limit, format HH:MM:SS: real elapsed time (killed after 30 min)
-#SBATCH --output=logs/check.%j.out     # %j = job ID; logs/ directory must exist first!
-
-module load amd_9655_cpu miniconda     # shell commands start here -&gt; no #SBATCH lines below!
-</code></pre>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec07/p9.png" title="点击看大图 Click to enlarge"><img src="img/Lec07/p9_c0.054_0.25_0.9566_0.8853.png" alt="A small job script and how to submit it" loading="lazy"></a><figcaption><span class="en">A small job script and how to submit it</span><span class="zh">一个小作业脚本及其提交方法</span></figcaption></figure></div>
 <p>Lines starting with <code class="nw">#SBATCH</code> are resource requests that Slurm reads; <code class="nw">module load</code> loads installed software (<code class="nw">amd_9655_cpu</code> is the CPU environment, <code class="nw">miniconda</code> a Python package manager). Details that matter:<span class="zh">以 <code class="nw">#SBATCH</code> 开头的行是 Slurm 读取的资源申请；<code class="nw">module load</code> 载入已安装的软件（<code class="nw">amd_9655_cpu</code> 是 CPU 环境，<code class="nw">miniconda</code> 是 Python 包管理器）。要注意的细节：</span></p>
 <ol>
 <li>Any <code class="nw">#SBATCH</code> directive placed <strong>after</strong> the first shell command (such as <code class="nw">module load</code>) is <strong>silently ignored</strong>.<span class="zh">任何放在第一条 shell 命令（如 <code class="nw">module load</code>）<strong>之后</strong>的 <code class="nw">#SBATCH</code> 指令都会被<strong>静默忽略</strong>。</span></li>
