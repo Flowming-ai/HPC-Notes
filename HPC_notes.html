@@ -278,7 +278,7 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <button id="menu" class="tool" type="button">☰ 目录</button>
 <nav id="nav">
   <div class="brand">ECCE 738 复习笔记</div>
-  <div class="sub">更新于 2026-11-12</div>
+  <div class="sub">更新于 2026-11-15</div>
   <div class="tools">
     <button class="tool" id="zhtoggle" type="button">语言：双语</button>
     <button class="tool" id="answers" type="button">展开全部答案</button>
@@ -2515,7 +2515,7 @@ def count_block_reduced(data, start, stop, count):
 </ul>
 </div></aside>
 <h3 class="practice" id="c05-s2-5">Practice<span class="zh" lang="zh-CN">练习</span></h3>
-<p><strong>Q1.</strong> <em>(Calculation)</em> <span class="math">\(N=4\cdot10^6\)</span> elements, 5% of them 3s, <span class="math">\(t=8\)</span> processes. How many lock acquisitions do the two versions perform, and what is the ratio? If one critical section takes 0.4 μs and the critical sections cannot overlap, how long does each version spend inside critical sections?<span class="zh" lang="zh-CN"><strong>Q1.</strong> <em>（计算）</em> <span class="math">\(N=4\cdot10^6\)</span> 个元素，其中 5% 为 3，<span class="math">\(t=8\)</span> 个进程。两个版本各进行多少次加锁？两者之比是多少？若一个临界区耗时 0.4 μs，且临界区不能重叠，那么每个版本在临界区内各花费多长时间？</span></p>
+<p><strong>Q1.</strong> <em>(Calculation)</em> <span class="math">\(N=4\cdot10^6\)</span> elements, 5% of them 3s, <span class="math">\(t=8\)</span> processes. How many lock acquisitions do the two versions perform, and what is the ratio?<span class="zh" lang="zh-CN"><strong>Q1.</strong> <em>（计算）</em> <span class="math">\(N=4\cdot10^6\)</span> 个元素，其中 5% 为 3，<span class="math">\(t=8\)</span> 个进程。两个版本各进行多少次加锁？两者之比是多少？</span></p>
 <details><summary>Answer</summary>
 <p><span class="math">\(H=0.05\cdot4\cdot10^6=200\,000\)</span>.</p>
 <ul>
@@ -2592,7 +2592,7 @@ if __name__ == &quot;__main__&quot;:
 </tbody>
 </table></div>
 <h2 id="c05-s5">Exam-style questions<span class="zh" lang="zh-CN">考试题型练习</span></h2>
-<p><strong>Q1.</strong> (Calculation and explanation) An array of <span class="math">\(N=2\,000\,001\)</span> elements contains <span class="math">\(H=300\,000\)</span> threes and is processed with <span class="math">\(t=8\)</span> processes. How many lock acquisitions do the version with the lock inside the match and the version with one locked update per process need, and what is the ratio?<span class="zh" lang="zh-CN"><strong>Q1.</strong>（计算与解释）一个数组有 <span class="math">\(N=2\,000\,001\)</span> 个元素，其中有 <span class="math">\(H=300\,000\)</span> 个 3，由 <span class="math">\(t=8\)</span> 个进程处理。在匹配处加锁的版本和每个进程只加锁一次的版本，各需要多少次获取锁？两者之比是多少？</span></p>
+<p><strong>Q1.</strong> (Calculation) An array of <span class="math">\(N=2\,000\,001\)</span> elements contains <span class="math">\(H=300\,000\)</span> threes and is processed with <span class="math">\(t=8\)</span> processes. How many lock acquisitions do the version with the lock inside the match and the version with one locked update per process need, and what is the ratio?<span class="zh" lang="zh-CN"><strong>Q1.</strong>（计算）一个数组有 <span class="math">\(N=2\,000\,001\)</span> 个元素，其中有 <span class="math">\(H=300\,000\)</span> 个 3，由 <span class="math">\(t=8\)</span> 个进程处理。在匹配处加锁的版本和每个进程只加锁一次的版本，各需要多少次获取锁？两者之比是多少？</span></p>
 <details><summary>Answer</summary>
 <p>Lock inside the match: <span class="math">\(A_{\text{match}}=H=300\,000\)</span>. Lock after the scan: <span class="math">\(A_{\text{proc}}=t=8\)</span>. Ratio <span class="math">\(H/t=300\,000/8=37\,500\)</span>.<span class="zh" lang="zh-CN">匹配处加锁：<span class="math">\(A_{\text{match}}=H=300\,000\)</span>。扫描后加锁：<span class="math">\(A_{\text{proc}}=t=8\)</span>。比值 <span class="math">\(H/t=300\,000/8=37\,500\)</span>。</span></p>
 </details>
@@ -4504,7 +4504,7 @@ pi_approx = 4.0*sum;
 <p>(e) The cost grows linearly with <span class="math">\(i\)</span> and is known in advance, so <code>static, 1</code> is a good choice: <span class="math">\(E=0.85\)</span> with no run-time requests. <code>dynamic, 1</code> reaches the same balance.<span class="zh" lang="zh-CN">(e) 代价随 <span class="math">\(i\)</span> 线性增长，并且事先已知，所以 <code>static, 1</code> 是个好选择：<span class="math">\(E=0.85\)</span>，运行时无需申请。<code>dynamic, 1</code> 也能达到同样的负载均衡。</span></p>
 <p><em>思路：先算每个线程的负载，取最大值当总时间；效率 = 总工作量 /（线程数 × 最大负载）。</em></p>
 </details>
-<p><strong>Q3.</strong> <em>(Loops: legal form and dependences)</em> For each loop decide whether <code># pragma omp parallel for</code> is correct as written. If not, give the reason and a correct version. (a) <code>for (i = 0; i &lt; n; i++) { t = a[i] + 1.0; b[i] = t*t; }</code> with <code>double t</code> declared before the loop. (b) <code>for (i = 1; i &lt; n; i++) a[i] = a[i-1] + 2;</code> (c) <code>for (x = 0.0; x &lt; 1.0; x += 0.001) s += g(x);</code><span class="zh" lang="zh-CN"><strong>Q3.</strong> <em>(循环：规范形式与依赖)</em> 对每个循环，判断 <code># pragma omp parallel for</code> 按原样写是否正确。如果不正确，给出原因和正确的写法。(a) <code>for (i = 0; i &lt; n; i++) { t = a[i] + 1.0; b[i] = t*t; }</code>，其中 <code>double t</code> 声明在循环之前。(b) <code>for (i = 1; i &lt; n; i++) a[i] = a[i-1] + 2;</code> (c) <code>for (x = 0.0; x &lt; 1.0; x += 0.001) s += g(x);</code></span></p>
+<p><strong>Q3.</strong> <em>(Loops: legal form and dependences)</em> For each loop decide whether <code># pragma omp parallel for</code> is correct as written. If not, give the reason. (a) <code>for (i = 0; i &lt; n; i++) { t = a[i] + 1.0; b[i] = t*t; }</code> with <code>double t</code> declared before the loop. (b) <code>for (i = 1; i &lt; n; i++) a[i] = a[i-1] + 2;</code> (c) <code>for (x = 0.0; x &lt; 1.0; x += 0.001) s += g(x);</code><span class="zh" lang="zh-CN"><strong>Q3.</strong> <em>(循环：规范形式与依赖)</em> 对每个循环，判断 <code># pragma omp parallel for</code> 按原样写是否正确。如果不正确，给出原因。(a) <code>for (i = 0; i &lt; n; i++) { t = a[i] + 1.0; b[i] = t*t; }</code>，其中 <code>double t</code> 声明在循环之前。(b) <code>for (i = 1; i &lt; n; i++) a[i] = a[i-1] + 2;</code> (c) <code>for (x = 0.0; x &lt; 1.0; x += 0.001) s += g(x);</code></span></p>
 <details><summary>Answer</summary>
 <ul>
 <li>(a) Wrong: <code>t</code> is a shared scratch variable (race). Add <code>private(t)</code> or declare <code>double t</code> inside the loop.<span class="zh" lang="zh-CN">（a）错误：<code>t</code> 是共享的临时变量（存在竞争）。应添加 <code>private(t)</code>，或在循环内声明 <code>double t</code>。</span></li>
@@ -5704,9 +5704,9 @@ float v = tile[threadIdx.x][threadIdx.y];
 <details><summary>Answer</summary>
 <p>(a) 1 FLOP per 12 bytes: AI <span class="math">\(=0.083\)</span> FLOP/byte. Traffic 1.2 GB, <span class="math">\(t_{\min}=1.2\times10^{9}/(4.8\times10^{12})=0.25\)</span> ms. (b) 1 FLOP per 8 bytes: AI <span class="math">\(=0.125\)</span>. Traffic 0.8 GB, <span class="math">\(t_{\min}=0.17\)</span> ms. Both are memory-bound: the bytes moved set the time.<span class="zh" lang="zh-CN">(a) 每 12 字节 1 FLOP：算术强度为 <span class="math">\(=0.083\)</span> FLOP/byte，访存流量 1.2 GB，<span class="math">\(t_{\min}=1.2\times10^{9}/(4.8\times10^{12})=0.25\)</span> ms。(b) 每 8 字节 1 FLOP：算术强度为 <span class="math">\(=0.125\)</span>，访存流量 0.8 GB，<span class="math">\(t_{\min}=0.17\)</span> ms。两者都是访存受限的：移动的字节数决定了时间。</span></p>
 </details>
-<p><strong>Q2.</strong> <em>(Calculation and concept)</em> The kernel <code>y[i] = a * x[i] + y[i]</code> on <span class="math">\(10^{8}\)</span> elements takes 0.25 ms. Find the effective bandwidth and its fraction of an 8 TB/s peak. What would 0.10 ms mean?<span class="zh" lang="zh-CN"><strong>Q2.</strong>（计算和概念）核函数 <code>y[i] = a * x[i] + y[i]</code> 处理 <span class="math">\(10^{8}\)</span> 个元素，耗时 0.25 ms。求有效带宽，以及它占 8 TB/s 峰值的比例。0.10 ms 意味着什么？</span></p>
+<p><strong>Q2.</strong> <em>(Calculation and concept)</em> The FP32 kernel <code>y[i] = a * x[i] + y[i]</code> on <span class="math">\(10^{8}\)</span> elements takes 0.25 ms. Find the effective bandwidth and its fraction of an 8 TB/s peak. What would 0.10 ms mean?<span class="zh" lang="zh-CN"><strong>Q2.</strong>（计算和概念）FP32 核函数 <code>y[i] = a * x[i] + y[i]</code> 处理 <span class="math">\(10^{8}\)</span> 个元素，耗时 0.25 ms。求有效带宽，以及它占 8 TB/s 峰值的比例。0.10 ms 意味着什么？</span></p>
 <details><summary>Answer</summary>
-<p><span class="math">\(BW_{\text{eff}}=1.2\,\text{GB}/0.25\,\text{ms}=4.8\)</span> TB/s, 60% of the peak.<span class="zh" lang="zh-CN"><span class="math">\(BW_{\text{eff}}=1.2\,\text{GB}/0.25\,\text{ms}=4.8\)</span> TB/s，占峰值的 60%。</span></p>
+<p>Traffic: <span class="math">\(10^{8}\times12\)</span> B <span class="math">\(=1.2\)</span> GB (read <code>x[i]</code> and <code>y[i]</code>, write <code>y[i]</code>, 4 B each). <span class="math">\(BW_{\text{eff}}=1.2\,\text{GB}/0.25\,\text{ms}=4.8\)</span> TB/s, 60% of the peak.<span class="zh" lang="zh-CN">访存流量：<span class="math">\(10^{8}\times12\)</span> B <span class="math">\(=1.2\)</span> GB（读 <code>x[i]</code> 和 <code>y[i]</code>，写 <code>y[i]</code>，各 4 B）。<span class="math">\(BW_{\text{eff}}=1.2\,\text{GB}/0.25\,\text{ms}=4.8\)</span> TB/s，占峰值的 60%。</span></p>
 <p>At 0.10 ms it would be 12 TB/s, above the peak, which is impossible. Likely causes: the timer stopped before the asynchronous kernel finished, part of the data came from a cache, or the byte count is wrong.<span class="zh" lang="zh-CN">若为 0.10 ms，则带宽为 12 TB/s，高于峰值，这是不可能的。可能的原因有：计时器在异步核函数结束前就已停止，部分数据来自缓存，或字节数有误。</span></p>
 <p><em>易错：内核启动是异步的，计时前要同步。</em></p>
 </details>
