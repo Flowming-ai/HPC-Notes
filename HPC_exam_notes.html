@@ -313,7 +313,7 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <button id="menu" class="tool" type="button">☰ 目录</button>
 <nav id="nav">
   <div class="brand">ECCE 738 考前极简版</div>
-  <div class="sub">更新于 2026-11-16 14:16</div>
+  <div class="sub">更新于 2026-11-16 15:38</div>
   <div class="tools">
     <button class="tool" id="zhtoggle" type="button">语言：双语</button>
     <button class="tool" id="answers" type="button">展开全部答案</button>
@@ -2813,10 +2813,11 @@ pi_approx = 4.0*sum;
 <div class="callout example"><div class="callout-head"><span class="kind"><span class="en">Worked Example</span><span class="zo">例题</span></span><span class="title"><span class="en">\(P_{\text{peak}} = 19.2\text{ TFLOP/s}\) (FP32), \(BW = 900\text{ GB/s}\); 4 B per FP32 value</span><span class="zh">\(P_{\text{peak}} = 19.2\text{ TFLOP/s}\)（FP32），\(BW = 900\text{ GB/s}\)；每个 FP32 数 4 B</span></span></div><div class="callout-body"><ol>
 <li>\(B_m = P_{\text{peak}} / BW = 19{,}200\text{ GFLOP/s} \div 900\text{ GB/s} = 21.3\text{ FLOP/byte}\).</li>
 <li>Vector addition \(c_i = a_i + b_i\): per element 1 FLOP and \(3 \times 4 = 12\) bytes (read \(a_i\), \(b_i\); write \(c_i\)) \(\implies \text{AI} = 1/12 = 0.083 &lt; B_m\): memory-bound; \(P_{\text{att}} = \text{AI} \times BW = 0.083 \times 900 = 75\text{ GFLOP/s}\), only <strong>0.39%</strong> of peak.<span class="zh">向量加法 \(c_i = a_i + b_i\)：每个元素 1 个 FLOP、\(3 \times 4 = 12\) 字节（读 \(a_i\)、\(b_i\)，写 \(c_i\)）\(\implies \text{AI} = 1/12 = 0.083 &lt; B_m\)：访存受限；\(P_{\text{att}} = \text{AI} \times BW = 0.083 \times 900 = 75\text{ GFLOP/s}\)，只有峰值的 <strong>0.39%</strong>。</span></li>
-<li>Dot product \(s = \sum x_i y_i\), \(s\) kept in a register: per element 2 FLOPs, a multiply and an add, and 8 bytes read: \(x_i\) and \(y_i\) \(\implies \text{AI} = 0.25\text{ FLOP/byte}\).<span class="zh">点积 \(s = \sum x_i y_i\)，\(s\) 留在寄存器里：每个元素 2 个 FLOP，一次乘、一次加，读 8 字节：\(x_i\) 和 \(y_i\) \(\implies \text{AI} = 0.25\text{ FLOP/byte}\)。</span></li>
+<li>Dot product \(s = \sum x_i y_i\), \(s\) kept in a register: per element 2 FLOPs, a multiply and an add, and 8 bytes read: \(x_i\) and \(y_i\) \(\implies \text{AI} = 2/8 = 0.25 &lt; B_m\): memory-bound; \(P_{\text{att}} = 0.25 \times 900 = 225\text{ GFLOP/s}\).<span class="zh">点积 \(s = \sum x_i y_i\)，\(s\) 留在寄存器里：每个元素 2 个 FLOP，一次乘、一次加，读 8 字节：\(x_i\) 和 \(y_i\) \(\implies \text{AI} = 2/8 = 0.25 &lt; B_m\)：访存受限；\(P_{\text{att}} = 0.25 \times 900 = 225\text{ GFLOP/s}\)。</span></li>
 <li>Ideal \(n \times n\) matmul (\(A\), \(B\), \(C\) each moved once): \(2n^3\) FLOPs, \(3 \times 4n^2 = 12n^2\) bytes \(\implies \text{AI} = n/6\); compute-bound when \(n/6 \ge 21.3\), i.e. \(n \ge 128\).<span class="zh">理想的 \(n \times n\) 矩阵乘（\(A\)、\(B\)、\(C\) 各只搬一次）：\(2n^3\) 个 FLOP，\(3 \times 4n^2 = 12n^2\) 字节 \(\implies \text{AI} = n/6\)；\(n/6 \ge 21.3\) 即 \(n \ge 128\) 时计算受限。</span></li>
 </ol>
 </div></div>
+<div class="figs n1"><figure><a class="zoom" href="img/fig/roofline_11_3.png" title="点击看大图 Click to enlarge"><img src="img/fig/roofline_11_3.png" alt="Roofline of this example GPU, both axes in log scale: the slanted memory roof AI × BW meets the flat compute roof of 19.2 TFLOP/s at the ridge point AI = 21.3 FLOP/byte" loading="lazy"></a><figcaption><span class="en">Roofline of this example GPU, both axes in log scale: the slanted memory roof AI × BW meets the flat compute roof of 19.2 TFLOP/s at the ridge point AI = 21.3 FLOP/byte</span><span class="zh">本例 GPU 的 Roofline，两轴均为对数刻度：斜的访存屋顶 AI × BW 与 19.2 TFLOP/s 的平顶在拐点 AI = 21.3 FLOP/byte 相交</span></figcaption></figure></div>
 <h2 id="sec-11_gpu_arch-4" data-num="11.4"><span class="en">Five Steps of a GPU Computation</span> <span class="prio p2">★★</span><span class="zh">GPU 计算的五个步骤</span></h2>
 <ol>
 <li>Load data into CPU memory \(\to\) 2. copy CPU \(\to\) GPU (PCIe) \(\to\) 3. run the kernel on the GPU \(\to\) 4. copy GPU \(\to\) CPU (PCIe) \(\to\) 5. use the results on the CPU.<span class="zh">把数据装入 CPU 内存 \(\to\) 2. 从 CPU 拷到 GPU（PCIe）\(\to\) 3. 在 GPU 上运行核函数 \(\to\) 4. 从 GPU 拷回 CPU（PCIe）\(\to\) 5. 在 CPU 上使用结果。</span></li>
