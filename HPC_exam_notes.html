@@ -313,7 +313,7 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <button id="menu" class="tool" type="button">☰ 目录</button>
 <nav id="nav">
   <div class="brand">ECCE 738 考前极简版</div>
-  <div class="sub">更新于 2026-11-16 13:09</div>
+  <div class="sub">更新于 2026-11-16 14:03</div>
   <div class="tools">
     <button class="tool" id="zhtoggle" type="button">语言：双语</button>
     <button class="tool" id="answers" type="button">展开全部答案</button>
@@ -1168,6 +1168,8 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <h2 id="sec-04_threads-2" data-num="4.2"><span class="en">The Pthreads API</span> <span class="prio p3">★★★</span><span class="zh">Pthreads 编程接口</span></h2>
 <ul>
 <li><strong>Pthreads</strong> (POSIX threads): the C thread library of Unix-like systems.<span class="zh"><strong>Pthreads</strong>（POSIX 线程）：类 Unix 系统的 C 线程库。</span></li>
+<li><code>pthread_create(&amp;handle, NULL, func, arg)</code>: starts a thread that runs <code class="nw">func(arg)</code> and returns at once (<code class="nw">NULL</code>: default attributes). <code class="nw">pthread_join(handle, NULL)</code>: waits until that thread has ended.<span class="zh"><code>pthread_create(&amp;handle, NULL, func, arg)</code>：启动一个运行 <code class="nw">func(arg)</code> 的线程，并立即返回（<code class="nw">NULL</code>：默认属性）。<code class="nw">pthread_join(handle, NULL)</code>：等到该线程结束。</span></li>
+<li>The thread function takes one <code class="nw">void*</code>: the rank (\(0\) to \(t-1\)) goes in as <code class="nw">(void*) thread</code> and comes back as <code class="nw">(long) rank</code>.<span class="zh">线程函数只接受一个 <code class="nw">void*</code>：编号（\(0\) 到 \(t-1\)）以 <code class="nw">(void*) thread</code> 传入，在函数里用 <code class="nw">(long) rank</code> 取回。</span></li>
 <li>Loop 1 creates all threads, loop 2 joins them. <code class="nw">pthread_join</code> inside the create loop makes the run serial.<span class="zh">第 1 个循环创建全部线程，第 2 个循环等待它们结束。把 <code class="nw">pthread_join</code> 放进创建循环会让运行变成串行。</span></li>
 </ul>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
@@ -1420,6 +1422,7 @@ void *Hello(void* rank) {
 <li>\(A_{\text{match}}\), \(A_{\text{proc}}\): lock acquisitions with a lock per match and per process; \(H\): matches (share of threes × array length \(N\)); \(t\): processes.<span class="zh">\(A_{\text{match}}\)、\(A_{\text{proc}}\)：逐次命中加锁、每进程加锁一次时的加锁次数；\(H\)：命中次数（3 的比例 × 数组长度 \(N\)）；\(t\)：进程数。</span></li>
 </ul>
 </div></div>
+<p>The worker with one locked update per process: count in <code class="nw">local</code> without a lock, then add <code class="nw">local</code> to the shared <code class="nw">count</code> once, under its lock.<span class="zh">每个进程只加锁一次的工作函数：先不加锁地数到 <code class="nw">local</code> 里，最后在锁内把 <code class="nw">local</code> 加到共享的 <code class="nw">count</code> 上一次。</span></p>
 <pre><code class="language-python">def count_block_reduced(data, start, stop, count):
     local = 0
     for i in range(start, stop):
@@ -1432,7 +1435,7 @@ void *Hello(void* rank) {
 </div></div>
 <h2 id="sec-05_python-3" data-num="5.3"><span class="en">Program Skeleton &amp; Life Cycle</span> <span class="prio p2">★★</span><span class="zh">多进程程序结构与生命周期</span></h2>
 <ul>
-<li>Four steps in order: <strong>create</strong>, <strong>start</strong>, <strong>join</strong>, <strong>read the result</strong> (after all joins).<span class="zh">四步依次为：<strong>创建</strong>、<strong>启动</strong>、<strong>join</strong>、<strong>读结果</strong>（全部 join 之后）。</span></li>
+<li>Four steps in order: <strong>create</strong> a process with <code>mp.Process(target=f, args=(...))</code>, which will run <code class="nw">f(*args)</code>; <strong>start</strong> it with <code class="nw">p.start()</code>; <strong>join</strong> with <code class="nw">p.join()</code>, which waits until it has ended; <strong>read the result</strong> after all joins.<span class="zh">四步依次为：用 <code>mp.Process(target=f, args=(...))</code> <strong>创建</strong>进程，它将运行 <code class="nw">f(*args)</code>；用 <code class="nw">p.start()</code> <strong>启动</strong>；用 <code class="nw">p.join()</code> <strong>等待</strong>它结束；全部 join 之后<strong>读结果</strong>。</span></li>
 </ul>
 <pre><code class="language-python">import multiprocessing as mp
 
@@ -1996,7 +1999,7 @@ void *Pth_mat_vect(void* rank) {
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Minibatch of \(k\) examples: three matrix products per layer</span><span class="zh">\(k\) 个样本的小批量：每层三次矩阵乘法</span></span></div><div class="callout-body"><p><span class="math display">\[\underbrace{\mathbf{W}^T}_{d_\ell \times d_{\ell-1}}\,\underbrace{\mathbf{X}}_{d_{\ell-1} \times k}, \qquad \underbrace{\mathbf{W}}_{d_{\ell-1} \times d_\ell}\,\underbrace{\boldsymbol\Delta}_{d_\ell \times k}, \qquad \underbrace{\mathbf{X}}_{d_{\ell-1} \times k}\,\underbrace{\boldsymbol\Delta^T}_{k \times d_\ell}: \qquad 2\,d_\ell\, d_{\ell-1}\, k \text{ FLOPs each}\]</span></p>
 <ul>
 <li>\(\mathbf{W}\): weights of layer \(\ell\); \(\mathbf{X}\), \(\boldsymbol\Delta\): the \(k\) vectors \(x\) and \(\delta\) as columns; \(d_{\ell-1}\) inputs and \(d_\ell\) outputs of layer \(\ell\).<span class="zh">\(\mathbf{W}\)：第 \(\ell\) 层的权重；\(\mathbf{X}\)、\(\boldsymbol\Delta\)：把 \(k\) 个 \(x\) 向量和 \(\delta\) 向量按列排开；第 \(\ell\) 层有 \(d_{\ell-1}\) 个输入、\(d_\ell\) 个输出。</span></li>
-<li>Results: \(d_\ell \times k\) (forward, the \(z\) of all \(k\) examples), \(d_{\ell-1} \times k\) (errors sent back), \(d_{\ell-1} \times d_\ell\) (weight gradient, the shape of \(\mathbf{W}\)).<span class="zh">结果形状：\(d_\ell \times k\)（前向，\(k\) 个样本的 \(z\)），\(d_{\ell-1} \times k\)（向后传的误差），\(d_{\ell-1} \times d_\ell\)（权重梯度，与 \(\mathbf{W}\) 同形）。</span></li>
+<li>Results: forward \(d_\ell \times k\), the \(z\) of all \(k\) examples; errors sent back \(d_{\ell-1} \times k\); weight gradient \(d_{\ell-1} \times d_\ell\), the shape of \(\mathbf{W}\).<span class="zh">结果形状：前向 \(d_\ell \times k\)，即 \(k\) 个样本的 \(z\)；向后传的误差 \(d_{\ell-1} \times k\)；权重梯度 \(d_{\ell-1} \times d_\ell\)，与 \(\mathbf{W}\) 同形。</span></li>
 </ul>
 </div></div>
 <h2 id="sec-07_dl_matmul-4" data-num="7.4"><span class="en">Model Size &amp; 3-Step Compression</span> <span class="prio p2">★★</span><span class="zh">模型大小与 3 步压缩</span></h2>
@@ -2174,10 +2177,11 @@ All the <span class="math">\(S_i\)</span>: <span class="math">\(12\cdot1024^2=12
 <ul>
 <li><strong>OpenMP</strong> (Open Multi-Processing): one program on several cores of one computer, parallelized with <code class="nw">#pragma omp</code> compiler directives; compile with <code class="nw">gcc -fopenmp</code>.<span class="zh"><strong>OpenMP</strong>（Open Multi-Processing）：一个程序在一台计算机的多个核上运行，用 <code class="nw">#pragma omp</code> 编译制导指令并行化；用 <code class="nw">gcc -fopenmp</code> 编译。</span></li>
 <li><strong>Fork–join:</strong> at <code class="nw">#pragma omp parallel</code> the <strong>master thread</strong> forks a team; all run the block; at the closing brace they <strong>join</strong> and only the master continues.<span class="zh"><strong>分叉–汇合：</strong>到 <code class="nw">#pragma omp parallel</code> 时<strong>主线程</strong>分叉出一组线程；都执行该代码块；到右花括号处<strong>汇合</strong>，只剩主线程继续。</span></li>
-<li><code class="nw">num_threads(n)</code> only <strong>requests</strong> \(n\) threads; the actual team size is <code class="nw">omp_get_num_threads()</code> inside the block.<span class="zh"><code class="nw">num_threads(n)</code> 只是<strong>请求</strong> \(n\) 个线程；实际线程数要在块内用 <code class="nw">omp_get_num_threads()</code> 取得。</span></li>
+<li><code class="nw">num_threads(n)</code> (a clause of the directive) only <strong>requests</strong> \(n\) threads. Inside the block <code class="nw">omp_get_num_threads()</code> returns the actual team size and <code class="nw">omp_get_thread_num()</code> the number of the calling thread, \(0\) to team size \(-1\).<span class="zh"><code class="nw">num_threads(n)</code>（指令的子句）只是<strong>请求</strong> \(n\) 个线程。块内 <code class="nw">omp_get_num_threads()</code> 返回实际线程数，<code class="nw">omp_get_thread_num()</code> 返回当前线程的编号，\(0\) 到线程数 \(-1\)。</span></li>
 <li>Output order is <strong>undefined</strong>: 4 threads can print in \(4! = 24\) orders.<span class="zh">输出顺序<strong>未定义</strong>：4 个线程有 \(4! = 24\) 种打印顺序。</span></li>
 </ul>
 <div class="figs n1"><figure><a class="zoom" href="img/Lec10/p22.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p22_c0.52_0.12_1_0.37.png" alt="Fork-join model" loading="lazy"></a><figcaption><span class="en">Fork-join model</span><span class="zh">分叉-汇合模型</span></figcaption></figure></div>
+<p>Hello program: <code class="nw">main</code> starts a team of <code class="nw">thread_count</code> threads; each thread runs <code class="nw">Hello</code> and prints its number and the team size.<span class="zh">Hello 程序：<code class="nw">main</code> 启动 <code class="nw">thread_count</code> 个线程的线程组；每个线程运行 <code class="nw">Hello</code>，打印自己的编号和线程数。</span></p>
 <pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;omp.h&gt;
@@ -2209,12 +2213,47 @@ void Hello(void) {
 <li><code class="nw">Local_trap(a, b, n)</code> computes one thread's part (<a class="xref" href="#sec-09_openmp-3">§9.3</a>); <code class="nw">global_result += my_result</code> in every thread loses updates (<a class="xref" href="#sec-04_threads-1">§4.1</a>). Two fixes:<span class="zh"><code class="nw">Local_trap(a, b, n)</code> 计算一个线程的部分（<a class="xref" href="#sec-09_openmp-3">§9.3</a>）；每个线程都执行 <code class="nw">global_result += my_result</code> 会丢更新（<a class="xref" href="#sec-04_threads-1">§4.1</a>）。两种修复：</span></li>
 </ul>
 <ol>
-<li><strong><code class="nw">#pragma omp critical</code></strong> only right before the shared update; around the whole <code class="nw">Local_trap(...)</code> it removes the parallelism.<span class="zh"><strong><code class="nw">#pragma omp critical</code></strong> 只放在共享更新的正前方；包住整个 <code class="nw">Local_trap(...)</code> 就失去了并行。</span></li>
-<li><strong><code class="nw">reduction(op: var)</code></strong>: a private copy of <code class="nw">var</code> per thread, combined safely at the end; <code class="nw">op</code>: <code class="nw">+</code>, <code class="nw">*</code>, <code class="nw">-</code>, <code class="nw">&amp;</code>, <code class="nw">|</code>, <code class="nw">^</code>, <code class="nw">&amp;&amp;</code>, <code class="nw">||</code>.<span class="zh"><strong><code class="nw">reduction(op: var)</code></strong>：每个线程一份 <code class="nw">var</code> 的私有副本，最后安全合并；<code class="nw">op</code> 可为 <code class="nw">+</code>、<code class="nw">*</code>、<code class="nw">-</code>、<code class="nw">&amp;</code>、<code class="nw">|</code>、<code class="nw">^</code>、<code class="nw">&amp;&amp;</code>、<code class="nw">||</code>。</span></li>
+<li><strong><code class="nw">#pragma omp critical</code></strong>: mutual exclusion; only one thread at a time executes the statement right after it, a critical section (<a class="xref" href="#sec-04_threads-1">§4.1</a>). Put it only before the shared update; around the whole <code class="nw">Local_trap(...)</code> it removes the parallelism.<span class="zh"><strong><code class="nw">#pragma omp critical</code></strong>：互斥；同一时刻只有一个线程执行紧跟其后的语句，即临界区（<a class="xref" href="#sec-04_threads-1">§4.1</a>）。只放在共享更新的正前方；包住整个 <code class="nw">Local_trap(...)</code> 就失去了并行。</span></li>
+<li><strong><code class="nw">reduction(op: var)</code></strong> (a clause of <code class="nw">parallel</code>): applies the operator <code class="nw">op</code> repeatedly to the partial results of the threads to get one result in <code class="nw">var</code>. Each thread works on a private copy of <code class="nw">var</code>; the copies are combined safely at the end. It replaces the private variable plus <code class="nw">critical</code>. <code class="nw">op</code>: <code class="nw">+</code>, <code class="nw">*</code>, <code class="nw">-</code>, <code class="nw">&amp;</code>, <code class="nw">|</code>, <code class="nw">^</code>, <code class="nw">&amp;&amp;</code>, <code class="nw">||</code>.<span class="zh"><strong><code class="nw">reduction(op: var)</code></strong>（<code class="nw">parallel</code> 的子句）：把运算符 <code class="nw">op</code> 反复作用于各线程的部分结果，在 <code class="nw">var</code> 中得到一个结果。每个线程用 <code class="nw">var</code> 的一份私有副本，最后安全合并。它代替了“私有变量 + <code class="nw">critical</code>”。<code class="nw">op</code> 可为 <code class="nw">+</code>、<code class="nw">*</code>、<code class="nw">-</code>、<code class="nw">&amp;</code>、<code class="nw">|</code>、<code class="nw">^</code>、<code class="nw">&amp;&amp;</code>、<code class="nw">||</code>。</span></li>
 </ol>
-<pre><code class="language-c"># pragma omp critical
-  global_result += my_result ;
+<p><strong>With <code class="nw">critical</code></strong> (the slide's whole <code class="nw">main</code>): <code class="nw">my_result</code> is declared inside the parallel block, so each thread has its own copy. Each thread fills it with its part, <code class="nw">Local_trap(a, b, n)</code> (code in <a class="xref" href="#sec-09_openmp-3">§9.3</a>), in parallel; then the threads add their <code class="nw">my_result</code> to the shared <code class="nw">global_result</code> one at a time.<span class="zh"><strong>用 <code class="nw">critical</code></strong>（课件中完整的 <code class="nw">main</code>）：<code class="nw">my_result</code> 在并行块内声明，所以每个线程各有一份。各线程并行地用 <code class="nw">Local_trap(a, b, n)</code>（代码见 <a class="xref" href="#sec-09_openmp-3">§9.3</a>）算出自己的部分；然后一次一个线程，把自己的 <code class="nw">my_result</code> 加到共享的 <code class="nw">global_result</code> 上。</span></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &lt;omp.h&gt;
+
+void Usage(char* prog_name);
+double f(double x);    /* Function we're integrating */
+double Local_trap(double a, double b, int n);
+
+int main(int argc, char* argv[]) {
+   double  global_result;        /* Store result in global_result */
+   double  a, b;                 /* Left and right endpoints      */
+   int     n;                    /* Total number of trapezoids    */
+   int     thread_count;
+
+   if (argc != 2) Usage(argv[0]);
+   thread_count = strtol(argv[1], NULL, 10);
+   printf(&quot;Enter a, b, and n\n&quot;);
+   scanf(&quot;%lf %lf %d&quot;, &amp;a, &amp;b, &amp;n);
+   if (n % thread_count != 0) Usage(argv[0]);
+
+   global_result = 0.0;
+#  pragma omp parallel num_threads(thread_count)
+   {
+      double my_result = 0.0;
+      my_result += Local_trap(a, b, n);
+#     pragma omp critical
+      global_result += my_result;
+   }
+
+   printf(&quot;With n = %d trapezoids, our estimate\n&quot;, n);
+   printf(&quot;of the integral from %f to %f = %.14e\n&quot;,
+      a, b, global_result);
+   return 0;
+}  /* main */
 </code></pre>
+<p><strong>With <code class="nw">reduction</code></strong> (first line: the general form): the parallel block of <code class="nw">main</code> above becomes the three lines below. Each thread adds <code class="nw">Local_trap(...)</code> to its own private copy of <code class="nw">global_result</code>; at the end the copies are added with <code class="nw">+</code>, so neither <code class="nw">my_result</code> nor <code class="nw">critical</code> is needed. The slide writes the parameter types inside the call; the real call is <code class="nw">Local_trap(a, b, n)</code>.<span class="zh"><strong>用 <code class="nw">reduction</code></strong>（第一行是一般形式）：上面 <code class="nw">main</code> 里的并行块变成下面三行。每个线程把 <code class="nw">Local_trap(...)</code> 加到自己那份 <code class="nw">global_result</code> 私有副本上；结束时各副本用 <code class="nw">+</code> 相加，所以既不需要 <code class="nw">my_result</code>，也不需要 <code class="nw">critical</code>。课件在调用里写了参数类型；实际调用是 <code class="nw">Local_trap(a, b, n)</code>。</span></p>
 <pre><code class="language-c">reduction(&lt;operator&gt;: &lt;variable list&gt;)
 </code></pre>
 <pre><code class="language-c">global_result = 0.0;
@@ -2234,6 +2273,28 @@ void Hello(void) {
 <li><code class="nw">local_n</code> trapezoids per thread on [<code class="nw">local_a</code>, <code class="nw">local_b</code>]; <code class="nw">local_result</code>: the thread's partial result; \(i\): inner point, \(1\) to \(\text{local\_n}-1\).<span class="zh">每个线程在 [<code class="nw">local_a</code>, <code class="nw">local_b</code>] 上算 <code class="nw">local_n</code> 个梯形；<code class="nw">local_result</code>：线程的部分结果；\(i\)：内部点，\(1\) 到 \(\text{local\_n}-1\)。</span></li>
 </ul>
 </div></div>
+<p>The slide's <code class="nw">Local_trap</code>: one thread's part, exactly the card above (<code class="nw">my_rank</code> is \(r\), <code class="nw">thread_count</code> is \(p\), <code class="nw">my_result</code> is local_result).<span class="zh">课件中的 <code class="nw">Local_trap</code>：一个线程的部分，就是上面这张卡（<code class="nw">my_rank</code> 即 \(r\)，<code class="nw">thread_count</code> 即 \(p\)，<code class="nw">my_result</code> 即 local_result）。</span></p>
+<pre><code class="language-c">double Local_trap(double a, double b, int n) {
+   double  h, x, my_result;
+   double  local_a, local_b;
+   int  i, local_n;
+   int my_rank = omp_get_thread_num();
+   int thread_count = omp_get_num_threads();
+
+   h = (b-a)/n;
+   local_n = n/thread_count;
+   local_a = a + my_rank*local_n*h;
+   local_b = local_a + local_n*h;
+   my_result = (f(local_a) + f(local_b))/2.0;
+   for (i = 1; i &lt;= local_n-1; i++) {
+     x = local_a + i*h;
+     my_result += f(x);
+   }
+   my_result = my_result*h;
+
+   return my_result;
+}  /* Trap */
+</code></pre>
 <ul>
 <li>\(C = AB\) (\(N \times N\)), stored as 1-D arrays <code class="nw">A[i*N + j]</code> (locality, <a class="xref" href="#sec-03_architecture-2">§3.2</a>); <code class="nw">collapse(2)</code> merges the <code class="nw">i</code> and <code class="nw">j</code> loops into one iteration space; each iteration writes its own <code class="nw">C[i*N + j]</code> \(\implies\) no lock.<span class="zh">\(C = AB\)（\(N \times N\)），存成一维数组 <code class="nw">A[i*N + j]</code>（局部性，<a class="xref" href="#sec-03_architecture-2">§3.2</a>）；<code class="nw">collapse(2)</code> 把 <code class="nw">i</code>、<code class="nw">j</code> 两层循环合并成一个迭代空间；每次迭代只写自己的 <code class="nw">C[i*N + j]</code> \(\implies\) 不需要锁。</span></li>
 </ul>
@@ -2392,6 +2453,7 @@ void Hello(void) {
 <li><strong><code class="nw">private(k, factor)</code></strong>: one copy per thread.<span class="zh"><strong><code class="nw">private(k, factor)</code></strong>：每个线程一份。</span></li>
 <li><strong><code class="nw">reduction(+:sum)</code></strong> (<a class="xref" href="#sec-09_openmp-2">§9.2</a>) and <strong><code class="nw">default(none)</code></strong>: every outside variable needs a declared scope, so a forgotten <code class="nw">private</code> is a compile error.<span class="zh"><strong><code class="nw">reduction(+:sum)</code></strong>（<a class="xref" href="#sec-09_openmp-2">§9.2</a>）和 <strong><code class="nw">default(none)</code></strong>：每个外部变量都要声明作用域，漏写 <code class="nw">private</code> 就会编译报错。</span></li>
 </ol>
+<p><strong>Wrong:</strong> <code class="nw">factor</code> is shared, and each iteration needs the <code class="nw">factor</code> of the previous one.<span class="zh"><strong>错误版本：</strong><code class="nw">factor</code> 是共享的，而且每次迭代都要用上一次迭代的 <code class="nw">factor</code>。</span></p>
 <pre><code class="language-c">   double factor = 1.0;
    double sum = 0.0;
 #  pragma omp parallel for num_threads(thread_count) \
@@ -2402,6 +2464,7 @@ void Hello(void) {
    }
    pi_approx = 4.0*sum;
 </code></pre>
+<p><strong>Correct:</strong> <code class="nw">factor</code> computed from <code class="nw">k</code>; <code class="nw">private(k, factor)</code>; <code class="nw">default(none)</code> with <code class="nw">shared(n)</code>; <code class="nw">reduction(+:sum)</code>.<span class="zh"><strong>正确版本：</strong>由 <code class="nw">k</code> 算出 <code class="nw">factor</code>；<code class="nw">private(k, factor)</code>；<code class="nw">default(none)</code> 并写明 <code class="nw">shared(n)</code>；<code class="nw">reduction(+:sum)</code>。</span></p>
 <pre><code class="language-c">   double sum = 0.0;
 #  pragma omp parallel for num_threads(thread_count) \
       default(none) reduction(+:sum) private(k, factor) \
@@ -3488,9 +3551,42 @@ tiled16&lt;&lt;&lt;grid,block&gt;&gt;&gt;(A,B,C,M,N,K);
 <ul>
 <li><strong>MPI</strong> (Message Passing Interface): standard message-passing library. <code class="nw">mpiexec -n p ./prog</code> starts all \(p\) processes (in code <code class="nw">comm_sz</code>); each runs the same <code class="nw">main</code> with private variables.<span class="zh"><strong>MPI</strong>（消息传递接口）：标准的消息传递库。<code class="nw">mpiexec -n p ./prog</code> 同时启动 \(p\) 个进程（代码里为 <code class="nw">comm_sz</code>）；每个进程运行同一个 <code class="nw">main</code>，变量各自私有。</span></li>
 <li><strong>Communicator:</strong> a group of processes that can exchange messages; <code class="nw">MPI_COMM_WORLD</code> holds all \(p\). <strong>Size:</strong> number of processes in it; <strong>rank:</strong> a process's number, <strong><code class="nw">0</code> to <code class="nw">p - 1</code></strong>.<span class="zh"><strong>通信子：</strong>一组能互发消息的进程；<code class="nw">MPI_COMM_WORLD</code> 含全部 \(p\) 个。<strong>大小（size）：</strong>其中的进程数；<strong>编号（rank）：</strong>进程的序号，<strong><code class="nw">0</code> 到 <code class="nw">p - 1</code></strong>。</span></li>
-<li>Names are case-sensitive (<code class="nw">MPI_Init</code>, <code class="nw">MPI_Finalize</code>); <code class="nw">MPI_Comm_size</code> and <code class="nw">MPI_Comm_rank</code> take pointers (<code class="nw">&amp;nproc</code>, <code class="nw">&amp;rank</code>).<span class="zh">函数名区分大小写（<code class="nw">MPI_Init</code>、<code class="nw">MPI_Finalize</code>）；<code class="nw">MPI_Comm_size</code> 和 <code class="nw">MPI_Comm_rank</code> 传指针（<code class="nw">&amp;nproc</code>、<code class="nw">&amp;rank</code>）。</span></li>
+<li>Names are case-sensitive (<code class="nw">MPI_Init</code>, not <code class="nw">mpi_init</code>); size and rank come back through pointers (<code class="nw">&amp;nproc</code>, <code class="nw">&amp;rank</code>).<span class="zh">函数名区分大小写（<code class="nw">MPI_Init</code>，不是 <code class="nw">mpi_init</code>）；进程数和编号通过指针传回（<code class="nw">&amp;nproc</code>、<code class="nw">&amp;rank</code>）。</span></li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th><span class="en">Function</span> <span class="zh">函数</span></th>
+<th><span class="en">What it does</span> <span class="zh">作用</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MPI_Init(&amp;argc, &amp;argv)</code></td>
+<td>Initializes MPI: all the setup; the first MPI call.<span class="zh">初始化 MPI：完成所有准备；第一个 MPI 调用。</span></td>
+</tr>
+<tr>
+<td><code class="nw">MPI_Finalize()</code></td>
+<td>Exits MPI: cleans up what MPI allocated; the last MPI call.<span class="zh">退出 MPI：清理 MPI 分配的资源；最后一个 MPI 调用。</span></td>
+</tr>
+<tr>
+<td><code>MPI_Comm_size(comm, &amp;size)</code></td>
+<td>Number of processes in the communicator <code class="nw">comm</code>.<span class="zh">通信子 <code class="nw">comm</code> 中的进程数。</span></td>
+</tr>
+<tr>
+<td><code>MPI_Comm_rank(comm, &amp;rank)</code></td>
+<td>Rank of the calling process in <code class="nw">comm</code>.<span class="zh">当前进程在 <code class="nw">comm</code> 中的编号。</span></td>
+</tr>
+<tr>
+<td><code class="nw">MPI_Send</code>, <code class="nw">MPI_Recv</code></td>
+<td>Send a message; receive a message (<a class="xref" href="#sec-15_mpi-3">§15.3</a>).<span class="zh">发送消息；接收消息（<a class="xref" href="#sec-15_mpi-3">§15.3</a>）。</span></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
 <li>Compile <code>mpicc -g -Wall -o mpi_hello mpi_hello.c</code> (without <code class="nw">-o</code>: <code class="nw">a.out</code>); run <code class="nw">mpiexec -n 4 ./mpi_hello</code>.<span class="zh">编译 <code>mpicc -g -Wall -o mpi_hello mpi_hello.c</code>（不加 <code class="nw">-o</code> 则为 <code class="nw">a.out</code>）；运行 <code class="nw">mpiexec -n 4 ./mpi_hello</code>。</span></li>
 </ul>
+<p>Hello program: every process gets the number of processes and its own rank, then prints its rank.<span class="zh">Hello 程序：每个进程取得进程数和自己的编号，然后打印编号。</span></p>
 <pre><code class="language-c">#include &quot;mpi.h&quot;
 int main( int argc, char *argv[] ) {
   int nproc, rank;
@@ -3506,6 +3602,7 @@ int main( int argc, char *argv[] ) {
 }
 </code></pre>
 <h2 id="sec-15_mpi-3" data-num="15.3"><span class="en"><code class="nw">MPI_Send</code>, <code class="nw">MPI_Recv</code> &amp; the Greetings Program</span> <span class="prio p3">★★★</span><span class="zh">消息收发与 Greetings 程序追踪</span></h2>
+<p><strong><code class="nw">MPI_Send</code></strong> sends <code class="nw">msg_size</code> elements of type <code class="nw">msg_type</code>, starting at <code class="nw">msg_buf_p</code>, to the process <code class="nw">dest</code>:<span class="zh"><strong><code class="nw">MPI_Send</code></strong> 把从 <code class="nw">msg_buf_p</code> 开始的 <code class="nw">msg_size</code> 个 <code class="nw">msg_type</code> 类型的元素发给进程 <code class="nw">dest</code>：</span></p>
 <pre><code class="language-c">int MPI_Send(
       void*         msg_buf_p    /* in */,
       int           msg_size     /* in */,
@@ -3514,6 +3611,7 @@ int main( int argc, char *argv[] ) {
       int           tag          /* in */,
       MPI_Comm      communicator /* in */);
 </code></pre>
+<p><strong><code class="nw">MPI_Recv</code></strong> receives a message from <code class="nw">source</code> with the label <code class="nw">tag</code> into <code class="nw">msg_buf_p</code>, which has room for <code class="nw">buf_size</code> elements:<span class="zh"><strong><code class="nw">MPI_Recv</code></strong> 接收来自 <code class="nw">source</code>、标签为 <code class="nw">tag</code> 的消息，存入 <code class="nw">msg_buf_p</code>，缓冲区能放 <code class="nw">buf_size</code> 个元素：</span></p>
 <pre><code class="language-c">int MPI_Recv(
       void*         msg_buf_p    /* out */,
       int           buf_size     /* in  */,
@@ -3843,6 +3941,7 @@ if (my_rank == 0)
 </tr>
 </tbody>
 </table></div>
+<p>Example job script: the <code class="nw">#SBATCH</code> lines request resources, <code class="nw">module load</code> and <code class="nw">conda activate</code> set up the software, the last command runs the analysis; then create <code class="nw">logs/</code> and submit.<span class="zh">作业脚本示例：<code class="nw">#SBATCH</code> 行申请资源，<code class="nw">module load</code> 和 <code class="nw">conda activate</code> 准备软件，最后一条命令运行分析；之后创建 <code class="nw">logs/</code> 并提交。</span></p>
 <pre><code class="language-bash">#!/bin/bash -l
 #SBATCH --job-name=bam_check
 #SBATCH --partition=prod
