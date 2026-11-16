@@ -313,7 +313,7 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <button id="menu" class="tool" type="button">☰ 目录</button>
 <nav id="nav">
   <div class="brand">ECCE 738 考前极简版</div>
-  <div class="sub">更新于 2026-11-16 19:15</div>
+  <div class="sub">更新于 2026-11-16 19:18</div>
   <div class="tools">
     <button class="tool" id="zhtoggle" type="button">语言：双语</button>
     <button class="tool" id="answers" type="button">展开全部答案</button>
@@ -711,7 +711,6 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <li>For a fixed \(p\), \(E\) is higher for the larger problem (at \(p = 16\): \(0.39\), \(0.68\), \(0.89\)).<span class="zh">\(p\) 固定时，问题越大 \(E\) 越高（\(p = 16\)：\(0.39\)、\(0.68\)、\(0.89\)）。</span></li>
 <li>For a fixed problem size, \(E\) falls as \(p\) grows.<span class="zh">问题规模固定时，\(p\) 增大则 \(E\) 下降。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec02/p25.png" title="点击看大图 Click to enlarge"><img src="img/Lec02/p25_c0.0933_0.1796_0.91_0.9004.png" alt="Speedup curves of the three problem sizes against the ideal line" loading="lazy"></a><figcaption><span class="en">Speedup curves of the three problem sizes against the ideal line</span><span class="zh">三种问题规模的加速比曲线与理想线</span></figcaption></figure></div>
 <div class="callout example"><div class="callout-head"><span class="kind"><span class="en">Worked Example</span><span class="zo">例题</span></span><span class="title"><span class="en">Best \(p\): \(T_{\text{serial}} = 100\text{ s}\), of which \(2\text{ s}\) serial and \(98\text{ s}\) parallel; communication \(0.25\log_2 p\text{ s}\)</span><span class="zh">最优核数：\(T_{\text{serial}} = 100\text{ s}\)，其中 \(2\text{ s}\) 串行、\(98\text{ s}\) 可并行；通信 \(0.25\log_2 p\text{ s}\)</span></span></div><div class="callout-body"><p><span class="math display">\[T_p = \underbrace{2}_{\text{serial}} + \underbrace{98/p}_{\text{parallel}} + \underbrace{0.25\log_2 p}_{\text{communication}}, \qquad S = \frac{T_{\text{serial}}}{T_p} = \frac{100}{T_p}\]</span></p>
 <ul>
 <li>\(p = 256\) (\(\log_2 p = 8\)): \(T_{256} = 2 + 0.3828 + 2.00 = 4.3828\text{ s}\), \(S = 22.82\).</li>
@@ -738,7 +737,6 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <li>Best candidate \(p = 256\); at \(p = 1024\) the two overheads (\(2.0 + 1.023\text{ s}\)) cost more than the \(0.58\text{ s}\) saved on \(198/p\).<span class="zh">最优 \(p = 256\)；到 \(p = 1024\)，两种开销（\(2.0 + 1.023\text{ s}\)）比 \(198/p\) 省下的 \(0.58\text{ s}\) 还大。</span></li>
 </ul>
 </div></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec03/p8.png" title="点击看大图 Click to enlarge"><img src="img/Lec03/p8_c0.6027_0.4444_0.9767_0.928.png" alt="Communication and synchronization together give a finite optimum \(p\)" loading="lazy"></a><figcaption><span class="en">Communication and synchronization together give a finite optimum \(p\)</span><span class="zh">通信与同步开销合在一起，使最优核数有限</span></figcaption></figure></div>
 <p>Terms of parallel programs.<span class="zh">并行程序的术语。</span></p>
 <ul>
 <li><strong>Granularity:</strong> size of the tasks; tasks may have different sizes.<span class="zh"><strong>粒度：</strong>任务的大小；任务大小可以不同。</span></li>
@@ -772,14 +770,12 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <li>Limit: \(S_\infty = 1/(1-\alpha) = 1/0.08 = 12.5\).<span class="zh">上限：\(S_\infty = 1/(1-\alpha) = 1/0.08 = 12.5\)。</span></li>
 </ul>
 </div></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec03/p4.png" title="点击看大图 Click to enlarge"><img src="img/Lec03/p4_c0.554_0.2862_0.9807_0.7973.png" alt="Ideal fixed-size speedup approaches the limit 12.5" loading="lazy"></a><figcaption><span class="en">Ideal fixed-size speedup approaches the limit 12.5</span><span class="zh">理想的固定规模加速比逼近上限 12.5</span></figcaption></figure></div>
 <div class="callout example"><div class="callout-head"><span class="kind"><span class="en">Worked Example</span><span class="zo">例题</span></span><span class="title"><span class="en">Exercise 6, scaling gap: \(S_{32} = 20\), \(S_{128} = 24\), \(T_1 = 100\text{ s}\)</span><span class="zh">练习 6，加速比缺口：\(S_{32} = 20\)，\(S_{128} = 24\)，\(T_1 = 100\text{ s}\)</span></span></div><div class="callout-body"><ul>
 <li>Fit \(f\) from \(S_{32}\): \(f = \dfrac{32 - 20}{20 \times 31} = \dfrac{12}{620} = 0.0194\).<span class="zh">由 \(S_{32}\) 求 \(f\)：\(f = \dfrac{32 - 20}{20 \times 31} = \dfrac{12}{620} = 0.0194\)。</span></li>
 <li>Ideal \(S_{128} = \dfrac{1}{f + (1-f)/128} = \dfrac{1}{0.0194 + 0.0077} = 37.0\).<span class="zh">理想 \(S_{128} = \dfrac{1}{f + (1-f)/128} = \dfrac{1}{0.0194 + 0.0077} = 37.0\)。</span></li>
 <li>Ideal \(T_{128} = 100/37.0 = 2.70\text{ s}\); observed \(T_{128} = 100/24 = 4.17\text{ s}\); overhead \(= 4.17 - 2.70 = 1.47\text{ s}\).<span class="zh">理想 \(T_{128} = 100/37.0 = 2.70\text{ s}\)；实测 \(T_{128} = 100/24 = 4.17\text{ s}\)；开销 \(= 4.17 - 2.70 = 1.47\text{ s}\)。</span></li>
 </ul>
 </div></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec03/p9.png" title="点击看大图 Click to enlarge"><img src="img/Lec03/p9_c0.5747_0.272_0.9753_0.7316.png" alt="Measured \(S_{128} = 24\) lies below the ideal value from the \(p = 32\) fit" loading="lazy"></a><figcaption><span class="en">Measured \(S_{128} = 24\) lies below the ideal value from the \(p = 32\) fit</span><span class="zh">实测 \(S_{128} = 24\) 低于由 \(p = 32\) 拟合得到的理想值</span></figcaption></figure></div>
 
 <h2 id="sec-02_performance-practice" class="practice-h"><span class="en">Practice questions</span><span class="zh">练习题</span></h2>
 <p class="lead">7 questions from the full notes; click “Answer” to unfold the model answer.<span class="zh">共 7 题，来自完整版笔记；点击“Answer / 答案”展开参考答案。</span></p>
@@ -938,7 +934,6 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <p><strong>2 hits, 6 misses.</strong> Blocks 0 and 4 both map to set 0 and evict each other.<span class="zh"><strong>2 次命中，6 次未命中。</strong>块 0 和块 4 都映射到第 0 组，互相替换。</span></p>
 </div></div>
 <div class="figs n1"><figure><a class="zoom" href="img/Lec05/p6.png" title="点击看大图 Click to enlarge"><img src="img/Lec05/p6_c0.04_0.1504_0.964_0.9369.png" alt="Direct-mapped lookup: the index selects the line, valid bit and tag match decide a hit" loading="lazy"></a><figcaption><span class="en">Direct-mapped lookup: the index selects the line, valid bit and tag match decide a hit</span><span class="zh">直接映射查找：索引选中行，有效位与标记匹配决定命中</span></figcaption></figure></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec05/p7.png" title="点击看大图 Click to enlarge"><img src="img/Lec05/p7_c0.0455_0.1553_0.938_0.8978.png" alt="The block offset selects the int inside the block" loading="lazy"></a><figcaption><span class="en">The block offset selects the int inside the block</span><span class="zh">块内偏移选出块中的那个 int</span></figcaption></figure></div>
 <h2 id="sec-03_architecture-2" data-num="3.2"><span class="en">Spatial Locality: Row-wise vs Column-wise</span> <span class="prio p3">★★★</span><span class="zh">空间局部性：行遍历 vs 列遍历</span></h2>
 <ul>
 <li>A miss loads the whole block (\(B\) bytes). <strong>Spatial locality:</strong> use neighbouring addresses, so every word of the block is used before eviction.<span class="zh">一次未命中会取回整块（\(B\) 字节）。<strong>空间局部性：</strong>访问相邻地址，让块中每个元素在被替换前都用上。</span></li>
@@ -968,7 +963,6 @@ int sum_array_rows(int a[M][N]){
 <p>The assignment names both versions <code class="nw">sum_array_rows</code>.<span class="zh">作业里两个版本都叫 <code class="nw">sum_array_rows</code>。</span></p>
 <h2 id="sec-03_architecture-3" data-num="3.3"><span class="en">Flynn's Taxonomy</span> <span class="prio p2">★★</span><span class="zh">Flynn 体系结构分类</span></h2>
 <p>Flynn (1972): classes by the number of instruction streams and data streams.<span class="zh">Flynn（1972）：按指令流和数据流的个数分类。</span></p>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec03/p13.png" title="点击看大图 Click to enlarge"><img src="img/Lec03/p13_c0.0833_0.2099_0.92_0.8276.png" alt="Flynn&#x27;s taxonomy as a 2×2 grid of instruction and data streams" loading="lazy"></a><figcaption><span class="en">Flynn&#x27;s taxonomy as a 2×2 grid of instruction and data streams</span><span class="zh">Flynn 分类：指令流与数据流构成的 2×2 网格</span></figcaption></figure></div>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -1326,9 +1320,6 @@ void count3s_thread(int id){
 <li><code>pthread_create(&amp;handle, NULL, func, arg)</code>: starts a thread that runs <code class="nw">func(arg)</code> and returns at once (<code class="nw">NULL</code>: default attributes). <code class="nw">pthread_join(handle, NULL)</code>: waits until that thread has ended.<span class="zh"><code>pthread_create(&amp;handle, NULL, func, arg)</code>：启动一个运行 <code class="nw">func(arg)</code> 的线程，并立即返回（<code class="nw">NULL</code>：默认属性）。<code class="nw">pthread_join(handle, NULL)</code>：等到该线程结束。</span></li>
 <li>The thread function takes one <code class="nw">void*</code>: the rank (\(0\) to \(t-1\)) goes in as <code class="nw">(void*) thread</code> and comes back as <code class="nw">(long) rank</code>.<span class="zh">线程函数只接受一个 <code class="nw">void*</code>：编号（\(0\) 到 \(t-1\)）以 <code class="nw">(void*) thread</code> 传入，在函数里用 <code class="nw">(long) rank</code> 取回。</span></li>
 <li>Loop 1 creates all threads, loop 2 joins them.<span class="zh">第 1 个循环创建全部线程，第 2 个循环等待它们结束。</span></li>
-</ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec04/p10.png" title="点击看大图 Click to enlarge"><img src="img/Lec04/p10_c0.12_0.3102_0.8587_0.7138.png" alt="The main thread forks two threads and joins them again" loading="lazy"></a><figcaption><span class="en">The main thread forks two threads and joins them again</span><span class="zh">主线程创建两个线程，最后再等它们结束</span></figcaption></figure></div>
-<ul>
 <li>One <code class="nw">pthread_t</code> object per thread, allocated before the call. <code class="nw">attr_p</code> is not used: pass <code class="nw">NULL</code>. <code class="nw">arg_p</code> points to the argument passed to the function <code class="nw">start_routine</code>.<span class="zh">每个线程一个 <code class="nw">pthread_t</code> 对象，调用前先分配。<code class="nw">attr_p</code> 不用：传 <code class="nw">NULL</code>。<code class="nw">arg_p</code> 指向传给函数 <code class="nw">start_routine</code> 的参数。</span></li>
 <li><code class="nw">void*</code> can be cast to any pointer type, so <code class="nw">args_p</code> can point to a list of values; the return value of the thread function can too.<span class="zh"><code class="nw">void*</code> 可以转成任何指针类型，所以 <code class="nw">args_p</code> 可以指向一组值；线程函数的返回值也可以。</span></li>
 </ul>
@@ -1424,7 +1415,6 @@ void *Hello(void* rank) {
 </tr>
 </tbody>
 </table></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p2.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p2_c0.02_0.16_0.9853_0.9502.png" alt="A single-threaded process, a process copied by fork(), and a multithreaded process with one shared address space" loading="lazy"></a><figcaption><span class="en">A single-threaded process, a process copied by fork(), and a multithreaded process with one shared address space</span><span class="zh">单线程进程、fork() 复制出的进程、共享同一地址空间的多线程进程</span></figcaption></figure></div>
 <ul>
 <li>Process \(=\) thread \(+\) code, data and kernel context. Thread context: data registers, condition codes, SP, PC. Kernel context: VM (virtual memory) structures, descriptor table, <code class="nw">brk</code> pointer.<span class="zh">进程 \(=\) 线程 \(+\) 代码、数据和内核上下文。线程上下文：数据寄存器、条件码、SP、PC。内核上下文：VM（虚拟内存）结构、描述符表、<code class="nw">brk</code> 指针。</span></li>
 </ul>
@@ -1435,7 +1425,6 @@ void *Hello(void* rank) {
 <li>Two threads are <strong>concurrent</strong> if their flows overlap in time, otherwise <strong>sequential</strong>. Example (threads A, B, C): A and B, A and C are concurrent; B and C are sequential.<span class="zh">两个线程的执行在时间上重叠，就是<strong>并发</strong>的，否则是<strong>顺序</strong>的。例（线程 A、B、C）：A 和 B、A 和 C 并发；B 和 C 顺序。</span></li>
 <li>Single core: time slicing simulates parallelism. Multi-core: true parallelism (e.g. 3 threads on 2 cores).<span class="zh">单核：靠时间片轮转模拟并行。多核：真正的并行（例如 3 个线程跑在 2 个核上）。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p7.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p7_c0.0293_0.4516_0.9593_0.9476.png" alt="Three threads on a single core (time slicing) and on two cores (true parallelism)" loading="lazy"></a><figcaption><span class="en">Three threads on a single core (time slicing) and on two cores (true parallelism)</span><span class="zh">三个线程在单核上（时间片轮转）和在两个核上（真正并行）</span></figcaption></figure></div>
 
 <h2 id="sec-04_threads-practice" class="practice-h"><span class="en">Practice questions</span><span class="zh">练习题</span></h2>
 <p class="lead">9 questions from the full notes; click “Answer” to unfold the model answer.<span class="zh">共 9 题，来自完整版笔记；点击“Answer / 答案”展开参考答案。</span></p>
@@ -1838,7 +1827,6 @@ if __name__ == &quot;__main__&quot;:
 <li>\(a_{ij}\): entry of \(A\) in row \(i\), column \(j\); \(x_j\): entry \(j\) of \(x\) (\(n\) entries); \(y_i\): entry \(i\) of \(y\) (\(m\) entries).<span class="zh">\(a_{ij}\)：\(A\) 中第 \(i\) 行第 \(j\) 列的元素；\(x_j\)：\(x\) 的第 \(j\) 个元素（共 \(n\) 个）；\(y_i\)：\(y\) 的第 \(i\) 个元素（共 \(m\) 个）。</span></li>
 </ul>
 </div></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec06/p9.png" title="点击看大图 Click to enlarge"><img src="img/Lec06/p9_c0.0707_0.0809_0.886_0.5956.png" alt="Row \(i\) of \(A\) times the vector \(x\) gives entry \(y_i\)" loading="lazy"></a><figcaption><span class="en">Row \(i\) of \(A\) times the vector \(x\) gives entry \(y_i\)</span><span class="zh">\(A\) 的第 \(i\) 行与向量 \(x\) 相乘，得到 \(y_i\)</span></figcaption></figure></div>
 <p><strong>Serial code:</strong><span class="zh"><strong>串行代码：</strong></span></p>
 <pre><code class="language-c">// Serial y = Ax: for each row, the dot product of the row with x
 // 串行 y = Ax：每一行与 x 做点积
@@ -2377,7 +2365,6 @@ void *Pth_mat_vect(void* rank) {
 <li><strong>ReLU:</strong> \(\max(0, z)\) per element; shape kept.<span class="zh"><strong>ReLU：</strong>逐元素取 \(\max(0, z)\)；形状不变。</span></li>
 <li><strong>\(2 \times 2\) max pooling:</strong> max of each \(2 \times 2\) block; \(H \times W \to (H/2) \times (W/2)\).<span class="zh"><strong>\(2 \times 2\) 最大池化：</strong>每个 \(2 \times 2\) 块取最大值；\(H \times W \to (H/2) \times (W/2)\)。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec08/p18.png" title="点击看大图 Click to enlarge"><img src="img/Lec08/p18_c0.1247_0.3107_0.9693_0.7948.png" alt="A 3x3 kernel slides over a zero-padded image; each position gives one output value" loading="lazy"></a><figcaption><span class="en">A 3x3 kernel slides over a zero-padded image; each position gives one output value</span><span class="zh">3×3 卷积核在补零的图像上滑动，每个位置得到一个输出值</span></figcaption></figure></div>
 <div class="callout example"><div class="callout-head"><span class="kind"><span class="en">Worked Example</span><span class="zo">例题</span></span><span class="title"><span class="en">RGB image (\(C = 3\) channels), \(K = 64\) filters of \(R \times S = 3 \times 3\)</span><span class="zh">RGB 图像（\(C = 3\) 个通道），\(K = 64\) 个 \(R \times S = 3 \times 3\) 的滤波器</span></span></div><div class="callout-body"><p><span class="math display">\[\#\text{weights} = KCRS = 64 \times 3 \times 3 \times 3 = 1{,}728; \qquad +\,K = 64\text{ biases} \implies 1{,}792\text{ parameters}\]</span></p>
 </div></div>
 <h2 id="sec-07_dl_matmul-2" data-num="7.2"><span class="en">Turning Convolution into Matrix Multiplication</span> <span class="prio p3">★★★</span><span class="zh">卷积转矩阵乘法</span></h2>
@@ -2413,13 +2400,18 @@ void *Pth_mat_vect(void* rank) {
 </ul>
 </div></div>
 <ul>
-<li><strong>Gradient descent:</strong> the negative gradient points in the direction of steepest descent; repeating the update with a fixed learning rate \(\eta\) (e.g. 0.03) from a random initial \(w\) converges to a local minimum.<span class="zh"><strong>梯度下降：</strong>负梯度指向最陡下降的方向；从随机初始 \(w\) 出发，用固定学习率 \(\eta\)（如 0.03）反复更新，收敛到局部极小值。</span></li>
-</ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec08/p32.png" title="点击看大图 Click to enlarge"><img src="img/Lec08/p32_c0.024_0.32_0.9847_0.8711.png" alt="Gradient descent on a function of two variables: repeated steps against the gradient reach a local minimum" loading="lazy"></a><figcaption><span class="en">Gradient descent on a function of two variables: repeated steps against the gradient reach a local minimum</span><span class="zh">二元函数上的梯度下降：沿负梯度反复迈步，到达局部最小值</span></figcaption></figure></div>
-<ul>
-<li><strong>Batch gradient descent:</strong> the gradient over the entire data set before each step. <strong>SGD</strong> (stochastic gradient descent): one random data point per update; a <strong>mini-batch</strong> of \(k\) examples is its variant.<span class="zh"><strong>批量梯度下降：</strong>每步用整个数据集的梯度。<strong>SGD</strong>（随机梯度下降）：每次更新用一个随机数据点；<strong>小批量</strong>（\(k\) 个样本）是它的变体。</span></li>
-<li>Advantages of SGD: easier for large datasets; works better for non-convex loss functions; sometimes faster. A mini-batch gives higher throughput and more parallelization.<span class="zh">SGD 的优点：更容易处理大数据集；对非凸损失函数效果更好；有时更快。小批量带来更高吞吐和更多并行。</span></li>
-<li>SGD workload: the <code class="nw">while</code> loop (walk downhill) is sequential; the gradient over a mini-batch is a reduction across images, each image's gradient is a large parallel computation; the parameter update is data-parallel.<span class="zh">SGD 的工作量：<code class="nw">while</code> 循环（沿坡下降）是串行的；小批量的梯度是对各图像的归约，每张图像的梯度本身是大规模并行计算；参数更新是数据并行。</span></li>
+<li>
+<p><strong>Gradient descent:</strong> the negative gradient points in the direction of steepest descent; repeating the update with a fixed learning rate \(\eta\) (e.g. 0.03) from a random initial \(w\) converges to a local minimum.<span class="zh"><strong>梯度下降：</strong>负梯度指向最陡下降的方向；从随机初始 \(w\) 出发，用固定学习率 \(\eta\)（如 0.03）反复更新，收敛到局部极小值。</span></p>
+</li>
+<li>
+<p><strong>Batch gradient descent:</strong> the gradient over the entire data set before each step. <strong>SGD</strong> (stochastic gradient descent): one random data point per update; a <strong>mini-batch</strong> of \(k\) examples is its variant.<span class="zh"><strong>批量梯度下降：</strong>每步用整个数据集的梯度。<strong>SGD</strong>（随机梯度下降）：每次更新用一个随机数据点；<strong>小批量</strong>（\(k\) 个样本）是它的变体。</span></p>
+</li>
+<li>
+<p>Advantages of SGD: easier for large datasets; works better for non-convex loss functions; sometimes faster. A mini-batch gives higher throughput and more parallelization.<span class="zh">SGD 的优点：更容易处理大数据集；对非凸损失函数效果更好；有时更快。小批量带来更高吞吐和更多并行。</span></p>
+</li>
+<li>
+<p>SGD workload: the <code class="nw">while</code> loop (walk downhill) is sequential; the gradient over a mini-batch is a reduction across images, each image's gradient is a large parallel computation; the parameter update is data-parallel.<span class="zh">SGD 的工作量：<code class="nw">while</code> 循环（沿坡下降）是串行的；小批量的梯度是对各图像的归约，每张图像的梯度本身是大规模并行计算；参数更新是数据并行。</span></p>
+</li>
 </ul>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Minibatch of \(k\) examples: three matrix products per layer</span><span class="zh">\(k\) 个样本的小批量：每层三次矩阵乘法</span></span></div><div class="callout-body"><p><span class="math display">\[\underbrace{\mathbf{W}^T}_{d_\ell \times d_{\ell-1}}\,\underbrace{\mathbf{X}}_{d_{\ell-1} \times k}, \qquad \underbrace{\mathbf{W}}_{d_{\ell-1} \times d_\ell}\,\underbrace{\boldsymbol\Delta}_{d_\ell \times k}, \qquad \underbrace{\mathbf{X}}_{d_{\ell-1} \times k}\,\underbrace{\boldsymbol\Delta^T}_{k \times d_\ell}: \qquad 2\,d_\ell\, d_{\ell-1}\, k \text{ FLOPs each}\]</span></p>
 <ul>
@@ -2438,7 +2430,7 @@ void *Pth_mat_vect(void* rank) {
 <li>Weights live in DRAM: a smaller model means less memory traffic. AlexNet \(\approx 200\) MB, VGG-16 \(\approx 500\) MB.<span class="zh">权重存放在 DRAM 中：模型越小，内存读写越少。AlexNet \(\approx 200\) MB，VGG-16 \(\approx 500\) MB。</span></li>
 <li>Three steps shrink VGG-16 from \(552\text{ MB}\) to \(11.3\text{ MB}\) (\(49\times\)):<span class="zh">三步把 VGG-16 从 \(552\text{ MB}\) 压到 \(11.3\text{ MB}\)（\(49\times\)）：</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec08/p26.png" title="点击看大图 Click to enlarge"><img src="img/Lec08/p26_c0.048_0.1778_0.9807_0.9147.png" alt="The three compression steps: pruning with CSR, weight sharing by clustering, Huffman coding" loading="lazy"></a><figcaption><span class="en">The three compression steps: pruning with CSR, weight sharing by clustering, Huffman coding</span><span class="zh">压缩三步：带 CSR 的剪枝、聚类权重共享、霍夫曼编码</span></figcaption></figure></div>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec08/p26.png" title="点击看大图 Click to enlarge"><img src="img/Lec08/p26_c0.5283_0.6384_0.9807_0.9147.png" alt="Weight sharing: 16 float32 weights clustered into 4 centroids; each weight is stored as a 2-bit cluster index" loading="lazy"></a><figcaption><span class="en">Weight sharing: 16 float32 weights clustered into 4 centroids; each weight is stored as a 2-bit cluster index</span><span class="zh">权重共享：16 个 float32 权重聚成 4 个中心值，每个权重只存 2 位的簇编号</span></figcaption></figure></div>
 <ol>
 <li><strong>Pruning:</strong> prune low-weight links, iteratively retrain the network, then prune; over 90 % of the weights can be removed without significant loss of accuracy. Store the rest in CSR (compressed sparse row: non-zero values plus their indices) format.<span class="zh"><strong>剪枝：</strong>去掉权重小的连接，反复重新训练再剪；超过 90 % 的权重可去掉而精度无明显损失。剩下的用 CSR（压缩稀疏行：非零值加索引）格式存储。</span></li>
 <li><strong>Weight sharing (quantization):</strong> \(k\)-means groups the weights into \(k\) centroids, retrain; each weight stores a \(\lceil \lg k \rceil\)-bit index into a \(k\)-entry codebook.<span class="zh"><strong>权重共享（量化）：</strong>用 \(k\)-means 把权重分成 \(k\) 个中心并重新训练；每个权重只存一个 \(\lceil \lg k \rceil\) 位的索引，指向 \(k\) 项的码本。</span></li>
@@ -2560,7 +2552,6 @@ void *Pth_mat_vect(void* rank) {
 <ul>
 <li><strong>Transformer:</strong> 6 encoders and 6 decoders. An encoder layer = self-attention + feed forward; a decoder layer = self-attention + encoder–decoder attention + feed forward.<span class="zh"><strong>Transformer：</strong>6 个编码器和 6 个解码器。编码器层 = 自注意力 + 前馈；解码器层 = 自注意力 + 编码器–解码器注意力 + 前馈。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec09/p12.png" title="点击看大图 Click to enlarge"><img src="img/Lec09/p12_c0.0147_0.1502_0.9887_0.9253.png" alt="Inside one encoder and one decoder layer" loading="lazy"></a><figcaption><span class="en">Inside one encoder and one decoder layer</span><span class="zh">一个编码器层和一个解码器层的内部结构</span></figcaption></figure></div>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">Self-attention per token (token \(t\) attends to tokens \(j\))</span><span class="zh">每个词元的自注意力（词元 \(t\) 关注词元 \(j\)）</span></span></div><div class="callout-body"><p><span class="math display">\[\mathbf q_j = \mathbf W_q^T \mathbf x_j,\quad \mathbf k_j = \mathbf W_k^T \mathbf x_j,\quad \mathbf v_j = \mathbf W_v^T \mathbf x_j,\qquad s_{t,j} = \mathbf k_j^T \mathbf q_t / \sqrt{d_k},\qquad \mathbf a_t = \operatorname{softmax}(\mathbf s_t),\qquad \mathbf x'_t = \sum_{j} a_{t,j}\,\mathbf v_j\]</span></p>
 <ul>
 <li>\(\mathbf x_j\): input vector of token \(j\); \(\mathbf W_q\), \(\mathbf W_k\), \(\mathbf W_v\): learned weight matrices; \(d_k\): width of a query or key; softmax: normalises the scores of token \(t\) to weights that sum to 1; \(\mathbf q_j\), \(\mathbf k_j\), \(\mathbf v_j\): its query, key, value; \(s_{t,j}\): score; \(\mathbf a_t\): attention weights of token \(t\); \(\mathbf x'_t\): output of token \(t\).<span class="zh">\(\mathbf x_j\)：词元 \(j\) 的输入向量；\(\mathbf W_q\)、\(\mathbf W_k\)、\(\mathbf W_v\)：学到的权重矩阵；\(d_k\)：query 或 key 的宽度；softmax：把词元 \(t\) 的分数归一化成和为 1 的权重；\(\mathbf q_j\)、\(\mathbf k_j\)、\(\mathbf v_j\)：它的 query、key、value；\(s_{t,j}\)：分数；\(\mathbf a_t\)：词元 \(t\) 的注意力权重；\(\mathbf x'_t\)：词元 \(t\) 的输出。</span></li>
@@ -2599,7 +2590,6 @@ void *Pth_mat_vect(void* rank) {
 <li><strong>The five steps (the example has 8 heads):</strong> (1) the input sentence; (2) embed each word into \(X\); (3) split into heads: multiply \(X\) (or \(R\)) with the weight matrices \(W_i^Q\), \(W_i^K\), \(W_i^V\); (4) calculate attention per head from its \(Q_i\), \(K_i\), \(V_i\); (5) concatenate the resulting \(Z_i\) matrices, then multiply with \(W^O\) to get the output of the layer.<span class="zh"><strong>五个步骤（例子中有 8 个头）：</strong>(1) 输入句子；(2) 把每个词嵌入成 \(X\)；(3) 分头：用权重矩阵 \(W_i^Q\)、\(W_i^K\)、\(W_i^V\) 乘 \(X\)（或 \(R\)）；(4) 每个头用自己的 \(Q_i\)、\(K_i\)、\(V_i\) 算注意力；(5) 把得到的各 \(Z_i\) 拼接，再乘 \(W^O\)，得到该层的输出。</span></li>
 <li>In all encoders other than #0 no embedding is needed: they start directly from \(R\), the output of the encoder right below.<span class="zh">除第 0 个之外的所有编码器都不需要嵌入：直接从下面一个编码器的输出 \(R\) 开始。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec09/p34.png" title="点击看大图 Click to enlarge"><img src="img/Lec09/p34_c0.0553_0.2329_0.958_0.8551.png" alt="The outputs of all heads are concatenated and multiplied by the output matrix" loading="lazy"></a><figcaption><span class="en">The outputs of all heads are concatenated and multiplied by the output matrix</span><span class="zh">把所有头的输出拼接，再乘输出矩阵</span></figcaption></figure></div>
 <div class="figs n1"><figure><a class="zoom" href="img/Lec09/p33.png" title="点击看大图 Click to enlarge"><img src="img/Lec09/p33_c0.008_0.1929_0.9687_0.8818.png" alt="Multi-head attention step by step: split into heads, attention per head, concatenate, multiply by the output matrix (slide)" loading="lazy"></a><figcaption><span class="en">Multi-head attention step by step: split into heads, attention per head, concatenate, multiply by the output matrix (slide)</span><span class="zh">多头注意力的步骤：分头、各头算注意力、拼接、乘输出矩阵（课件）</span></figcaption></figure></div>
 <h2 id="sec-08_transformer-3" data-num="8.3"><span class="en">FLOPs &amp; Memory of Attention</span> <span class="prio p2">★★</span><span class="zh">注意力的运算量与显存</span></h2>
 <ul>
@@ -2656,14 +2646,21 @@ All the <span class="math">\(S_i\)</span>: <span class="math">\(12\cdot1024^2=12
 <h1 id="ch-09_openmp"><span class="chnum"><span class="en">Chapter 9</span><span class="zo">第 9 章</span></span><span class="en">OpenMP: Parallel Regions, Scope &amp; Reduction</span> <span class="title-cn">OpenMP：并行区、变量作用域与归约</span></h1>
 <h2 id="sec-09_openmp-1" data-num="9.1"><span class="en">The <code class="nw">parallel</code> Directive</span> <span class="prio p3">★★★</span><span class="zh">并行指令</span></h2>
 <ul>
-<li><strong>OpenMP</strong> (Open Multi-Processing): an API (<a class="xref" href="#sec-04_threads-2">§4.2</a>; not a programming language) for shared-memory parallel programming, with three components: directives, runtime library routines, environment variables. One program runs on several cores that all access main memory; compile with <code class="nw">gcc -fopenmp</code>.<span class="zh"><strong>OpenMP</strong>（Open Multi-Processing）：共享内存并行编程的 API（<a class="xref" href="#sec-04_threads-2">§4.2</a>；不是编程语言），有三个组成部分：制导指令、运行时库函数、环境变量。一个程序在多个核上运行，这些核都能访问主存；用 <code class="nw">gcc -fopenmp</code> 编译。</span></li>
-</ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec10/p17.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p17_c0.0687_0.2738_0.9227_0.7769.png" alt="A shared-memory system: several CPUs connected by an interconnect to one memory" loading="lazy"></a><figcaption><span class="en">A shared-memory system: several CPUs connected by an interconnect to one memory</span><span class="zh">共享内存系统：多个 CPU 通过互连网络连到同一块内存</span></figcaption></figure></div>
-<ul>
-<li><strong>Pragma:</strong> a preprocessor instruction for behaviour outside the basic C specification; a compiler that does not support it ignores it.<span class="zh"><strong>Pragma（编译指示）：</strong>预处理指令，用来表达基本 C 规范之外的行为；不支持它的编译器会忽略它。</span></li>
-<li><code class="nw">#pragma omp parallel</code> forks a team of threads that all execute the following structured block; the run-time system decides how many threads, unless <code class="nw">num_threads</code> is given.<span class="zh"><code class="nw">#pragma omp parallel</code> 分叉出一组线程，都执行紧随其后的结构化代码块；线程数由运行时系统决定，除非给出 <code class="nw">num_threads</code>。</span></li>
-<li><code class="nw">num_threads(n)</code> (a clause of the directive) only <strong>requests</strong> \(n\) threads. Inside the block <code class="nw">omp_get_num_threads()</code> returns the actual team size and <code class="nw">omp_get_thread_num()</code> the number of the calling thread, \(0\) to team size \(-1\).<span class="zh"><code class="nw">num_threads(n)</code>（指令的子句）只是<strong>请求</strong> \(n\) 个线程。块内 <code class="nw">omp_get_num_threads()</code> 返回实际线程数，<code class="nw">omp_get_thread_num()</code> 返回当前线程的编号，\(0\) 到线程数 \(-1\)。</span></li>
-<li>Output order is <strong>undefined</strong>: 4 threads can print in \(4! = 24\) orders.<span class="zh">输出顺序<strong>未定义</strong>：4 个线程有 \(4! = 24\) 种打印顺序。</span></li>
+<li>
+<p><strong>OpenMP</strong> (Open Multi-Processing): an API (<a class="xref" href="#sec-04_threads-2">§4.2</a>; not a programming language) for shared-memory parallel programming, with three components: directives, runtime library routines, environment variables. One program runs on several cores that all access main memory; compile with <code class="nw">gcc -fopenmp</code>.<span class="zh"><strong>OpenMP</strong>（Open Multi-Processing）：共享内存并行编程的 API（<a class="xref" href="#sec-04_threads-2">§4.2</a>；不是编程语言），有三个组成部分：制导指令、运行时库函数、环境变量。一个程序在多个核上运行，这些核都能访问主存；用 <code class="nw">gcc -fopenmp</code> 编译。</span></p>
+</li>
+<li>
+<p><strong>Pragma:</strong> a preprocessor instruction for behaviour outside the basic C specification; a compiler that does not support it ignores it.<span class="zh"><strong>Pragma（编译指示）：</strong>预处理指令，用来表达基本 C 规范之外的行为；不支持它的编译器会忽略它。</span></p>
+</li>
+<li>
+<p><code class="nw">#pragma omp parallel</code> forks a team of threads that all execute the following structured block; the run-time system decides how many threads, unless <code class="nw">num_threads</code> is given.<span class="zh"><code class="nw">#pragma omp parallel</code> 分叉出一组线程，都执行紧随其后的结构化代码块；线程数由运行时系统决定，除非给出 <code class="nw">num_threads</code>。</span></p>
+</li>
+<li>
+<p><code class="nw">num_threads(n)</code> (a clause of the directive) only <strong>requests</strong> \(n\) threads. Inside the block <code class="nw">omp_get_num_threads()</code> returns the actual team size and <code class="nw">omp_get_thread_num()</code> the number of the calling thread, \(0\) to team size \(-1\).<span class="zh"><code class="nw">num_threads(n)</code>（指令的子句）只是<strong>请求</strong> \(n\) 个线程。块内 <code class="nw">omp_get_num_threads()</code> 返回实际线程数，<code class="nw">omp_get_thread_num()</code> 返回当前线程的编号，\(0\) 到线程数 \(-1\)。</span></p>
+</li>
+<li>
+<p>Output order is <strong>undefined</strong>: 4 threads can print in \(4! = 24\) orders.<span class="zh">输出顺序<strong>未定义</strong>：4 个线程有 \(4! = 24\) 种打印顺序。</span></p>
+</li>
 </ul>
 <div class="figs n1"><figure><a class="zoom" href="img/Lec10/p22.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p22_c0.52_0.12_1_0.37.png" alt="Fork-join model" loading="lazy"></a><figcaption><span class="en">Fork-join model</span><span class="zh">分叉-汇合模型</span></figcaption></figure></div>
 <pre><code class="language-c">// Hello World with OpenMP: thread_count threads, each prints one line
@@ -2799,7 +2796,6 @@ global_result = 0.0;
 <li>\([a, b]\): interval, \(x_i\): the points \(a + ih\), \(x_0 = a\), \(x_n = b\); \(\text{area}_i\): area of trapezoid \(i\); \(f(x)\): the function; \(n\) trapezoids of equal width \(h\) (\(= \Delta x\)); \(i = 0, \dots, n-1\): trapezoid number.<span class="zh">\([a, b]\)：区间，\(x_i\)：点 \(a + ih\)，\(x_0 = a\)，\(x_n = b\)；\(\text{area}_i\)：第 \(i\) 个梯形的面积；\(f(x)\)：被积函数；\(n\) 个等宽 \(h\)（\(= \Delta x\)）的梯形；\(i = 0, \dots, n-1\)：梯形编号。</span></li>
 </ul>
 </div></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec10/p25.png" title="点击看大图 Click to enlarge"><img src="img/Lec10/p25_c0.0447_0.2418_0.968_0.8311.png" alt="The area under a curve approximated by trapezoids" loading="lazy"></a><figcaption><span class="en">The area under a curve approximated by trapezoids</span><span class="zh">用梯形近似曲线下的面积</span></figcaption></figure></div>
 <p><strong>Serial algorithm:</strong><span class="zh"><strong>串行算法：</strong></span></p>
 <pre><code class="language-c">// Serial trapezoidal rule: integral of f from a to b with n trapezoids
 // 串行梯形法则：用 n 个梯形计算 f 从 a 到 b 的积分
@@ -3481,7 +3477,6 @@ pi_approx = 4.0*sum;
 </tr>
 </tbody>
 </table></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec12/p12.png" title="点击看大图 Click to enlarge"><img src="img/Lec12/p12_c0.042_0.2427_0.9353_0.8276.png" alt="CPU cores devote area to a large local cache and control; GPU compute units devote it to many SIMD lanes, registers and threading" loading="lazy"></a><figcaption><span class="en">CPU cores devote area to a large local cache and control; GPU compute units devote it to many SIMD lanes, registers and threading</span><span class="zh">CPU 核把面积给大缓存和控制逻辑；GPU 计算单元把面积给大量 SIMD 通道、寄存器和多线程</span></figcaption></figure></div>
 <ul>
 <li><strong>SIMT</strong> (single instruction, multiple threads): you write code for one thread; the hardware runs 32 threads (a <strong>warp</strong>) in lockstep, each with its own registers and control flow. CPU SIMD (<a class="xref" href="#sec-03_architecture-3">§3.3</a>) uses fixed-width vector registers explicitly.<span class="zh"><strong>SIMT</strong>（单指令多线程）：按单个线程写代码；硬件让 32 个线程（一个 <strong>warp</strong>）锁步执行，每个线程有自己的寄存器和控制流。CPU 的 SIMD（<a class="xref" href="#sec-03_architecture-3">§3.3</a>）要显式使用固定宽度的向量寄存器。</span></li>
 <li>Execution model: <strong>bulk synchronous parallel (BSP)</strong>; a kernel may have tens of thousands of threads; the execution is SIMT, &quot;not a SIMD model&quot;.<span class="zh">执行模型：<strong>整体同步并行（BSP）</strong>；一个核函数可以有几万个线程；执行方式是 SIMT，“不是 SIMD 模型”。</span></li>
@@ -3525,7 +3520,6 @@ pi_approx = 4.0*sum;
 </tr>
 </tbody>
 </table></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec13/p19.png" title="点击看大图 Click to enlarge"><img src="img/Lec13/p19_c0.0733_0.1719_0.9407_0.7858.png" alt="A thread runs on a core, a thread block on one SM, the kernel grid on the whole GPU" loading="lazy"></a><figcaption><span class="en">A thread runs on a core, a thread block on one SM, the kernel grid on the whole GPU</span><span class="zh">线程由一个核心执行，线程块由一个 SM 执行，核函数网格由整个 GPU 执行</span></figcaption></figure></div>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -3554,7 +3548,6 @@ pi_approx = 4.0*sum;
 <li>Ampere SM: 4 processing blocks, <strong>64 FP32 cores</strong>, <strong>32 FP64 cores</strong>, 16,384 32-bit registers per processing block (64 KB), so 65,536 per SM (256 KB), 192 KB L1/shared memory (<a class="xref" href="#sec-12_cuda-4">§12.4</a>).<span class="zh">Ampere 的 SM：4 个处理块，<strong>64 个 FP32 核心</strong>，<strong>32 个 FP64 核心</strong>，每个处理块 16,384 个 32 位寄存器（64 KB），所以每个 SM 共 65,536 个（256 KB），192 KB L1/共享内存（<a class="xref" href="#sec-12_cuda-4">§12.4</a>）。</span></li>
 <li>Each core: <strong>1 FMA per clock cycle = 2 FLOPs</strong>.<span class="zh">每个核心：<strong>每周期 1 次 FMA = 2 个 FLOP</strong>。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec13/p6.png" title="点击看大图 Click to enlarge"><img src="img/Lec13/p6_c0.4147_0.0098_0.9853_0.9929.png" alt="Ampere SM (GA100): four processing blocks, each with warp scheduler, 16,384 registers, INT32 (32-bit integer)/FP32/FP64 units and a Tensor Core; 192 KB L1/shared memory below" loading="lazy"></a><figcaption><span class="en">Ampere SM (GA100): four processing blocks, each with warp scheduler, 16,384 registers, INT32 (32-bit integer)/FP32/FP64 units and a Tensor Core; 192 KB L1/shared memory below</span><span class="zh">Ampere SM（GA100）：四个处理块，各有 warp 调度器、16,384 个寄存器、INT32/FP32/FP64 单元和 Tensor Core；下方是 192 KB L1/共享内存</span></figcaption></figure></div>
 <div class="callout formula"><div class="callout-head"><span class="kind"><span class="en">Formula</span><span class="zo">公式</span></span><span class="title"><span class="en">GPU peak performance (without Tensor Cores)</span><span class="zh">GPU 理论峰值（不含 Tensor Core）</span></span></div><div class="callout-body"><p><span class="math display">\[P_{\text{peak}} = N_{\text{SM}} \times n_{\text{core/SM}} \times 2 \times f_{\text{clock}}\]</span></p>
 <ul>
 <li>\(P_{\text{peak}}\): peak FLOP/s for one precision; \(N_{\text{SM}}\) SMs; \(n_{\text{core/SM}}\) cores per SM for that precision (Ampere: 64 FP32, 32 FP64); \(2\) FLOPs per FMA; \(f_{\text{clock}}\) (or \(f\)): clock rate, Hz.<span class="zh">\(P_{\text{peak}}\)：某一精度的峰值 FLOP/s；\(N_{\text{SM}}\) 个 SM；\(n_{\text{core/SM}}\)：该精度下每个 SM 的核心数（Ampere：FP32 为 64，FP64 为 32）；\(2\)：每次 FMA 的 FLOP 数；\(f_{\text{clock}}\)（或 \(f\)）：主频，单位 Hz。</span></li>
@@ -3666,7 +3659,6 @@ pi_approx = 4.0*sum;
 <li>Launch: <code>kernel&lt;&lt;&lt;grid, block&gt;&gt;&gt;(args)</code>; <code class="nw">grid</code> = number of blocks, <code class="nw">block</code> = threads per block, both <code class="nw">dim3</code> (axes \(x\), \(y\), \(z\)); omitted axes are <strong>1</strong>: <code class="nw">dim3(4, 3)</code> = <code class="nw">(4, 3, 1)</code>.<span class="zh">启动：<code>kernel&lt;&lt;&lt;grid, block&gt;&gt;&gt;(args)</code>；<code class="nw">grid</code> = 块数，<code class="nw">block</code> = 每块线程数，两者都是 <code class="nw">dim3</code>（\(x\)、\(y\)、\(z\) 三个维度）；省略的维度为 <strong>1</strong>：<code class="nw">dim3(4, 3)</code> = <code class="nw">(4, 3, 1)</code>。</span></li>
 <li>The <code class="nw">&lt;&lt;&lt;...&gt;&gt;&gt;</code> part of the launch is the <strong>execution configuration</strong>.<span class="zh">启动语句中的 <code class="nw">&lt;&lt;&lt;...&gt;&gt;&gt;</code> 部分叫<strong>执行配置</strong>。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec14/p3.png" title="点击看大图 Click to enlarge"><img src="img/Lec14/p3_c0.0447_0.2072_0.9553_0.5067.png" alt="A grid of 4×3×2 blocks, each block of 3×2 threads, and the launch that creates it" loading="lazy"></a><figcaption><span class="en">A grid of 4×3×2 blocks, each block of 3×2 threads, and the launch that creates it</span><span class="zh">4×3×2 个块的网格，每块 3×2 个线程，以及创建它的启动语句</span></figcaption></figure></div>
 <pre><code class="language-cuda">// Launch examples: b and g are dim3 sizes; foo runs on different grids
 // 启动示例：b、g 是 dim3 尺寸；foo 在不同的网格上运行
 dim3 b(3,3,3);
@@ -4039,7 +4031,6 @@ printf(&quot;SMs: %d\n&quot;, p.multiProcessorCount);
 <li>Lane fill \(= N_{\text{thr}} / (32\,N_{\text{warp}}) = 144 / 768 = 18.75\%\). \(\lceil 144/32 \rceil = 5\) warps is wrong: warps never cross blocks.<span class="zh">填充率 \(= N_{\text{thr}} / (32\,N_{\text{warp}}) = 144 / 768 = 18.75\%\)。算成 \(\lceil 144/32 \rceil = 5\) 个 warp 是错的：warp 不跨块。</span></li>
 </ul>
 </div></div>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec16/p14.png" title="点击看大图 Click to enlarge"><img src="img/Lec16/p14_c0.0613_0.2133_0.9387_0.784.png" alt="The warp of one block of 6 threads: lanes 0–5 hold threads, lanes 6–31 stay unused (18.75% lane fill)" loading="lazy"></a><figcaption><span class="en">The warp of one block of 6 threads: lanes 0–5 hold threads, lanes 6–31 stay unused (18.75% lane fill)</span><span class="zh">一个 6 线程块的 warp：通道 0–5 有线程，通道 6–31 空闲（填充率 18.75%）</span></figcaption></figure></div>
 <p><strong>Alternative layouts for 144 independent items (valid only if the algorithm allows other block boundaries):</strong><span class="zh"><strong>144 个独立任务的其他布局（仅当算法允许改变块边界时才成立）：</strong></span></p>
 <div class="tw"><table>
 <thead>
@@ -4652,7 +4643,6 @@ float v = tile[threadIdx.x][threadIdx.y];
 <li><strong>Naive:</strong> one thread per element of <code class="nw">C</code>, reading <code class="nw">A[row][k]</code> and <code class="nw">B[k][col]</code> from HBM (<a class="xref" href="#sec-13_gpu_memory-4">§13.4</a>) every time. Per output element: \(2K\) FLOPs, \(8K\) bytes loaded, 4 bytes stored \(\implies\) logical \(\text{AI} = 2K/(8K + 4) \approx 0.25\text{ FLOP/byte}\), memory-bound (<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>). Caching, coalescing (<a class="xref" href="#sec-13_gpu_memory-2">§13.2</a>) and broadcasts can make the measured HBM bytes much lower.<span class="zh"><strong>朴素版：</strong>每个线程算 <code class="nw">C</code> 的一个元素，每次都从 HBM（<a class="xref" href="#sec-13_gpu_memory-4">§13.4</a>）读 <code class="nw">A[row][k]</code> 和 <code class="nw">B[k][col]</code>。每个输出元素：\(2K\) 个 FLOP，读 \(8K\) 字节，写 4 字节 \(\implies\) 逻辑 \(\text{AI} = 2K/(8K + 4) \approx 0.25\text{ FLOP/byte}\)，访存受限（<a class="xref" href="#sec-11_gpu_arch-3">§11.3</a>）。缓存、合并访问（<a class="xref" href="#sec-13_gpu_memory-2">§13.2</a>）和广播可使实测 HBM 字节少得多。</span></li>
 <li><strong>Shared-memory tiling:</strong> a \(T \times T\) block (<a class="xref" href="#sec-12_cuda-1">§12.1</a>) loads a \(T \times T\) tile of <code class="nw">A</code> and of <code class="nw">B</code> into <code class="nw">__shared__</code> memory (<a class="xref" href="#sec-12_cuda-4">§12.4</a>) once per stage and reuses each value \(T\) times \(\implies\) <strong>\(T\times\) fewer</strong> HBM loads.<span class="zh"><strong>共享内存分块：</strong>\(T \times T\) 的线程块（<a class="xref" href="#sec-12_cuda-1">§12.1</a>）每个阶段把 <code class="nw">A</code>、<code class="nw">B</code> 各一个 \(T \times T\) 子块载入 <code class="nw">__shared__</code> 内存（<a class="xref" href="#sec-12_cuda-4">§12.4</a>），每个值复用 \(T\) 次 \(\implies\) HBM 读取<strong>少 \(T\) 倍</strong>。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec17/p2.png" title="点击看大图 Click to enlarge"><img src="img/Lec17/p2_c0.059_0.4747_0.937_0.6578.png" alt="Reuse chain: global memory holds A and B, shared memory holds tiles, registers hold partial sums" loading="lazy"></a><figcaption><span class="en">Reuse chain: global memory holds A and B, shared memory holds tiles, registers hold partial sums</span><span class="zh">复用链：全局内存存 A、B，共享内存存分块，寄存器存部分和</span></figcaption></figure></div>
 <p><strong>Naive kernel</strong> (launch a 2D grid of \(16 \times 16\) threads per block; <code class="nw">A</code>, <code class="nw">B</code>, <code class="nw">C</code> are on the device):<span class="zh"><strong>朴素核函数</strong>（启动 2D 网格，每块 \(16 \times 16\) 个线程；<code class="nw">A</code>、<code class="nw">B</code>、<code class="nw">C</code> 在设备上）：</span></p>
 <pre><code class="language-cuda">// Naive GEMM: one thread computes one element of C
 // 朴素 GEMM：一个线程计算 C 的一个元素
@@ -5113,9 +5103,6 @@ tiled16&lt;&lt;&lt;grid,block&gt;&gt;&gt;(A,B,C,M,N,K);
 <li><strong>Communicator:</strong> a group of processes that can exchange messages; <code class="nw">MPI_COMM_WORLD</code> holds all \(p\). <strong>Size:</strong> number of processes in it; <strong>rank:</strong> a process's number, <strong><code class="nw">0</code> to <code class="nw">p - 1</code></strong>.<span class="zh"><strong>通信子：</strong>一组能互发消息的进程；<code class="nw">MPI_COMM_WORLD</code> 含全部 \(p\) 个。<strong>大小（size）：</strong>其中的进程数；<strong>编号（rank）：</strong>进程的序号，<strong><code class="nw">0</code> 到 <code class="nw">p - 1</code></strong>。</span></li>
 <li>A communicator is required in every call that communicates. Several communicators can co-exist, and a process can belong to several at the same time.<span class="zh">每个通信调用都要给出通信子。可以同时存在多个通信子，一个进程可以同时属于多个。</span></li>
 <li>All distribution decisions (which process works on which data) are based on the rank.<span class="zh">所有分工决定（哪个进程处理哪部分数据）都根据编号来定。</span></li>
-</ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p13.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p13_c0.208_0.5467_0.7927_0.9227.png" alt="Every process has its own rank, data and program; the communication network connects them" loading="lazy"></a><figcaption><span class="en">Every process has its own rank, data and program; the communication network connects them</span><span class="zh">每个进程有自己的编号、数据和程序，通信网络把它们连起来</span></figcaption></figure></div>
-<ul>
 <li>Identifiers defined by MPI start with <code class="nw">MPI_</code>, and the first letter after the underscore is uppercase (function names and MPI-defined types); the program includes <code class="nw">mpi.h</code>. Size and rank come back through pointers (<code class="nw">&amp;nproc</code>, <code class="nw">&amp;rank</code>).<span class="zh">MPI 定义的标识符都以 <code class="nw">MPI_</code> 开头，下划线后第一个字母大写（函数名和 MPI 定义的类型）；程序要包含 <code class="nw">mpi.h</code>。进程数和编号通过指针传回（<code class="nw">&amp;nproc</code>、<code class="nw">&amp;rank</code>）。</span></li>
 </ul>
 <div class="tw"><table>
@@ -5193,9 +5180,6 @@ int MPI_Recv(
 <li><code class="nw">msg_buf_p</code>: data buffer; <code class="nw">msg_size</code>, <code class="nw">buf_size</code>: numbers of elements; <code class="nw">msg_type</code>, <code class="nw">buf_type</code>: MPI type of one element; <code class="nw">dest</code>, <code class="nw">source</code>: ranks; <code class="nw">tag</code>: integer label to match; <code class="nw">status_p</code>: message status (<a class="xref" href="#sec-15_mpi-4">§15.4</a>).<span class="zh"><code class="nw">msg_buf_p</code>：数据缓冲区；<code class="nw">msg_size</code>、<code class="nw">buf_size</code>：元素个数；<code class="nw">msg_type</code>、<code class="nw">buf_type</code>：单个元素的 MPI 类型；<code class="nw">dest</code>、<code class="nw">source</code>：进程编号；<code class="nw">tag</code>：用于匹配的整数标签；<code class="nw">status_p</code>：消息状态（<a class="xref" href="#sec-15_mpi-4">§15.4</a>）。</span></li>
 <li>Types: <code class="nw">MPI_CHAR</code> (<code class="nw">signed char</code>), <code class="nw">MPI_SHORT</code> (<code class="nw">signed short int</code>), <code class="nw">MPI_INT</code>, <code class="nw">MPI_LONG</code>, <code class="nw">MPI_LONG_LONG</code> (<code class="nw">signed long long int</code>), <code class="nw">MPI_UNSIGNED_CHAR</code>, <code class="nw">MPI_UNSIGNED_SHORT</code>, <code class="nw">MPI_UNSIGNED</code>, <code class="nw">MPI_UNSIGNED_LONG</code> (the <code class="nw">unsigned</code> C types), <code class="nw">MPI_FLOAT</code>, <code class="nw">MPI_DOUBLE</code>, <code class="nw">MPI_LONG_DOUBLE</code> (<code class="nw">long double</code>), <code class="nw">MPI_BYTE</code>, <code class="nw">MPI_PACKED</code>.<span class="zh">类型：<code class="nw">MPI_CHAR</code>（<code class="nw">signed char</code>）、<code class="nw">MPI_SHORT</code>（<code class="nw">signed short int</code>）、<code class="nw">MPI_INT</code>、<code class="nw">MPI_LONG</code>、<code class="nw">MPI_LONG_LONG</code>（<code class="nw">signed long long int</code>）、<code class="nw">MPI_UNSIGNED_CHAR</code>、<code class="nw">MPI_UNSIGNED_SHORT</code>、<code class="nw">MPI_UNSIGNED</code>、<code class="nw">MPI_UNSIGNED_LONG</code>（对应 C 的 <code class="nw">unsigned</code> 类型）、<code class="nw">MPI_FLOAT</code>、<code class="nw">MPI_DOUBLE</code>、<code class="nw">MPI_LONG_DOUBLE</code>（<code class="nw">long double</code>）、<code class="nw">MPI_BYTE</code>、<code class="nw">MPI_PACKED</code>。</span></li>
 <li>A message needs: the sending and receiving process (the ranks); the source and destination location (identifier); the source and destination data type (type); the source data size and destination buffer size (how many).<span class="zh">一条消息需要：发送和接收进程（编号）；源和目的的位置（标识）；源和目的的数据类型（类型）；源数据大小和目的缓冲区大小（个数）。</span></li>
-</ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p15.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p15_c0.1053_0.2978_0.8507_0.7956.png" alt="Process A sends data from its memory over the network into the memory of process B" loading="lazy"></a><figcaption><span class="en">Process A sends data from its memory over the network into the memory of process B</span><span class="zh">进程 A 把自己内存里的数据经网络发到进程 B 的内存</span></figcaption></figure></div>
-<ul>
 <li><code class="nw">MPI_Send</code>: <strong>6</strong> arguments, with the <strong>exact</strong> count (<code class="nw">strlen(greeting) + 1</code> includes <code class="nw">'\0'</code>). <code class="nw">MPI_Recv</code>: <strong>7</strong> arguments, with the <strong>buffer capacity</strong> <code class="nw">MAX_STRING</code> plus <code class="nw">&amp;status</code> or <code class="nw">MPI_STATUS_IGNORE</code>.<span class="zh"><code class="nw">MPI_Send</code>：<strong>6 个</strong>参数，个数要<strong>精确</strong>（<code class="nw">strlen(greeting) + 1</code> 含 <code class="nw">'\0'</code>）。<code class="nw">MPI_Recv</code>：<strong>7 个</strong>参数，给的是<strong>缓冲区容量</strong> <code class="nw">MAX_STRING</code>，再加 <code class="nw">&amp;status</code> 或 <code class="nw">MPI_STATUS_IGNORE</code>。</span></li>
 <li>Greetings (<code class="nw">mpiexec -n 4 ./mpi_hello</code>): ranks <code class="nw">1 .. comm_sz-1</code> send to rank 0; rank 0 prints its own line, then receives from <code class="nw">q = 1, 2, 3</code> in turn \(\implies\) output always in rank order; <code class="nw">comm_sz - 1</code> sends and receives.<span class="zh">Greetings（<code class="nw">mpiexec -n 4 ./mpi_hello</code>）：编号 <code class="nw">1 .. comm_sz-1</code> 的进程发给 0 号；0 号先打印自己的问候，再依次接收 <code class="nw">q = 1, 2, 3</code> \(\implies\) 输出总按编号顺序；共 <code class="nw">comm_sz - 1</code> 次收发。</span></li>
 </ul>
@@ -5239,7 +5223,6 @@ status.MPI_TAG
 <li>The slide declares <code class="nw">MPI_Status* status;</code>, but <code class="nw">&amp;status</code> and <code class="nw">status.MPI_TAG</code> need the structure: <code class="nw">MPI_Status status;</code>.<span class="zh">课件写的是 <code class="nw">MPI_Status* status;</code>，但 <code class="nw">&amp;status</code> 和 <code class="nw">status.MPI_TAG</code> 要求是结构体：<code class="nw">MPI_Status status;</code>。</span></li>
 <li>Trapezoidal rule (<a class="xref" href="#sec-09_openmp-3">§9.3</a>) in MPI: each process integrates <code class="nw">local_n</code> trapezoids; the others send their results to process 0, which adds them up.<span class="zh">MPI 梯形积分（<a class="xref" href="#sec-09_openmp-3">§9.3</a>）：每个进程算 <code class="nw">local_n</code> 个梯形；其他进程把结果发给 0 号进程，由它求和。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/Lec18/p29.png" title="点击看大图 Click to enlarge"><img src="img/Lec18/p29_c0.0147_0.2933_0.9847_0.6818.png" alt="Task graph: one task per trapezoid area, then an Add areas task combines them" loading="lazy"></a><figcaption><span class="en">Task graph: one task per trapezoid area, then an Add areas task combines them</span><span class="zh">任务图：每个梯形一个求面积的任务，最后由求和任务汇总</span></figcaption></figure></div>
 <pre><code class="language-c">// MPI integral of f over [a, b]: each process its part, process 0 sums
 // MPI 积分：各进程算自己那段，0 号进程求和
 Get a, b, n;
@@ -5498,7 +5481,6 @@ if (my_rank == 0)
 <li>A <strong>job</strong> is the application plus its resource request (cores, nodes, queue, walltime). Resources are not guaranteed at submission: a job pends in a queue until all requested resources are free, then starts.<span class="zh"><strong>作业</strong>是应用程序加上它的资源申请（核数、节点数、队列、运行时限）。提交时不保证有资源：作业在队列中等待，直到所有申请的资源都空闲，然后开始运行。</span></li>
 <li>Slurm is a central manager <code class="nw">slurmctld</code>; each compute node runs a <code class="nw">slurmd</code> daemon.<span class="zh">Slurm 有一个中央管理器 <code class="nw">slurmctld</code>；每个计算节点上运行一个 <code class="nw">slurmd</code> 守护进程。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/RC/p3.png" title="点击看大图 Click to enlarge"><img src="img/RC/p3_c0.0735_0.2204_0.853_0.856.png" alt="A personal computer connects by ssh to the login nodes, which submit jobs to the compute nodes" loading="lazy"></a><figcaption><span class="en">A personal computer connects by ssh to the login nodes, which submit jobs to the compute nodes</span><span class="zh">个人电脑用 ssh 连到登录节点，登录节点把作业提交给计算节点</span></figcaption></figure></div>
 <div class="tw"><table>
 <thead>
 <tr>
@@ -5626,7 +5608,6 @@ sbatch --dependency=afterok:$first compare_tree.slurm
 <ul>
 <li><code class="nw">afterok</code> waits for a successful exit of the earlier job; it does not check that the results are correct.<span class="zh"><code class="nw">afterok</code> 等前一个作业成功退出；它不检查结果是否正确。</span></li>
 </ul>
-<div class="figs n1"><figure><a class="zoom" href="img/RC/p29.png" title="点击看大图 Click to enlarge"><img src="img/RC/p29_c0.496_0.248_0.9195_0.8756.png" alt="Job dependencies: B and C wait for A, D waits for B and C" loading="lazy"></a><figcaption><span class="en">Job dependencies: B and C wait for A, D waits for B and C</span><span class="zh">作业依赖：B、C 等 A 完成，D 等 B、C 都完成</span></figcaption></figure></div>
 <p><strong>Interactive test</strong> (before a batch run):<span class="zh"><strong>交互式测试</strong>（批处理运行之前）：</span></p>
 <pre><code class="language-bash"># Request an interactive allocation and print the node name
 # 申请交互式资源并打印节点名
