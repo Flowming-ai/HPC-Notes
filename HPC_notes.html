@@ -278,7 +278,7 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <button id="menu" class="tool" type="button">☰ 目录</button>
 <nav id="nav">
   <div class="brand">ECCE 738 复习笔记</div>
-  <div class="sub">更新于 2026-11-16</div>
+  <div class="sub">更新于 2026-11-21</div>
   <div class="tools">
     <button class="tool" id="zhtoggle" type="button">语言：双语</button>
     <button class="tool" id="answers" type="button">展开全部答案</button>
@@ -333,6 +333,9 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 </li>
 <li><a href="#c15"><span class="chnum">Chapter 15</span>MPI: Message Passing between Processes</a>
 <ol><li><a href="#c15-s1"><span class="secnum">15.1</span>Shared versus distributed memory <span class="prio p2">★★</span></a></li><li><a href="#c15-s2"><span class="secnum">15.2</span>The MPI program skeleton, compiling and running <span class="prio p3">★★★</span></a></li><li><a href="#c15-s3"><span class="secnum">15.3</span>Communicators, size and rank <span class="prio p3">★★★</span></a></li><li><a href="#c15-s4"><span class="secnum">15.4</span>Sending and receiving a message <span class="prio p3">★★★</span></a></li><li><a href="#c15-s5"><span class="secnum">15.5</span>The greetings program <span class="prio p3">★★★</span></a></li><li><a href="#c15-s6"><span class="secnum">15.6</span>The status of a received message <span class="prio p2">★★</span></a></li><li><a href="#c15-s7"><span class="secnum">15.7</span>The trapezoidal rule with MPI <span class="prio p2">★★</span></a></li><li><a href="#c15-s8"><span class="secnum"></span>Terms to recognise <span class="prio p1">★</span></a></li><li><a href="#c15-s9"><span class="secnum"></span>Exam-style questions</a></li></ol>
+</li>
+<li><a href="#c16"><span class="chnum">Chapter 16</span>Collective MPI Communication and Parallel Examples</a>
+<ol><li><a href="#c16-s1"><span class="secnum">16.1</span>Trapezoidal C code, MPI I/O and MPI_Reduce <span class="prio p3">★★★</span></a></li><li><a href="#c16-s2"><span class="secnum">16.2</span>Collective vs. point-to-point rules and call-order matching <span class="prio p3">★★★</span></a></li><li><a href="#c16-s3"><span class="secnum">16.3</span>MPI_Allreduce, Bcast, Scatter, Gather and Allgather <span class="prio p3">★★★</span></a></li><li><a href="#c16-s4"><span class="secnum">16.4</span>Matrix-vector multiplication with MPI <span class="prio p2">★★</span></a></li><li><a href="#c16-s5"><span class="secnum"></span>Terms to recognise <span class="prio p1">★</span></a></li><li><a href="#c16-s6"><span class="secnum"></span>Exam-style questions</a></li></ol>
 </li>
 <li><a href="#app-A"><span class="chnum">Appendix A</span>Slurm Cheat Sheet</a>
 <ol><li><a href="#app-A-s1"><span class="secnum">A.1</span>Commands and job scripts <span class="prio p2">★★</span></a></li><li><a href="#app-A-s2"><span class="secnum">A.2</span>Job arrays and dependencies <span class="prio p1">★</span></a></li><li><a href="#app-A-s3"><span class="secnum"></span>Terms to recognise <span class="prio p1">★</span></a></li><li><a href="#app-A-s4"><span class="secnum"></span>Exam-style questions</a></li></ol>
@@ -457,6 +460,11 @@ details.fold > summary { color: var(--blue); padding: 8px 0; }
 <td>15 MPI</td>
 <td>program skeleton, compile and run; communicators, size and rank; <code>MPI_Send</code> and <code>MPI_Recv</code>; the greetings program<span class="zh" lang="zh-CN">程序骨架、编译与运行；通信子、大小与进程编号；<code>MPI_Send</code> 和 <code>MPI_Recv</code>；问候程序</span></td>
 <td>shared versus distributed memory; status of a received message; trapezoidal rule with MPI<span class="zh" lang="zh-CN">共享内存与分布式内存；接收消息的状态；用 MPI 实现梯形法则</span></td>
+</tr>
+<tr>
+<td>16 Collective MPI &amp; examples<span class="zh" lang="zh-CN">16 MPI 集合通信与并行实例</span></td>
+<td>tree global sum and <code>MPI_Reduce</code>; collective rules and call-order matching; <code>MPI_Allreduce</code>, <code>MPI_Bcast</code>, <code>MPI_Scatter</code>, <code>MPI_Gather</code>, <code>MPI_Allgather</code><span class="zh" lang="zh-CN">树形求和与 <code>MPI_Reduce</code>；集合规则与调用顺序匹配；<code>MPI_Allreduce</code>、<code>MPI_Bcast</code>、<code>MPI_Scatter</code>、<code>MPI_Gather</code>、<code>MPI_Allgather</code></span></td>
+<td>trapezoidal C I/O (<code>Get_input</code>, <code>stdout</code>); matrix-vector multiplication with MPI<span class="zh" lang="zh-CN">梯形积分 I/O（<code>Get_input</code>、<code>stdout</code>）；MPI 矩阵-向量乘法</span></td>
 </tr>
 <tr>
 <td>A Slurm<span class="zh" lang="zh-CN">附录 A Slurm</span></td>
@@ -7320,6 +7328,298 @@ Greetings from process 2 of 3!
 <p>(d) <code>mpicc -g -Wall -o hello hello.c</code>, then <code>mpiexec -n 16 ./hello</code>.<span class="zh" lang="zh-CN">(d) 先是 <code>mpicc -g -Wall -o hello hello.c</code>，然后是 <code>mpiexec -n 16 ./hello</code>。</span></p>
 </details>
 </section>
+<section class="chapter" id="c16"><h1><span class="chnum">Chapter 16</span>Collective MPI Communication and Parallel Examples<span class="title-cn">MPI 集合通信与并行实例</span></h1>
+<aside class="callout note" id="c16-b348"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh" lang="zh-CN">考点表</span></span></div><div class="callout-body"><div class="tw"><table>
+<thead>
+<tr>
+<th>Priority<span class="zh" lang="zh-CN">优先级</span></th>
+<th>What can be asked<span class="zh" lang="zh-CN">可能考什么</span></th>
+<th>Key formula or fact<span class="zh" lang="zh-CN">关键公式或结论</span></th>
+</tr>
+</thead>
+<tbody>
+<tr><td><span class="prio p3">★★★</span></td><td>Tree sum &amp; <code>MPI_Reduce</code><span class="zh" lang="zh-CN">树形求和与 <code>MPI_Reduce</code></span></td><td><span class="math">\(\lceil \log_2 p \rceil\)</span> steps, <span class="math">\(p-1\)</span> msgs; 7 args + predefined <code>MPI_Op</code><span class="zh" lang="zh-CN"><span class="math">\(\lceil \log_2 p \rceil\)</span> 步、<span class="math">\(p-1\)</span> 消息；7 参数与预定义 <code>MPI_Op</code></span></td></tr>
+<tr><td><span class="prio p3">★★★</span></td><td>Collective vs. P2P rules<span class="zh" lang="zh-CN">集合通信与点对点规则</span></td><td>all ranks call same func; compatible args; <code>output_data_p</code> passed by all; matched by call order (no tags)<span class="zh" lang="zh-CN">全员调用同函数；参数兼容；全传 <code>output_data_p</code>；无标签按顺序匹配</span></td></tr>
+<tr><td><span class="prio p3">★★★</span></td><td><code>Allreduce</code>, <code>Bcast</code>, <code>Scatter</code>, <code>Gather</code>, <code>Allgather</code><span class="zh" lang="zh-CN">集合原语家族</span></td><td>butterfly <span class="math">\(\log_2 p\)</span> vs <span class="math">\(2\log_2 p\)</span>; <code>sendcount = recvcount = local_n = n/p</code> (not <code>n</code>)<span class="zh" lang="zh-CN">蝶形 <span class="math">\(\log_2 p\)</span> 对比 <span class="math">\(2\log_2 p\)</span>；计数皆为 <code>local_n = n/p</code>（非 <code>n</code>）</span></td></tr>
+<tr><td><span class="prio p2">★★</span></td><td>MPI I/O &amp; Matrix-vector mult<span class="zh" lang="zh-CN">MPI I/O 与矩阵-向量乘</span></td><td><code>stdin</code> rank 0 only (<code>a_p</code> pointer); <code>stdout</code> unordered; <code>local_A[local_i*n + j]</code><span class="zh" lang="zh-CN">仅 0 号读 <code>stdin</code>；<code>stdout</code> 乱序；一维步长 <code>n</code></span></td></tr>
+</tbody>
+</table></div>
+</div></aside>
+<h2 data-num="16.1" id="c16-s1">Trapezoidal C code, MPI I/O and <code>MPI_Reduce</code> <span class="prio p3">★★★</span><span class="zh" lang="zh-CN">梯形积分 C 实现、MPI I/O 与 <code>MPI_Reduce</code></span></h2>
+<p class="goal"><strong>Goal.</strong> Understand <code>stdin</code>/<code>stdout</code> rules in MPI, why process 0 becomes a summation bottleneck in point-to-point code, and how tree reduction with <code>MPI_Reduce</code> replaces the loop.<span class="zh" lang="zh-CN"><strong>目标。</strong>掌握 MPI 中的 <code>stdin</code>/<code>stdout</code> 规则，理解点对点代码中 0 号进程的串行瓶颈，并用树形 <code>MPI_Reduce</code> 取代收集循环。</span></p>
+<h3 id="c16-s1-1">Step 1: <code>stdin</code>, <code>stdout</code> and the point-to-point bottleneck<span class="zh" lang="zh-CN">第 1 步：<code>stdin</code>、<code>stdout</code> 与点对点瓶颈</span></h3>
+<ul>
+<li><strong><code>stdin</code> (<code>Get_input</code>):</strong> most MPI implementations allow only <strong>process 0</strong> in <code>MPI_COMM_WORLD</code> to read <code>stdin</code>; rank 0 calls <code>scanf</code> and sends <code>a, b, n</code> to ranks <code>1..comm_sz-1</code>. Since <code>a_p</code>, <code>b_p</code>, <code>n_p</code> are already pointers to <code>main</code>'s variables, pass <code>a_p</code>—not <code>&amp;a_p</code>.<span class="zh" lang="zh-CN"><strong><code>stdin</code>（<code>Get_input</code>）：</strong>绝大多数 MPI 实现只允许进程 0 访问 <code>stdin</code>；0 号读入后再发给 <code>1..comm_sz-1</code>。<code>a_p</code>/<code>b_p</code>/<code>n_p</code> 本身就是指针，调用 <code>scanf</code>/<code>MPI_Send</code> 时直接传 <code>a_p</code> 而非 <code>&amp;a_p</code>。</span></li>
+<li><strong><code>stdout</code>:</strong> every process can call <code>printf</code>, so output order is <strong>unpredictable</strong> (e.g., Proc 4 may print before Proc 3); to keep rank order, send lines to rank 0 as in Section 15.5.<span class="zh" lang="zh-CN"><strong><code>stdout</code>：</strong>所有进程都能调用 <code>printf</code>，输出顺序<strong>不可预测</strong>（如 Proc 4 可能排在 Proc 3 前）；若要按序输出须像第 15.5 节发给 0 号打印。</span></li>
+<li><strong>Bottleneck:</strong> in the point-to-point trapezoidal code, rank 0 executes a serial loop of <code>p - 1</code> receives and additions while all other ranks sit idle.<span class="zh" lang="zh-CN"><strong>瓶颈：</strong>点对点梯形积分中，0 号进程要串行执行 <code>p - 1</code> 次接收和累加，其余进程空等。</span></li>
+</ul>
+<pre><code class="language-c">void Get_input(int my_rank, int comm_sz, double* a_p, double* b_p, int* n_p) {
+   int dest;
+   if (my_rank == 0) {
+      printf(&quot;Enter a, b, and n\n&quot;);
+      scanf(&quot;%lf %lf %d&quot;, a_p, b_p, n_p);
+      for (dest = 1; dest &lt; comm_sz; dest++) {
+         MPI_Send(a_p, 1, MPI_DOUBLE, dest, 0, MPI_COMM_WORLD);
+         MPI_Send(b_p, 1, MPI_DOUBLE, dest, 0, MPI_COMM_WORLD);
+         MPI_Send(n_p, 1, MPI_INT, dest, 0, MPI_COMM_WORLD);
+      }
+   } else { /* my_rank != 0 */
+      MPI_Recv(a_p, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      MPI_Recv(b_p, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      MPI_Recv(n_p, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+   }
+}</code></pre>
+<h3 id="c16-s1-2">Step 2: tree global sum and <code>MPI_Reduce</code><span class="zh" lang="zh-CN">第 2 步：树形全局求和与 <code>MPI_Reduce</code></span></h3>
+<p>Pairing processes in a binary tree cuts the depth from <span class="math">\(p-1\)</span> serial steps to <span class="math">\(\lceil \log_2 p \rceil\)</span> parallel steps while sending the same <span class="math">\(p-1\)</span> messages.<span class="zh" lang="zh-CN">让进程按二叉树配对，通信步数从串行 <span class="math">\(p-1\)</span> 步降至并行 <span class="math">\(\lceil \log_2 p \rceil\)</span> 步，总消息数仍为 <span class="math">\(p-1\)</span>。</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec19/p16.png" title="点击看大图"><img src="img/Lec19/p16_c0.13_0.2364_0.8693_0.9138.png" alt="Tree-structured global sum across 8 processes: [5,2,-1,-3,6,5,-7,2] sums to 9 in 3 steps" loading="lazy"></a><figcaption>Tree-structured global sum on 8 ranks (<code>[5,2,-1,-3,6,5,-7,2]</code> <span class="math">\(\to\)</span> 9 in 3 steps; alternatively by halving stride 4, 2, 1)<span class="zh" lang="zh-CN">8 进程树形全局求和（3 步得总和 9；也可先步距 4、再步距 2、最后步距 1 配对）</span></figcaption></figure></div>
+<pre><code class="language-c">int MPI_Reduce(
+      void*        input_data_p   /* in  */,
+      void*        output_data_p  /* out */,
+      int          count          /* in  */,
+      MPI_Datatype datatype       /* in  */,
+      MPI_Op       operator       /* in  */,
+      int          dest_process   /* in  */,
+      MPI_Comm     comm           /* in  */);
+
+/* Point-to-point sum (serial bottleneck on rank 0): */
+if (my_rank != 0) {
+   MPI_Send(&amp;local_int, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+} else {
+   total_int = local_int;
+   for (source = 1; source &lt; comm_sz; source++) {
+      MPI_Recv(&amp;local_int, 1, MPI_DOUBLE, source, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      total_int += local_int;
+   }
+}
+
+/* Tree-structured collective replacement (one call on every rank): */
+MPI_Reduce(&amp;local_int, &amp;total_int, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);</code></pre>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Predefined <code>MPI_Op</code><span class="zh" lang="zh-CN">预定义运算符</span></th>
+<th>Meaning<span class="zh" lang="zh-CN">含义</span></th>
+<th>Predefined <code>MPI_Op</code><span class="zh" lang="zh-CN">预定义运算符</span></th>
+<th>Meaning<span class="zh" lang="zh-CN">含义</span></th>
+</tr>
+</thead>
+<tbody>
+<tr><td><code>MPI_MAX</code> / <code>MPI_MIN</code></td><td>Maximum / Minimum<span class="zh" lang="zh-CN">最大值 / 最小值</span></td><td><code>MPI_SUM</code> / <code>MPI_PROD</code></td><td>Sum / Product<span class="zh" lang="zh-CN">求和 / 乘积</span></td></tr>
+<tr><td><code>MPI_LAND</code> / <code>MPI_LOR</code> / <code>MPI_LXOR</code></td><td>Logical AND / OR / XOR<span class="zh" lang="zh-CN">逻辑与 / 或 / 异或</span></td><td><code>MPI_BAND</code> / <code>MPI_BOR</code> / <code>MPI_BXOR</code></td><td>Bitwise AND / OR / XOR<span class="zh" lang="zh-CN">按位与 / 或 / 异或</span></td></tr>
+<tr><td><code>MPI_MAXLOC</code></td><td>Max &amp; rank location<span class="zh" lang="zh-CN">最大值及进程位置</span></td><td><code>MPI_MINLOC</code></td><td>Min &amp; rank location<span class="zh" lang="zh-CN">最小值及进程位置</span></td></tr>
+</tbody>
+</table></div>
+<p class="keyline">In words: <strong>only rank 0 reads <code>stdin</code>; tree reduction cuts depth from <span class="math">\(p-1\)</span> to <span class="math">\(\lceil \log_2 p \rceil\)</span>, and one <code>MPI_Reduce</code> replaces the whole P2P sum loop</strong>.<span class="zh" lang="zh-CN">用一句话说：<strong>仅 0 号读 <code>stdin</code>；树形归约把步数从 <span class="math">\(p-1\)</span> 降为 <span class="math">\(\lceil \log_2 p \rceil\)</span>，一条 <code>MPI_Reduce</code> 即可取代点对点求和循环</strong>。</span></p>
+<aside class="callout exam" id="c16-b351"><div class="callout-head"><span class="kind">Traps</span><span class="title"><span class="zh inline" lang="zh-CN">易错点</span></span></div><div class="callout-body"><ul>
+<li>Only process 0 accesses <code>stdin</code>; in <code>Get_input</code>, <code>a_p</code>/<code>b_p</code>/<code>n_p</code> are already pointers, so pass <code>a_p</code>, not <code>&amp;a_p</code>.<span class="zh" lang="zh-CN">仅进程 0 可读 <code>stdin</code>；在 <code>Get_input</code> 中 <code>a_p</code>/<code>b_p</code>/<code>n_p</code> 本身是指针，直接传 <code>a_p</code>，不要写 <code>&amp;a_p</code>。</span></li>
+<li>Every rank can call <code>printf</code> to <code>stdout</code>, making output order unpredictable (if order matters, send to rank 0 as in Section 15.5).<span class="zh" lang="zh-CN">所有进程都能写 <code>stdout</code>，打印顺序不可预测（需要有序则发给 0 号打印，见第 15.5 节）。</span></li>
+<li><code>MPI_Reduce</code> takes 7 args and uses predefined <code>MPI_Op</code> names (<code>MPI_SUM</code>, <code>MPI_MAX</code>, etc.), not C operators.<span class="zh" lang="zh-CN"><code>MPI_Reduce</code> 有 7 个参数，运算符须用预定义 <code>MPI_Op</code>（如 <code>MPI_SUM</code>、<code>MPI_MAX</code>），而非 C 符号。</span></li>
+</ul>
+</div></aside>
+<h3 class="practice" id="c16-s1-3">Practice<span class="zh" lang="zh-CN">练习</span></h3>
+<p><strong>Q1.</strong> <em>(Code &amp; I/O)</em> In <code>Get_input(my_rank, comm_sz, &amp;a, &amp;b, &amp;n)</code> with 6 processes: (a) Why does only rank 0 call <code>scanf</code>, and why does it pass <code>a_p</code> instead of <code>&amp;a_p</code>? (b) If all 6 ranks call <code>printf</code> directly, is output order guaranteed? Contrast with Section 15.5.<span class="zh" lang="zh-CN"><strong>Q1.</strong> <em>(代码与 I/O)</em> 6 个进程调用 <code>Get_input(my_rank, comm_sz, &amp;a, &amp;b, &amp;n)</code>：(a) 为什么只有 0 号调用 <code>scanf</code>，且传 <code>a_p</code> 而不是 <code>&amp;a_p</code>？(b) 若 6 个进程都直接调用 <code>printf</code>，输出顺序是否固定？对比第 15.5 节。</span></p>
+<details><summary>Answer</summary>
+<p>(a) Most MPI implementations allow only rank 0 access to <code>stdin</code>; inside <code>Get_input</code>, <code>a_p</code> is already a pointer (<code>double*</code>) to <code>a</code>.<span class="zh" lang="zh-CN">(a) 大多数 MPI 实现只允许 0 号读 <code>stdin</code>；在 <code>Get_input</code> 中 <code>a_p</code> 已是指向 <code>a</code> 的指针。</span></p>
+<p>(b) No—concurrent <code>stdout</code> order is unpredictable. In Section 15.5, ranks send strings to rank 0 to print in rank order.<span class="zh" lang="zh-CN">(b) 不固定——多进程写 <code>stdout</code> 顺序不可预测；第 15.5 节由 0 号按序收齐后打印。</span></p>
+</details>
+<p><strong>Q2.</strong> <em>(Calculation &amp; code)</em> (a) For <span class="math">\(p=64\)</span> processes, how many parallel steps and messages does a tree global sum take, vs. rank 0 looping serially? (b) Write one <code>MPI_Reduce</code> call to find the element-wise maximum of <code>double local_x[4]</code> into <code>double global_x[4]</code> on rank 0.<span class="zh" lang="zh-CN"><strong>Q2.</strong> <em>(计算与代码)</em> (a) 对 <span class="math">\(p=64\)</span> 个进程，树形求和需要几步、几条消息（对比 0 号串行接收）？(b) 写一条 <code>MPI_Reduce</code> 将各进程的 <code>double local_x[4]</code> 逐元素求最大值归约到 0 号的 <code>global_x[4]</code>。</span></p>
+<details><summary>Answer</summary>
+<p>(a) Tree: <span class="math">\(\lceil \log_2 64 \rceil = 6\)</span> parallel steps, <span class="math">\(63\)</span> messages (serial at rank 0: <span class="math">\(63\)</span> steps, <span class="math">\(63\)</span> messages).<span class="zh" lang="zh-CN">(a) 树形：<span class="math">\(\lceil \log_2 64 \rceil = 6\)</span> 个并行步、<span class="math">\(63\)</span> 条消息（0 号串行：<span class="math">\(63\)</span> 步、<span class="math">\(63\)</span> 条消息）。</span></p>
+<p>(b) <code>MPI_Reduce(local_x, global_x, 4, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);</code>.<span class="zh" lang="zh-CN">(b) <code>MPI_Reduce(local_x, global_x, 4, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);</code>。</span></p>
+</details>
+
+<h2 data-num="16.2" id="c16-s2">Collective vs. point-to-point rules and call-order matching <span class="prio p3">★★★</span><span class="zh" lang="zh-CN">集合通信与点对点规则及调用顺序匹配</span></h2>
+<p class="goal"><strong>Goal.</strong> Apply the four rules of MPI collective calls and trace why multiple calls match strictly by call order rather than variable names.<span class="zh" lang="zh-CN"><strong>目标。</strong>掌握 MPI 集合通信的四条规则，并会追踪为何多次调用只按顺序匹配而不看变量名。</span></p>
+<ol>
+<li><strong>Same function on all ranks:</strong> every process in the communicator must call the same collective function (mixing <code>MPI_Reduce</code> with <code>MPI_Recv</code> hangs or crashes).<span class="zh" lang="zh-CN"><strong>全体调用同函数：</strong>通信子中所有进程必须调用同一个集合函数（混用 <code>MPI_Reduce</code> 与 <code>MPI_Recv</code> 会挂起或崩溃）。</span></li>
+<li><strong>Compatible arguments:</strong> e.g. passing different <code>dest_process</code> values on different processes is erroneous and hangs or crashes.<span class="zh" lang="zh-CN"><strong>参数兼容：</strong>如不同进程传不同的 <code>dest_process</code> 会出错并挂起或崩溃。</span></li>
+<li><strong>Pass <code>output_data_p</code> on every rank:</strong> even though only <code>dest_process</code> writes to it, non-root ranks must still pass an actual argument.<span class="zh" lang="zh-CN"><strong>全员传 <code>output_data_p</code>：</strong>虽然只在目标进程使用，非目标进程也必须传一个实参。</span></li>
+<li><strong>No tags, no <code>MPI_Status</code>:</strong> collectives match solely by communicator and <strong>call order</strong>, ignoring C variable names.<span class="zh" lang="zh-CN"><strong>无标签、无状态：</strong>仅按通信子和<strong>调用顺序</strong>匹配，忽略 C 变量名。</span></li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr><th>Time<span class="zh" lang="zh-CN">时刻</span></th><th>Process 0<span class="zh" lang="zh-CN">进程 0</span></th><th>Process 1<span class="zh" lang="zh-CN">进程 1</span></th><th>Process 2<span class="zh" lang="zh-CN">进程 2</span></th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td><code>a = 1; c = 2</code></td><td><code>a = 1; c = 2</code></td><td><code>a = 1; c = 2</code></td></tr>
+<tr><td>1</td><td><code>MPI_Reduce(&amp;a, &amp;b, ...)</code></td><td><code>MPI_Reduce(&amp;c, &amp;d, ...)</code></td><td><code>MPI_Reduce(&amp;a, &amp;b, ...)</code></td></tr>
+<tr><td>2</td><td><code>MPI_Reduce(&amp;c, &amp;d, ...)</code></td><td><code>MPI_Reduce(&amp;a, &amp;b, ...)</code></td><td><code>MPI_Reduce(&amp;c, &amp;d, ...)</code></td></tr>
+</tbody>
+</table></div>
+<aside class="callout example" id="c16-b352"><div class="callout-head"><span class="kind">Worked example</span><span class="title">Why rank 0 gets <code>b = 4</code> and <code>d = 5</code> (not 3 and 6)<span class="zh" lang="zh-CN">为何 0 号得到 <code>b = 4</code>、<code>d = 5</code>（非 3 和 6）</span></span></div><div class="callout-body"><ul>
+<li>Time 1 matches P0's <code>a</code> (1) + P1's <code>c</code> (2) + P2's <code>a</code> (1) <span class="math">\(\implies\)</span> stored in P0's <code>b = 4</code>.<span class="zh" lang="zh-CN">第 1 次匹配 P0 的 <code>a</code>(1) + P1 的 <code>c</code>(2) + P2 的 <code>a</code>(1) <span class="math">\(\implies\)</span> 写入 P0 的 <code>b = 4</code>。</span></li>
+<li>Time 2 matches P0's <code>c</code> (2) + P1's <code>a</code> (1) + P2's <code>c</code> (2) <span class="math">\(\implies\)</span> stored in P0's <code>d = 5</code>.<span class="zh" lang="zh-CN">第 2 次匹配 P0 的 <code>c</code>(2) + P1 的 <code>a</code>(1) + P2 的 <code>c</code>(2) <span class="math">\(\implies\)</span> 写入 P0 的 <code>d = 5</code>。</span></li>
+</ul>
+</div></aside>
+<aside class="callout cn" id="c16-b353"><div class="callout-head"><span class="kind">中文解释</span><span class="title">集合通信只认「第几次调用」</span></div><div class="callout-body"><p>各进程内存彼此隔离，MPI 看不到变量名。每个进程的第 1 次 <code>MPI_Reduce</code> 必与其余进程的第 1 次配对；若少调用一次或传错目标进程号就会卡死。</p>
+</div></aside>
+<aside class="callout exam" id="c16-b354"><div class="callout-head"><span class="kind">Traps</span><span class="title"><span class="zh inline" lang="zh-CN">易错点</span></span></div><div class="callout-body"><ul>
+<li>All ranks in the communicator must call the <strong>same</strong> collective with compatible arguments (same <code>dest_process</code>/root) and pass an actual argument for <code>output_data_p</code>.<span class="zh" lang="zh-CN">通信子内全体进程必须调用<strong>同一个</strong>集合函数、参数兼容（如相同的 <code>dest_process</code>/根进程），且所有进程都传 <code>output_data_p</code>。</span></li>
+<li>Collective calls have no tags and no <code>MPI_Status</code>; MPI matches solely by communicator and <strong>call order</strong>, ignoring variable names.<span class="zh" lang="zh-CN">集合调用无标签、无 <code>MPI_Status</code>；MPI 只按通信子与<strong>调用顺序</strong>匹配，忽略变量名。</span></li>
+</ul>
+</div></aside>
+<h3 class="practice" id="c16-s2-1">Practice<span class="zh" lang="zh-CN">练习</span></h3>
+<p><strong>Q1.</strong> <em>(Trace)</em> On ranks 0, 1, 2 initially <code>a = 1; c = 2;</code>. With <code>MPI_SUM</code> and <code>dest_process = 0</code>: Call 1 passes P0 <code>(&amp;a,&amp;b)</code>, P1 <code>(&amp;c,&amp;d)</code>, P2 <code>(&amp;a,&amp;b)</code>; Call 2 passes P0 <code>(&amp;c,&amp;d)</code>, P1 <code>(&amp;a,&amp;b)</code>, P2 <code>(&amp;c,&amp;d)</code>. What are <code>b</code> and <code>d</code> on rank 0, and why?<span class="zh" lang="zh-CN"><strong>Q1.</strong> <em>(追踪)</em> 进程 0、1、2 初始都有 <code>a = 1; c = 2;</code>。以 <code>MPI_SUM</code>、<code>dest_process = 0</code>：第 1 次调用各传 P0 <code>(&amp;a,&amp;b)</code>、P1 <code>(&amp;c,&amp;d)</code>、P2 <code>(&amp;a,&amp;b)</code>；第 2 次传 P0 <code>(&amp;c,&amp;d)</code>、P1 <code>(&amp;a,&amp;b)</code>、P2 <code>(&amp;c,&amp;d)</code>。进程 0 上 <code>b</code> 和 <code>d</code> 最终是多少？为什么？</span></p>
+<details><summary>Answer</summary>
+<p><code>b = 4</code> and <code>d = 5</code>. Collective calls ignore memory names and tags, matching solely by call order: Call 1 sums <span class="math">\(1+2+1=4\)</span> into <code>b</code>; Call 2 sums <span class="math">\(2+1+2=5\)</span> into <code>d</code>.<span class="zh" lang="zh-CN"><code>b = 4</code>、<code>d = 5</code>。集合调用忽略变量名与标签，只按调用顺序匹配：第 1 次把 <span class="math">\(1+2+1=4\)</span> 存入 <code>b</code>；第 2 次把 <span class="math">\(2+1+2=5\)</span> 存入 <code>d</code>。</span></p>
+</details>
+<p><strong>Q2.</strong> <em>(Find the mistakes)</em> Why will each fail: (a) Rank 0 calls <code>MPI_Reduce</code> while ranks 1..3 call <code>MPI_Send</code>; (b) Rank 0 passes <code>dest_process = 0</code> while rank 1 passes <code>1</code>; (c) Non-root ranks omit <code>output_data_p</code>.<span class="zh" lang="zh-CN"><strong>Q2.</strong> <em>(找错)</em> 指出以下错在哪里：(a) 0 号调 <code>MPI_Reduce</code> 而 1..3 号调 <code>MPI_Send</code>；(b) 0 号传 <code>dest_process = 0</code> 而 1 号传 <code>1</code>；(c) 非目标进程省略实参 <code>output_data_p</code>。</span></p>
+<details><summary>Answer</summary>
+<p>(a) Hangs/crashes: all ranks must call the same collective (cannot match collective with <code>MPI_Send</code>). (b) Hangs/crashes: arguments must be compatible across ranks. (c) Invalid call: all processes must pass an actual argument for <code>output_data_p</code>.<span class="zh" lang="zh-CN">(a) 挂起/崩溃：所有进程须调用同一集合函数，不能与 <code>MPI_Send</code> 混配。(b) 挂起/崩溃：各进程参数必须兼容。(c) 错误：即使非目标进程也必须为 <code>output_data_p</code> 传实参。</span></p>
+</details>
+
+<h2 data-num="16.3" id="c16-s3"><code>MPI_Allreduce</code>, <code>MPI_Bcast</code>, <code>MPI_Scatter</code>, <code>MPI_Gather</code> and <code>MPI_Allgather</code> <span class="prio p3">★★★</span><span class="zh" lang="zh-CN">Allreduce、广播、分发与收集</span></h2>
+<p class="goal"><strong>Goal.</strong> Choose the right collective primitive for data distribution or reduction, compare butterfly vs. reduce+bcast depth, and set per-process counts correctly.<span class="zh" lang="zh-CN"><strong>目标。</strong>根据数据流向选用正确的集合原语，比较蝶形与归约+广播轮数，并正确填写每进程元素计数。</span></p>
+<ul>
+<li><strong>Butterfly <code>MPI_Allreduce</code>:</strong> drops <code>dest_process</code> (6 args) and gives every process the reduced result in <span class="math">\(\log_2 p\)</span> rounds—twice as fast in depth as tree reduce + tree broadcast (<span class="math">\(2\log_2 p\)</span> rounds).<span class="zh" lang="zh-CN"><strong>蝶形 <code>MPI_Allreduce</code>：</strong>去掉 <code>dest_process</code>（6 参数），经 <span class="math">\(\log_2 p\)</span> 轮交换让每个进程都得到结果，步数只有「先树归约再树广播（<span class="math">\(2\log_2 p\)</span>）」的一半。</span></li>
+<li><strong><code>MPI_Bcast</code> vs. <code>Scatter</code>/<code>Gather</code>/<code>Allgather</code>:</strong> <code>Bcast</code> copies root's buffer (<code>data_p</code> is <code>in/out</code>, same <code>source_proc</code> on all ranks) to all; <code>Scatter</code> splits a root array into equal slices (1 per rank); <code>Gather</code> is its inverse onto root; <code>Allgather</code> equals Gather + Bcast.<span class="zh" lang="zh-CN"><strong>广播与分发/收集对比：</strong><code>Bcast</code> 把根缓冲复制给所有人（<code>data_p</code> 为 <code>in/out</code>）；<code>Scatter</code> 将根数组均分给各进程；<code>Gather</code> 是其逆操作（拼回根）；<code>Allgather</code> 等价于 Gather + Bcast。</span></li>
+</ul>
+<div class="figs n2"><figure><a class="zoom" href="img/Lec20/p8.png" title="点击看大图"><img src="img/Lec20/p8_c0.1227_0.2098_0.84_0.848.png" alt="Butterfly global sum across 8 ranks: 3 rounds give 9 on every rank" loading="lazy"></a><figcaption>Butterfly <code>MPI_Allreduce</code>: 3 rounds give 9 on all 8 ranks<span class="zh" lang="zh-CN">蝶形 <code>MPI_Allreduce</code>：3 轮后 8 进程全得 9</span></figcaption></figure><figure><a class="zoom" href="img/Lec20/p12.png" title="点击看大图"><img src="img/Lec20/p12_c0.074_0.072_0.9573_0.9316.png" alt="Tree global sum to rank 0 followed by tree broadcast takes 6 rounds" loading="lazy"></a><figcaption>Tree reduce + tree broadcast takes <span class="math">\(2\log_2 8 = 6\)</span> rounds<span class="zh" lang="zh-CN">先树归约再树广播共需 <span class="math">\(2\log_2 8 = 6\)</span> 轮</span></figcaption></figure></div>
+<div class="figs n2"><figure><a class="zoom" href="img/Lec20/p19.png" title="点击看大图"><img src="img/Lec20/p19_c0.1653_0.2231_0.83_0.8791.png" alt="MPI_Gather and MPI_Scatter are inverse operations between P_0..P_{p-1} and Root" loading="lazy"></a><figcaption><code>MPI_Gather</code> and <code>MPI_Scatter</code> are inverse operations<span class="zh" lang="zh-CN"><code>MPI_Gather</code> 与 <code>MPI_Scatter</code> 互为逆操作</span></figcaption></figure><figure><a class="zoom" href="img/Lec20/p22.png" title="点击看大图"><img src="img/Lec20/p22_c0.0547_0.2391_0.966_0.8284.png" alt="MPI_Allgather gives every process the concatenated array of all chunks" loading="lazy"></a><figcaption><code>MPI_Allgather</code> = <code>MPI_Gather</code> + <code>MPI_Bcast</code><span class="zh" lang="zh-CN"><code>MPI_Allgather</code> = 先 <code>Gather</code> 再 <code>Bcast</code></span></figcaption></figure></div>
+<aside class="callout formula" id="c16-b350"><div class="callout-head"><span class="kind">Formula</span><span class="title">Tree global sum vs. butterfly <code>MPI_Allreduce</code><span class="zh" lang="zh-CN">树形归约与蝶形 <code>MPI_Allreduce</code> 步数</span></span></div><div class="callout-body"><p><span class="math display">\[\text{tree steps}=\lceil\log_2 p\rceil,\quad \text{messages}=p-1,\qquad \text{butterfly}=\log_2 p\;\text{(vs.\ }2\log_2 p\text{ reduce+bcast)}\]</span></p>
+<ul>
+<li><span class="math">\(p\)</span>: number of processes (<code>comm_sz</code>); <span class="math">\(\lceil\cdot\rceil\)</span> rounds up.<span class="zh" lang="zh-CN"><span class="math">\(p\)</span>：进程数（<code>comm_sz</code>）；<span class="math">\(\lceil\cdot\rceil\)</span> 向上取整。</span></li>
+<li>For <span class="math">\(p=8\)</span>: tree <code>MPI_Reduce</code> takes <span class="math">\(3\)</span> steps (7 msgs) vs. <span class="math">\(7\)</span> serial steps on rank 0; butterfly <code>MPI_Allreduce</code> takes <span class="math">\(3\)</span> rounds vs. <span class="math">\(6\)</span> for reduce+bcast.<span class="zh" lang="zh-CN">以 <span class="math">\(p=8\)</span> 为例：树形 <code>MPI_Reduce</code> 需 <span class="math">\(3\)</span> 步（7 条消息，对比 0 号串行 <span class="math">\(7\)</span> 步）；蝶形 <code>MPI_Allreduce</code> 只需 <span class="math">\(3\)</span> 轮，对比先归约再广播的 <span class="math">\(6\)</span> 轮。</span></li>
+</ul>
+</div></aside>
+<aside class="callout formula" id="c16-b355"><div class="callout-head"><span class="kind">Formula</span><span class="title">Counts in <code>MPI_Scatter</code>, <code>MPI_Gather</code> and <code>MPI_Allgather</code><span class="zh" lang="zh-CN"><code>MPI_Scatter</code>、<code>MPI_Gather</code> 与 <code>MPI_Allgather</code> 的计数</span></span></div><div class="callout-body"><p><span class="math display">\[\text{sendcount}=\text{recvcount}=\text{local\_n}=\frac{n}{p}\]</span></p>
+<ul>
+<li><span class="math">\(n\)</span>: full vector length; <span class="math">\(p\)</span>: number of processes (assuming <span class="math">\(p \mid n\)</span>).<span class="zh" lang="zh-CN"><span class="math">\(n\)</span>：完整向量长度；<span class="math">\(p\)</span>：进程数（假设 <span class="math">\(p \mid n\)</span>）。</span></li>
+<li>Both counts are the <strong>per-process chunk size</strong> <code>local_n</code>, <strong>not</strong> the total length <code>n</code>.<span class="zh" lang="zh-CN">发送/接收计数均为<strong>单个进程的分片长度</strong> <code>local_n</code>，<strong>不是</strong>总长度 <code>n</code>。</span></li>
+</ul>
+</div></aside>
+<pre><code class="language-c">int MPI_Allreduce(void* input_data_p, void* output_data_p, int count,
+      MPI_Datatype datatype, MPI_Op operator, MPI_Comm comm);
+
+int MPI_Bcast(void* data_p /* in/out */, int count, MPI_Datatype datatype,
+      int source_proc, MPI_Comm comm);
+
+int MPI_Scatter(void* sendbuf, int sendcount, MPI_Datatype sendtype,
+      void* recvbuf, int recvcount, MPI_Datatype recvtype,
+      int source, MPI_Comm comm);
+
+int MPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
+      void* recvbuf, int recvcount, MPI_Datatype recvtype,
+      int root, MPI_Comm comm);
+
+int MPI_Allgather(void* send_data, int send_count, MPI_Datatype send_datatype,
+      void* recv_data, int recv_count, MPI_Datatype recv_datatype,
+      MPI_Comm communicator);</code></pre>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Collective<span class="zh" lang="zh-CN">集合函数</span></th>
+<th>Data flow<span class="zh" lang="zh-CN">数据流向</span></th>
+<th>Count &amp; buffer rule<span class="zh" lang="zh-CN">计数与缓冲规则</span></th>
+</tr>
+</thead>
+<tbody>
+<tr><td><code>MPI_Bcast</code></td><td>1 copy on <code>source_proc</code> <span class="math">\(\to\)</span> all ranks<span class="zh" lang="zh-CN">源进程 1 份 <span class="math">\(\to\)</span> 全部进程</span></td><td><code>data_p</code> is <code>in/out</code>; same <code>source_proc</code> everywhere<span class="zh" lang="zh-CN"><code>data_p</code> 为 <code>in/out</code>；各进程 <code>source_proc</code> 一致</span></td></tr>
+<tr><td><code>MPI_Scatter</code></td><td>Root's array split <span class="math">\(\to\)</span> 1 chunk per rank<span class="zh" lang="zh-CN">根数组均分 <span class="math">\(\to\)</span> 每进程 1 段</span></td><td><code>sendcount = recvcount = local_n</code>; <code>sendbuf</code> root-only<span class="zh" lang="zh-CN">计数为 <code>local_n</code>；<code>sendbuf</code> 仅根用</span></td></tr>
+<tr><td><code>MPI_Gather</code></td><td>1 chunk per rank <span class="math">\(\to\)</span> concatenated on root<span class="zh" lang="zh-CN">每进程 1 段 <span class="math">\(\to\)</span> 在根拼回</span></td><td><code>sendcount = recvcount = local_n</code>; <code>recvbuf</code> root-only<span class="zh" lang="zh-CN">计数为 <code>local_n</code>；<code>recvbuf</code> 仅根用</span></td></tr>
+<tr><td><code>MPI_Allgather</code></td><td>1 chunk per rank <span class="math">\(\to\)</span> full array on all ranks<span class="zh" lang="zh-CN">每进程 1 段 <span class="math">\(\to\)</span> 全员各得完整数组</span></td><td><code>send_count = recv_count = local_n</code><span class="zh" lang="zh-CN">计数均为每进程 <code>local_n</code></span></td></tr>
+</tbody>
+</table></div>
+<aside class="callout cn" id="c16-b357"><div class="callout-head"><span class="kind">中文解释</span><span class="title">为什么 count 总是写 <code>local_n</code> 而不是 <code>n</code>？</span></div><div class="callout-body"><p>MPI 规定 <code>Scatter</code>/<code>Gather</code>/<code>Allgather</code> 里的收发 count 指的都是「与<strong>单个进程</strong>对应的分片长度」（<code>local_n = n/p</code>），MPI 会自动乘以进程数 <code>p</code> 得到根进程总缓冲区大小；非根进程不用分配 <code>vec</code>（传 <code>NULL</code>），但仍必须调用集合函数。</p>
+</div></aside>
+<aside class="callout exam" id="c16-b358"><div class="callout-head"><span class="kind">Traps</span><span class="title"><span class="zh inline" lang="zh-CN">易错点</span></span></div><div class="callout-body"><ul>
+<li><code>MPI_Allreduce</code> removes <code>dest_process</code> (6 args); in <code>MPI_Bcast</code>, <code>data_p</code> is <code>in/out</code> and <code>source_proc</code> must match on all ranks.<span class="zh" lang="zh-CN"><code>MPI_Allreduce</code> 去掉了 <code>dest_process</code>（6 参数）；<code>MPI_Bcast</code> 中 <code>data_p</code> 为 <code>in/out</code>，且各进程 <code>source_proc</code> 必须相同。</span></li>
+<li>In <code>Scatter</code>/<code>Gather</code>/<code>Allgather</code>, counts equal <code>local_n = n/p</code> (not total <code>n</code>); root-only buffers can be <code>NULL</code> on non-root ranks.<span class="zh" lang="zh-CN"><code>Scatter</code>/<code>Gather</code>/<code>Allgather</code> 的计数均填 <code>local_n = n/p</code>（非总长 <code>n</code>）；仅根进程使用的缓冲区在非根进程可为 <code>NULL</code>。</span></li>
+</ul>
+</div></aside>
+<h3 class="practice" id="c16-s3-1">Practice<span class="zh" lang="zh-CN">练习</span></h3>
+<p><strong>Q1.</strong> <em>(Butterfly &amp; Bcast)</em> (a) Ranks 0..3 hold <code>[4, -1, 7, 2]</code>: trace butterfly <code>MPI_Allreduce</code> rounds. For <span class="math">\(p=16\)</span>, compare rounds of butterfly vs. tree reduce + tree bcast. (b) In <code>MPI_Bcast(a_p, 1, MPI_DOUBLE, 0, comm)</code>, why is <code>a_p</code> called <code>in/out</code>?<span class="zh" lang="zh-CN"><strong>Q1.</strong> <em>(蝶形与广播)</em> (a) 进程 0..3 持有 <code>[4, -1, 7, 2]</code>，追踪蝶形 <code>MPI_Allreduce</code> 各轮结果；<span class="math">\(p=16\)</span> 时比较蝶形与「归约+广播」的轮数。(b) 在 <code>MPI_Bcast(a_p, 1, MPI_DOUBLE, 0, comm)</code> 中，为什么说 <code>a_p</code> 是 <code>in/out</code>？</span></p>
+<details><summary>Answer</summary>
+<p>(a) Round 1 (0↔1, 2↔3): <code>[3, 3, 9, 9]</code>; Round 2 (0↔2, 1↔3): <code>[12, 12, 12, 12]</code>. For <span class="math">\(p=16\)</span>: <span class="math">\(\log_2 16 = 4\)</span> vs. <span class="math">\(2\log_2 16 = 8\)</span> rounds.<span class="zh" lang="zh-CN">(a) 第 1 轮（0↔1、2↔3）：<code>[3, 3, 9, 9]</code>；第 2 轮（0↔2、1↔3）：<code>[12, 12, 12, 12]</code>。对 <span class="math">\(p=16\)</span>：<span class="math">\(\log_2 16 = 4\)</span> 轮对比 <span class="math">\(2\log_2 16 = 8\)</span> 轮。</span></p>
+<p>(b) On <code>source_proc = 0</code> it supplies the input to send; on all other ranks it is overwritten with the broadcast output.<span class="zh" lang="zh-CN">(b) 在源进程 0 上它是输入数据；在其余进程上是接收广播结果的覆盖输出。</span></p>
+</details>
+<p><strong>Q2.</strong> <em>(Scatter / Gather / Allgather)</em> On <span class="math">\(p=6\)</span> ranks, rank 0 has <code>double vec[24]</code> and every rank has <code>double local_vec[4]</code> and <code>double all_vec[24]</code>. Write the calls for: (a) distributing <code>vec</code> to <code>local_vec</code>; (b) gathering <code>local_vec</code> back to <code>vec</code> on rank 0; (c) giving <code>all_vec</code> to every rank.<span class="zh" lang="zh-CN"><strong>Q2.</strong> <em>(分发与收集)</em> <span class="math">\(p=6\)</span> 个进程，0 号持有 <code>double vec[24]</code>，每进程另有 <code>local_vec[4]</code> 和 <code>all_vec[24]</code>。写出：(a) 分发到 <code>local_vec</code>；(b) 收回 0 号 <code>vec</code>；(c) 让全员得到 <code>all_vec</code> 的调用。</span></p>
+<details><summary>Answer</summary>
+<p>(a) <code>MPI_Scatter(vec, 4, MPI_DOUBLE, local_vec, 4, MPI_DOUBLE, 0, comm);</code><br>(b) <code>MPI_Gather(local_vec, 4, MPI_DOUBLE, vec, 4, MPI_DOUBLE, 0, comm);</code><br>(c) <code>MPI_Allgather(local_vec, 4, MPI_DOUBLE, all_vec, 4, MPI_DOUBLE, comm);</code><br>All counts are <code>4</code> (<code>24 / 6 = local_n</code>), not <code>24</code>.<span class="zh" lang="zh-CN">计数全填 <code>4</code>（<code>local_n = 24/6</code>），不是 <code>24</code>。</span></p>
+</details>
+
+<h2 data-num="16.4" id="c16-s4">Matrix-vector multiplication with MPI <span class="prio p2">★★</span><span class="zh" lang="zh-CN">MPI 矩阵-向量乘法</span></h2>
+<p class="goal"><strong>Goal.</strong> Trace how <code>Get_dims</code>, <code>Read_vector</code>, <code>Mat_vect_mult</code> and <code>Print_vector</code> combine four collectives to compute <span class="math">\(y = Ax\)</span> with row-block partitioning.<span class="zh" lang="zh-CN"><strong>目标。</strong>串联 <code>Get_dims</code>、<code>Read_vector</code>、<code>Mat_vect_mult</code> 与 <code>Print_vector</code> 中的四种集合通信，理解按行分块计算 <span class="math">\(y = Ax\)</span> 的流程。</span></p>
+<div class="figs n1"><figure><a class="zoom" href="img/Lec20/p3.png" title="点击看大图"><img src="img/Lec20/p3_c0.0367_0.1582_0.9673_0.584.png" alt="Matrix-vector multiplication y = Ax: row i of A dotted with full vector x gives y_i" loading="lazy"></a><figcaption>Every row <span class="math">\(i\)</span> of <span class="math">\(A\)</span> multiplies the full vector <span class="math">\(x\)</span> to yield <span class="math">\(y_i\)</span><span class="zh" lang="zh-CN"><span class="math">\(A\)</span> 的每行 <span class="math">\(i\)</span> 都与完整向量 <span class="math">\(x\)</span> 做点积得到 <span class="math">\(y_i\)</span></span></figcaption></figure></div>
+<ul>
+<li><strong>Data distribution (<span class="math">\(p \mid m,\; p \mid n\)</span>):</strong> each rank stores <code>local_m = m/p</code> complete rows of <span class="math">\(A\)</span> in 1-D row-major array <code>local_A</code> (size <code>local_m * n</code>, row stride <code>n</code>) and <code>local_n = n/p</code> entries of <code>local_x</code>.<span class="zh" lang="zh-CN"><strong>数据划分：</strong>每进程存 <code>local_m = m/p</code> 个完整行（一维数组 <code>local_A</code>，步长为全列数 <code>n</code>）与 <code>local_n = n/p</code> 个 <code>local_x</code> 元素。</span></li>
+<li><strong>4-collective pipeline:</strong> (1) <code>Get_dims</code> uses <code>MPI_Bcast</code> for <code>m, n</code>; (2) <code>Read_vector</code> uses <code>MPI_Scatter</code> for <code>local_x</code>; (3) <code>Mat_vect_mult</code> uses <code>MPI_Allgather</code> so every rank gets full <code>x[n]</code> to dot with its rows; (4) <code>Print_vector</code> uses <code>MPI_Gather</code> to print <code>y</code> on rank 0.<span class="zh" lang="zh-CN"><strong>四段集合流水：</strong>(1) <code>Get_dims</code> 广播 <code>m, n</code>；(2) <code>Read_vector</code> 分发 <code>local_x</code>；(3) <code>Mat_vect_mult</code> 用 <code>MPI_Allgather</code> 在各进程拼出完整 <code>x[n]</code> 后计算局部点积；(4) <code>Print_vector</code> 收集 <code>local_y</code> 到 0 号打印。</span></li>
+</ul>
+<aside class="callout formula" id="c16-b359"><div class="callout-head"><span class="kind">Formula</span><span class="title">MPI matrix-vector partition and indexing<span class="zh" lang="zh-CN">MPI 矩阵-向量乘法划分与下标</span></span></div><div class="callout-body"><p><span class="math display">\[\text{local\_m}=\frac{m}{p},\qquad \text{local\_n}=\frac{n}{p},\qquad \texttt{local\_A[local\_i*n + j]}\]</span></p>
+<ul>
+<li><span class="math">\(A\)</span> is <span class="math">\(m \times n\)</span>: each rank stores <code>local_m</code> full rows (row stride is full <code>n</code>, not <code>local_n</code>) and gathers full <code>x[n]</code> via <code>MPI_Allgather</code>.<span class="zh" lang="zh-CN"><span class="math">\(A\)</span> 为 <span class="math">\(m \times n\)</span>：每进程存 <code>local_m</code> 个整行（行步长是总列数 <code>n</code>，不是 <code>local_n</code>），并用 <code>MPI_Allgather</code> 收集完整 <code>x[n]</code>。</span></li>
+</ul>
+</div></aside>
+<pre><code class="language-c">/* 1. Get_dims: rank 0 reads m, n and broadcasts both */
+if (my_rank == 0) { scanf(&quot;%d&quot;, m_p); scanf(&quot;%d&quot;, n_p); }
+MPI_Bcast(m_p, 1, MPI_INT, 0, comm);
+MPI_Bcast(n_p, 1, MPI_INT, 0, comm);
+
+/* 2. Read_vector / Print_vector: root scatters input x, gathers output y */
+MPI_Scatter(vec, local_n, MPI_DOUBLE, local_vec, local_n, MPI_DOUBLE, 0, comm);
+MPI_Gather(local_vec, local_n, MPI_DOUBLE, vec, local_n, MPI_DOUBLE, 0, comm);
+
+/* 3. Mat_vect_mult: gather full x on every rank, then compute local_m rows */
+void Mat_vect_mult(double local_A[], double local_x[], double local_y[],
+      int local_m, int n, int local_n, MPI_Comm comm) {
+   double* x = malloc(n * sizeof(double));
+   MPI_Allgather(local_x, local_n, MPI_DOUBLE, x, local_n, MPI_DOUBLE, comm);
+   for (int local_i = 0; local_i &lt; local_m; local_i++) {
+      local_y[local_i] = 0.0;
+      for (int j = 0; j &lt; n; j++)
+         local_y[local_i] += local_A[local_i*n + j] * x[j];
+   }
+   free(x);
+}</code></pre>
+<aside class="callout example" id="c16-b360"><div class="callout-head"><span class="kind">Worked example</span><span class="title"><span class="math">\(4 \times 4\)</span> matrix-vector product on <span class="math">\(p = 2\)</span> ranks<span class="zh" lang="zh-CN"><span class="math">\(p = 2\)</span> 进程追踪 <span class="math">\(4 \times 4\)</span> 矩阵-向量乘法</span></span></div><div class="callout-body"><ol>
+<li><code>Get_dims</code> broadcasts <span class="math">\(m=4, n=4\)</span> <span class="math">\(\implies\)</span> <code>local_m = 2</code>, <code>local_n = 2</code>. P0 holds rows 0–1 (<code>8</code> doubles) and <code>local_x = [x_0, x_1]</code>; P1 holds rows 2–3 and <code>[x_2, x_3]</code>.<span class="zh" lang="zh-CN"><code>Get_dims</code> 广播后算出 <code>local_m = 2</code>、<code>local_n = 2</code>。P0 持有第 0–1 行与 <code>[x_0, x_1]</code>；P1 持有第 2–3 行与 <code>[x_2, x_3]</code>。</span></li>
+<li><code>MPI_Allgather(local_x, 2, MPI_DOUBLE, x, 2, MPI_DOUBLE, comm)</code> puts all 4 entries <code>[x_0, x_1, x_2, x_3]</code> in <code>x</code> on both ranks; each computes 2 rows (<span class="math">\(16\)</span> FLOPs/rank) and <code>Print_vector</code> gathers <code>y</code> via <code>MPI_Gather</code>.<span class="zh" lang="zh-CN"><code>MPI_Allgather</code>（计数填 2）让双方都拿到完整 <code>x</code>，各算 2 行点积后由 <code>Print_vector</code> 通过 <code>MPI_Gather</code> 汇集到 0 号打印。</span></li>
+</ol>
+</div></aside>
+<aside class="callout exam" id="c16-b361"><div class="callout-head"><span class="kind">Traps</span><span class="title"><span class="zh inline" lang="zh-CN">易错点</span></span></div><div class="callout-body"><ul>
+<li>Distinguish <code>local_m = m/p</code> (rows of <code>A</code> and <code>local_y</code>) from <code>local_n = n/p</code> (<code>local_x</code>); when <span class="math">\(m \ne n\)</span> they differ.<span class="zh" lang="zh-CN">区分 <code>local_m = m/p</code>（<code>A</code> 的行数与 <code>local_y</code>）与 <code>local_n = n/p</code>（<code>local_x</code>）；<span class="math">\(m \ne n\)</span> 时两者不同。</span></li>
+<li>1-D indexing in <code>local_A</code> uses full column count <code>n</code> as stride: <code>local_A[local_i*n + j]</code> (not <code>local_n</code>).<span class="zh" lang="zh-CN"><code>local_A</code> 的一维下标以总列数 <code>n</code> 为步长：<code>local_A[local_i*n + j]</code>（不是 <code>local_n</code>）。</span></li>
+</ul>
+</div></aside>
+<h3 class="practice" id="c16-s4-1">Practice<span class="zh" lang="zh-CN">练习</span></h3>
+<p><strong>Q1.</strong> <em>(Sizes &amp; indexing)</em> With <span class="math">\(A\)</span> of size <span class="math">\(800 \times 400\)</span> on <span class="math">\(p=8\)</span> processes: give <code>local_m</code>, <code>local_n</code>, the number of doubles in <code>local_A</code> and temporary <code>x</code> inside <code>Mat_vect_mult</code>, and the 1-D index of entry <span class="math">\((i_{\text{loc}}, j) = (3, 15)\)</span>.<span class="zh" lang="zh-CN"><strong>Q1.</strong> <em>(尺寸与索引)</em> <span class="math">\(800 \times 400\)</span> 的矩阵 <span class="math">\(A\)</span> 用 <span class="math">\(p=8\)</span> 个进程计算：给出 <code>local_m</code>、<code>local_n</code>、<code>Mat_vect_mult</code> 中 <code>local_A</code> 与临时数组 <code>x</code> 的长度，以及元素 <span class="math">\((3, 15)\)</span> 的一维下标。</span></p>
+<details><summary>Answer</summary>
+<p><code>local_m = 100</code>, <code>local_n = 50</code>; <code>local_A</code> has <span class="math">\(100 \times 400 = 40{,}000\)</span> doubles, temporary <code>x</code> has <span class="math">\(n = 400\)</span> doubles; 1-D index is <code>3 * 400 + 15 = 1215</code> (stride is full <code>n = 400</code>).<span class="zh" lang="zh-CN"><code>local_m = 100</code>、<code>local_n = 50</code>；<code>local_A</code> 含 <span class="math">\(40{,}000\)</span> 个 double，临时 <code>x</code> 长 <span class="math">\(n = 400\)</span>；下标 <code>3 * 400 + 15 = 1215</code>（步长为总列数 <code>400</code>）。</span></p>
+</details>
+<p><strong>Q2.</strong> <em>(Trace)</em> Two processes (0, 1) multiply <span class="math">\(4 \times 2\)</span> matrix <span class="math">\(A = [1,2;\;3,4;\;5,6;\;7,8]\)</span> by <span class="math">\(x = [10, 20]^T\)</span>. What are <code>local_x</code> initially, <code>x</code> after <code>MPI_Allgather</code>, and each rank's <code>local_y</code>?<span class="zh" lang="zh-CN"><strong>Q2.</strong> <em>(追踪)</em> 2 个进程算 <span class="math">\(4 \times 2\)</span> 矩阵 <span class="math">\(A=[1,2;\;3,4;\;5,6;\;7,8]\)</span> 乘 <span class="math">\(x=[10, 20]^T\)</span>。初始 <code>local_x</code>、<code>MPI_Allgather</code> 后的 <code>x</code>，以及各进程算出的 <code>local_y</code> 分别是什么？</span></p>
+<details><summary>Answer</summary>
+<p>Initial: P0 <code>local_x = [10]</code>, P1 <code>[20]</code>. After <code>MPI_Allgather</code>: both hold <code>x = [10, 20]</code>. Outputs: P0 <code>local_y = [50, 110]</code>, P1 <code>local_y = [170, 230]</code> (gathered to rank 0 for printing).<span class="zh" lang="zh-CN">初始 P0 为 <code>[10]</code>、P1 为 <code>[20]</code>；<code>Allgather</code> 后双方均有 <code>x=[10, 20]</code>；结果 P0 得 <code>[50, 110]</code>、P1 得 <code>[170, 230]</code>。</span></p>
+</details>
+
+<h2 id="c16-s5">Terms to recognise <span class="prio p1">★</span><span class="zh" lang="zh-CN">需要认识的术语</span></h2>
+<div class="tw"><table>
+<thead>
+<tr><th>Term<span class="zh" lang="zh-CN">术语</span></th><th>What to know<span class="zh" lang="zh-CN">要知道什么</span></th></tr>
+</thead>
+<tbody>
+<tr><td><code>MPI_Op</code>, <code>MPI_MAXLOC</code></td><td>Predefined reduction operators (<code>MPI_SUM</code>, <code>MPI_MAX</code>, etc.); <code>MAXLOC</code>/<code>MINLOC</code> return both extremum and rank.<span class="zh" lang="zh-CN">预定义归约运算符；<code>MAXLOC</code>/<code>MINLOC</code> 同时返回极值及所在进程编号。</span></td></tr>
+<tr><td>Tree global sum<span class="zh" lang="zh-CN">树形全局求和</span></td><td>Pairwise binary tree reduction in <span class="math">\(\lceil \log_2 p \rceil\)</span> steps and <span class="math">\(p-1\)</span> messages.<span class="zh" lang="zh-CN">二叉树分层合并，需 <span class="math">\(\lceil \log_2 p \rceil\)</span> 步与 <span class="math">\(p-1\)</span> 条消息。</span></td></tr>
+<tr><td>Butterfly global sum<span class="zh" lang="zh-CN">蝶形全局求和</span></td><td>Pairwise all-to-all exchange in <span class="math">\(\log_2 p\)</span> rounds (for <code>MPI_Allreduce</code>) so every rank finishes with the total.<span class="zh" lang="zh-CN">每轮双向交换，经 <span class="math">\(\log_2 p\)</span> 轮让所有进程都持有归约总结果。</span></td></tr>
+<tr><td><code>stdin</code>, <code>stdout</code></td><td>In MPI, usually only rank 0 reads <code>stdin</code>; any rank can write <code>stdout</code> in unpredictable order.<span class="zh" lang="zh-CN">在 MPI 中通常仅 0 号可读 <code>stdin</code>；各进程皆可写 <code>stdout</code>，顺序不定。</span></td></tr>
+</tbody>
+</table></div>
+<h2 id="c16-s6">Exam-style questions<span class="zh" lang="zh-CN">考试题型练习</span></h2>
+<p><strong>Q1.</strong> <em>(Collective rules &amp; trace)</em> Ranks 0, 1, 2 start with <code>x = 2; y = 5;</code> and execute two <code>MPI_Reduce</code> calls (<code>MPI_PROD</code>, <code>dest_process = 0</code>): Call 1 passes P0 <code>(&amp;x,&amp;p1)</code>, P1 <code>(&amp;y,&amp;p2)</code>, P2 <code>(&amp;y,&amp;p1)</code>; Call 2 passes P0 <code>(&amp;y,&amp;p2)</code>, P1 <code>(&amp;x,&amp;p1)</code>, P2 <code>(&amp;x,&amp;p2)</code>. (a) Find <code>p1</code> and <code>p2</code> on rank 0. (b) Can rank 2 skip Call 2? Why?<span class="zh" lang="zh-CN"><strong>Q1.</strong> <em>(集合规则与追踪)</em> 进程 0、1、2 初始 <code>x = 2; y = 5;</code>，执行两次 <code>MPI_Reduce</code>（<code>MPI_PROD</code>，<code>dest = 0</code>）：第 1 次 P0 传 <code>(&amp;x,&amp;p1)</code>、P1 传 <code>(&amp;y,&amp;p2)</code>、P2 传 <code>(&amp;y,&amp;p1)</code>；第 2 次 P0 传 <code>(&amp;y,&amp;p2)</code>、P1 传 <code>(&amp;x,&amp;p1)</code>、P2 传 <code>(&amp;x,&amp;p2)</code>。(a) 求 0 号上的 <code>p1, p2</code>。(b) 进程 2 能否跳过第 2 次调用？</span></p>
+<details><summary>Answer</summary>
+<p>(a) Call 1: <code>p1 = 2 * 5 * 5 = 50</code>; Call 2: <code>p2 = 5 * 2 * 2 = 20</code> (matched by call order, not variable names).<span class="zh" lang="zh-CN">(a) 第 1 次：<code>p1 = 2×5×5 = 50</code>；第 2 次：<code>p2 = 5×2×2 = 20</code>（按调用顺序匹配）。</span></p>
+<p>(b) No—all ranks must call every collective in the communicator, otherwise the program hangs or crashes.<span class="zh" lang="zh-CN">(b) 不能——通信子中全体进程都必须调用同一个集合函数，否则挂起或崩溃。</span></p>
+</details>
+<p><strong>Q2.</strong> <em>(Butterfly vs. Reduce+Bcast &amp; choosing collectives)</em> (a) With <span class="math">\(p=8\)</span> ranks holding <code>[5, 2, -1, -3, 6, 5, -7, 2]</code>, how many rounds does butterfly <code>MPI_Allreduce</code> take vs. tree reduce + tree bcast, and what final value sits on every rank? (b) Which MPI collective solves each: (i) broadcast <code>m, n</code> from rank 0; (ii) split an array equally from rank 0; (iii) assemble every rank's slice onto all ranks?<span class="zh" lang="zh-CN"><strong>Q2.</strong> <em>(蝶形对比与函数选择)</em> (a) 8 个进程持有 <code>[5, 2, -1, -3, 6, 5, -7, 2]</code>，蝶形 <code>MPI_Allreduce</code> 与「树形归约+广播」各需几轮？最终所有进程的值是什么？(b) 为以下任务选择 MPI 函数：(i) 从 0 号广播 <code>m, n</code>；(ii) 0 号将数组均分给各进程；(iii) 每个进程都收集全部切片。</span></p>
+<details><summary>Answer</summary>
+<p>(a) Butterfly takes <span class="math">\(\log_2 8 = 3\)</span> rounds (vs. <span class="math">\(2\log_2 8 = 6\)</span>), finishing with <code>9</code> on all 8 ranks.<span class="zh" lang="zh-CN">(a) 蝶形需 3 轮（对比 6 轮），结束时全部 8 个进程都得到 9。</span></p>
+<p>(b) (i) <code>MPI_Bcast</code>; (ii) <code>MPI_Scatter</code>; (iii) <code>MPI_Allgather</code>.<span class="zh" lang="zh-CN">(b) (i) <code>MPI_Bcast</code>；(ii) <code>MPI_Scatter</code>；(iii) <code>MPI_Allgather</code>。</span></p>
+</details>
+<p><strong>Q3.</strong> <em>(Matvec program flow)</em> For <span class="math">\(1200 \times 600\)</span> matrix <span class="math">\(A\)</span> on <span class="math">\(p=10\)</span> ranks in Section 16.4: (a) list the 4 collective calls used in order; (b) give <code>local_m</code>, <code>local_n</code>, and <code>MPI_Allgather</code>'s <code>sendcount</code>/<code>recvcount</code>; (c) why must <code>Mat_vect_mult</code> allocate full <code>x[600]</code>?<span class="zh" lang="zh-CN"><strong>Q3.</strong> <em>(矩阵乘法流程)</em> 第 16.4 节中 <span class="math">\(1200 \times 600\)</span> 矩阵 <span class="math">\(A\)</span> 用 10 个进程：(a) 按执行顺序列出使用的 4 个集合函数；(b) 给出 <code>local_m</code>、<code>local_n</code> 与 <code>MPI_Allgather</code> 的计数；(c) 为什么必须分配长度为 600 的临时数组 <code>x</code>？</span></p>
+<details><summary>Answer</summary>
+<p>(a) <code>MPI_Bcast</code> (<code>Get_dims</code>) <span class="math">\(\to\)</span> <code>MPI_Scatter</code> (<code>Read_vector</code>) <span class="math">\(\to\)</span> <code>MPI_Allgather</code> (<code>Mat_vect_mult</code>) <span class="math">\(\to\)</span> <code>MPI_Gather</code> (<code>Print_vector</code>).<span class="zh" lang="zh-CN">(a) <code>MPI_Bcast</code> <span class="math">\(\to\)</span> <code>MPI_Scatter</code> <span class="math">\(\to\)</span> <code>MPI_Allgather</code> <span class="math">\(\to\)</span> <code>MPI_Gather</code>。</span></p>
+<p>(b) <code>local_m = 120</code>, <code>local_n = 60</code>; both <code>MPI_Allgather</code> counts are <code>local_n = 60</code> (not 600). (c) Each row of <code>local_A</code> has all 600 columns, so dot products need the entire vector <code>x</code>.<span class="zh" lang="zh-CN">(b) <code>local_m = 120</code>、<code>local_n = 60</code>，<code>Allgather</code> 计数均为 <code>60</code>（不是 600）。(c) 每行点积需要全部 600 个分量。</span></p>
+</details>
+</section>
 <section class="chapter" id="app-A"><h1><span class="chnum">Appendix A</span>Slurm Cheat Sheet<span class="title-cn">Slurm 速查</span></h1><aside class="callout note" id="app-A-b310"><div class="callout-head"><span class="kind">Note</span><span class="title">Exam map<span class="zh" lang="zh-CN">考点表</span></span></div><div class="callout-body"><div class="tw"><table>
 <thead>
 <tr>
@@ -9225,6 +9525,25 @@ export OMP_NUM_THREADS=8            # environment variable read by the OpenMP ru
 </ul>
 </div>
 </div>
+<h2><a href="#c16">Chapter 16 Collective MPI Communication and Parallel Examples</a></h2><div class="collected">
+<div class="card"><a class="card-title" href="#c16-b350">Tree global sum vs. butterfly <code>MPI_Allreduce</code><span class="zh" lang="zh-CN">树形归约与蝶形 <code>MPI_Allreduce</code> 步数</span> ↩</a><p><span class="math display">\[\text{tree steps}=\lceil\log_2 p\rceil,\quad \text{messages}=p-1,\qquad \text{butterfly}=\log_2 p\;\text{(vs.\ }2\log_2 p\text{ reduce+bcast)}\]</span></p>
+<ul>
+<li><span class="math">\(p\)</span>: number of processes (<code>comm_sz</code>); <span class="math">\(\lceil\cdot\rceil\)</span> rounds up.<span class="zh" lang="zh-CN"><span class="math">\(p\)</span>：进程数（<code>comm_sz</code>）；<span class="math">\(\lceil\cdot\rceil\)</span> 向上取整。</span></li>
+<li>For <span class="math">\(p=8\)</span>: tree <code>MPI_Reduce</code> takes <span class="math">\(3\)</span> steps (7 msgs) vs. <span class="math">\(7\)</span> serial steps on rank 0; butterfly <code>MPI_Allreduce</code> takes <span class="math">\(3\)</span> rounds vs. <span class="math">\(6\)</span> for reduce+bcast.<span class="zh" lang="zh-CN">以 <span class="math">\(p=8\)</span> 为例：树形 <code>MPI_Reduce</code> 需 <span class="math">\(3\)</span> 步（7 条消息，对比 0 号串行 <span class="math">\(7\)</span> 步）；蝶形 <code>MPI_Allreduce</code> 只需 <span class="math">\(3\)</span> 轮，对比先归约再广播的 <span class="math">\(6\)</span> 轮。</span></li>
+</ul>
+</div>
+<div class="card"><a class="card-title" href="#c16-b355">Counts in <code>MPI_Scatter</code>, <code>MPI_Gather</code> and <code>MPI_Allgather</code><span class="zh" lang="zh-CN"><code>MPI_Scatter</code>、<code>MPI_Gather</code> 与 <code>MPI_Allgather</code> 的计数</span> ↩</a><p><span class="math display">\[\text{sendcount}=\text{recvcount}=\text{local\_n}=\frac{n}{p}\]</span></p>
+<ul>
+<li><span class="math">\(n\)</span>: full vector length; <span class="math">\(p\)</span>: number of processes (assuming <span class="math">\(p \mid n\)</span>).<span class="zh" lang="zh-CN"><span class="math">\(n\)</span>：完整向量长度；<span class="math">\(p\)</span>：进程数（假设 <span class="math">\(p \mid n\)</span>）。</span></li>
+<li>Both counts are the <strong>per-process chunk size</strong> <code>local_n</code>, <strong>not</strong> the total length <code>n</code>.<span class="zh" lang="zh-CN">发送/接收计数均为<strong>单个进程的分片长度</strong> <code>local_n</code>，<strong>不是</strong>总长度 <code>n</code>。</span></li>
+</ul>
+</div>
+<div class="card"><a class="card-title" href="#c16-b359">MPI matrix-vector partition and indexing<span class="zh" lang="zh-CN">MPI 矩阵-向量乘法划分与下标</span> ↩</a><p><span class="math display">\[\text{local\_m}=\frac{m}{p},\qquad \text{local\_n}=\frac{n}{p},\qquad \texttt{local\_A[local\_i*n + j]}\]</span></p>
+<ul>
+<li><span class="math">\(A\)</span> is <span class="math">\(m \times n\)</span>: each rank stores <code>local_m</code> full rows (row stride is full <code>n</code>, not <code>local_n</code>) and gathers full <code>x[n]</code> via <code>MPI_Allgather</code>.<span class="zh" lang="zh-CN"><span class="math">\(A\)</span> 为 <span class="math">\(m \times n\)</span>：每进程存 <code>local_m</code> 个整行（行步长是总列数 <code>n</code>，不是 <code>local_n</code>），并用 <code>MPI_Allgather</code> 收集完整 <code>x[n]</code>。</span></li>
+</ul>
+</div>
+</div>
 <h2><a href="#app-B">Appendix B Basics: Numbers, Units and Computer Vocabulary</a></h2><div class="collected">
 <div class="card"><a class="card-title" href="#app-B-b320">Changing prefix<span class="zh" lang="zh-CN">更换词头</span> ↩</a><p><span class="math display">\[N_2=N_1\cdot10^{\,e_1-e_2}\]</span></p>
 <ul>
@@ -9730,6 +10049,29 @@ export OMP_NUM_THREADS=8            # environment variable read by the OpenMP ru
 <li>Process 0 computes a part too. <code>total_integral</code> starts with its own <code>local_integral</code>, and the loop starts at <code>proc = 1</code>.<span class="zh" lang="zh-CN">进程 0 也计算一部分。<code>total_integral</code> 从它自己的 <code>local_integral</code> 开始，循环从 <code>proc = 1</code> 开始。</span></li>
 <li>The number of messages is <code>comm_sz - 1</code>. Each message carries one number.<span class="zh" lang="zh-CN">消息的数量是 <code>comm_sz - 1</code>。每条消息只带一个数。</span></li>
 <li>Only process 0 prints the result.<span class="zh" lang="zh-CN">只有进程 0 打印结果。</span></li>
+</ul>
+</div>
+</div>
+<h2><a href="#c16">Chapter 16 Collective MPI Communication and Parallel Examples</a></h2><div class="collected">
+<div class="card"><a class="card-title" href="#c16-b351">Trapezoidal C code, MPI I/O and <code>MPI_Reduce</code> <span class="prio p2">★★</span> ↩</a><ul>
+<li>Only process 0 accesses <code>stdin</code>; in <code>Get_input</code>, <code>a_p</code>/<code>b_p</code>/<code>n_p</code> are already pointers, so pass <code>a_p</code>, not <code>&amp;a_p</code>.<span class="zh" lang="zh-CN">仅进程 0 可读 <code>stdin</code>；在 <code>Get_input</code> 中 <code>a_p</code>/<code>b_p</code>/<code>n_p</code> 本身是指针，直接传 <code>a_p</code>，不要写 <code>&amp;a_p</code>。</span></li>
+<li>Every rank can call <code>printf</code> to <code>stdout</code>, making output order unpredictable (if order matters, send to rank 0 as in Section 15.5).<span class="zh" lang="zh-CN">所有进程都能写 <code>stdout</code>，打印顺序不可预测（需要有序则发给 0 号打印，见第 15.5 节）。</span></li>
+<li><code>MPI_Reduce</code> takes 7 args and uses predefined <code>MPI_Op</code> names (<code>MPI_SUM</code>, <code>MPI_MAX</code>, etc.), not C operators.<span class="zh" lang="zh-CN"><code>MPI_Reduce</code> 有 7 个参数，运算符须用预定义 <code>MPI_Op</code>（如 <code>MPI_SUM</code>、<code>MPI_MAX</code>），而非 C 符号。</span></li>
+</ul>
+</div>
+<div class="card"><a class="card-title" href="#c16-b354">Collective vs. point-to-point rules <span class="prio p3">★★★</span> ↩</a><ul>
+<li>All ranks in the communicator must call the <strong>same</strong> collective with compatible arguments (same <code>dest_process</code>/root) and pass an actual argument for <code>output_data_p</code>.<span class="zh" lang="zh-CN">通信子内全体进程必须调用<strong>同一个</strong>集合函数、参数兼容（如相同的 <code>dest_process</code>/根进程），且所有进程都传 <code>output_data_p</code>。</span></li>
+<li>Collective calls have no tags and no <code>MPI_Status</code>; MPI matches solely by communicator and <strong>call order</strong>, ignoring variable names.<span class="zh" lang="zh-CN">集合调用无标签、无 <code>MPI_Status</code>；MPI 只按通信子与<strong>调用顺序</strong>匹配，忽略变量名。</span></li>
+</ul>
+</div>
+<div class="card"><a class="card-title" href="#c16-b358"><code>MPI_Allreduce</code>, <code>Bcast</code>, <code>Scatter</code>, <code>Gather</code>, <code>Allgather</code> <span class="prio p3">★★★</span> ↩</a><ul>
+<li><code>MPI_Allreduce</code> removes <code>dest_process</code> (6 args); in <code>MPI_Bcast</code>, <code>data_p</code> is <code>in/out</code> and <code>source_proc</code> must match on all ranks.<span class="zh" lang="zh-CN"><code>MPI_Allreduce</code> 去掉了 <code>dest_process</code>（6 参数）；<code>MPI_Bcast</code> 中 <code>data_p</code> 为 <code>in/out</code>，且各进程 <code>source_proc</code> 必须相同。</span></li>
+<li>In <code>Scatter</code>/<code>Gather</code>/<code>Allgather</code>, counts equal <code>local_n = n/p</code> (not total <code>n</code>); root-only buffers can be <code>NULL</code> on non-root ranks.<span class="zh" lang="zh-CN"><code>Scatter</code>/<code>Gather</code>/<code>Allgather</code> 的计数均填 <code>local_n = n/p</code>（非总长 <code>n</code>）；仅根进程使用的缓冲区在非根进程可为 <code>NULL</code>。</span></li>
+</ul>
+</div>
+<div class="card"><a class="card-title" href="#c16-b361">Matrix-vector multiplication with MPI <span class="prio p2">★★</span> ↩</a><ul>
+<li>Distinguish <code>local_m = m/p</code> (rows of <code>A</code> and <code>local_y</code>) from <code>local_n = n/p</code> (<code>local_x</code>); when <span class="math">\(m \ne n\)</span> they differ.<span class="zh" lang="zh-CN">区分 <code>local_m = m/p</code>（<code>A</code> 的行数与 <code>local_y</code>）与 <code>local_n = n/p</code>（<code>local_x</code>）；<span class="math">\(m \ne n\)</span> 时两者不同。</span></li>
+<li>1-D indexing in <code>local_A</code> uses full column count <code>n</code> as stride: <code>local_A[local_i*n + j]</code> (not <code>local_n</code>).<span class="zh" lang="zh-CN"><code>local_A</code> 的一维下标以总列数 <code>n</code> 为步长：<code>local_A[local_i*n + j]</code>（不是 <code>local_n</code>）。</span></li>
 </ul>
 </div>
 </div>
